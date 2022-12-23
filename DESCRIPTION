@@ -1,0 +1,31 @@
+Package: gggda
+Type: Package
+Title: Geometric Data Analysis Layers for 'ggplot2'
+Version: 0.1.0
+Authors@R: c(
+    person(given = "Jason Cory",
+           family = "Brunson",
+           role = c("aut", "cre"),
+           email = "cornelioid@gmail.com",
+           comment = c(ORCID = "0000-0003-3126-9494")))
+Description: Geometric data analysis (GDA) comprises several multivariate
+    techniques based on geometric concepts and physical principles.
+    Le Roux & Rouanet (2005) <doi:10.1007/1-4020-2236-0> provide a thorough
+    introduction.
+    This package provides common GDA plotting elements for Wickham's (2010)
+    <doi:10.1198/jcgs.2009.07098> layered grammar of graphics.
+Depends:
+    R (>= 3.3.0),
+    ggplot2
+Imports:
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/corybrunson/gggda
+BugReports: https://github.com/corybrunson/gggda/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
