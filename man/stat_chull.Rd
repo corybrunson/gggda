@@ -2,13 +2,25 @@
 % Please edit documentation in R/stat-chull.r
 \name{stat_chull}
 \alias{stat_chull}
-\title{Restrict geometric data to boundary points for its convex hull}
+\alias{stat_cone}
+\title{Restrict points to the boundary of their convex or conical hull}
 \usage{
 stat_chull(
   mapping = NULL,
   data = NULL,
   geom = "polygon",
   position = "identity",
+  show.legend = NA,
+  inherit.aes = TRUE,
+  ...
+)
+
+stat_cone(
+  mapping = NULL,
+  data = NULL,
+  geom = "polygon",
+  position = "identity",
+  origin = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
   ...
@@ -54,14 +66,19 @@ display.}
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+
+\item{origin}{Logical; whether to include the origin with the conical hull.
+Defaults to \code{FALSE}.}
 }
 \value{
 A ggproto \link[ggplot2:layer]{layer}.
 }
 \description{
-As used in a \strong{\link[ggplot2:ggplot2-package]{ggplot2}} vignette, this stat
-layer restricts a dataset with \code{x} and \code{y} variables to the points that lie
-on its convex hull.
+As used in a \strong{\link[ggplot2:ggplot2-package]{ggplot2}} vignette,
+\code{stat_chull()} restricts a dataset with \code{x} and \code{y} variables to the points
+that bound its convex hull. \code{stat_cone()} restricts a dataset with \code{x} and
+\code{y} variables to the points that bound its conical hull, optionally
+including the origin.
 }
 \examples{
 # plot petal measurements of Anderson irises with convex hulls
@@ -70,11 +87,28 @@ ggplot(iris, aes(x = Petal.Length, y = Petal.Width,
   geom_point() +
   scale_color_brewer(type = "qual", aesthetics = c("color", "fill")) +
   stat_chull(alpha = .2)
+
+# US arrests
+us_arrests <- USArrests
+us_arrests$State <- rownames(USArrests)
+us_arrests$Region <- state.region[match(state.name, us_arrests$State)]
+
+# plot US arrest rates with conical hulls
+ggplot(us_arrests, aes(x = Murder, y = Assault, color = Region)) +
+  geom_point() +
+  stat_cone(origin = FALSE)
+
+# plot centered US arrest rates with conical hulls (including origin)
+us_arrests2 <- us_arrests
+us_arrests2[, c(1,3,4)] <-
+  scale(us_arrests2[, c(1,3,4)], center = TRUE, scale = FALSE)
+ggplot(us_arrests2, aes(x = Murder, y = Assault, color = Region)) +
+  geom_point() +
+  stat_cone(origin = TRUE)
 }
 \seealso{
 Other stat layers: 
 \code{\link{stat_center}()},
-\code{\link{stat_cone}()},
 \code{\link{stat_spantree}()}
 }
 \concept{stat layers}

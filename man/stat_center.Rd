@@ -101,7 +101,6 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
 \seealso{
 Other stat layers: 
 \code{\link{stat_chull}()},
-\code{\link{stat_cone}()},
 \code{\link{stat_spantree}()}
 }
 \concept{stat layers}

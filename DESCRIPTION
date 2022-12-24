@@ -8,8 +8,8 @@ Authors@R: c(
            role = c("aut", "cre"),
            email = "cornelioid@gmail.com",
            comment = c(ORCID = "0000-0003-3126-9494")))
-Description: Geometric data analysis (GDA) comprises several multivariate
-    techniques based on geometric concepts and physical principles.
+Description: Geometric data analysis (GDA) comprises multivariate techniques
+    based on geometric concepts and physical principles.
     Le Roux & Rouanet (2005) <doi:10.1007/1-4020-2236-0> provide a thorough
     introduction.
     This package provides common GDA plotting elements for Wickham's (2010)
@@ -17,9 +17,8 @@ Description: Geometric data analysis (GDA) comprises several multivariate
 Depends:
     R (>= 3.3.0),
     ggplot2
-Imports:
 Suggests:
-    testthat,
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown
 License: GPL-3
@@ -29,3 +28,4 @@ URL: https://github.com/corybrunson/gggda
 BugReports: https://github.com/corybrunson/gggda/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Config/testthat/edition: 3
