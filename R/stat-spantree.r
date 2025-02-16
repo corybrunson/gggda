@@ -41,7 +41,7 @@
 #'   to use; `"mlpack"`, `"vegan"`, or `"ade4"`.
 #' @param method Passed to [stats::dist()] if `engine` is `"vegan"` or `"ade4"`,
 #'   ignored if `"mlpack"`.
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-spantree.r
@@ -69,7 +69,7 @@ stat_spantree <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

@@ -84,7 +84,7 @@ geom_isoline <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

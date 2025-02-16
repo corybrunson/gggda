@@ -32,7 +32,7 @@
 #' - `group`
 #' 
 
-#' @include biplot-key.r
+#' @include key-intervals.r
 #' @import ggplot2
 #' @inheritParams ggplot2::geom_linerange
 #' @template param-geom
@@ -84,7 +84,7 @@ geom_pointranges <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -108,7 +108,7 @@ GeomPointranges <- ggproto(
   }
 )
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

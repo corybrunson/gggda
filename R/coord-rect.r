@@ -28,7 +28,7 @@ coord_rect <- function(
 #' @export
 coord_square <- coord_rect
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

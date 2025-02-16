@@ -7,7 +7,7 @@
 #' @template biplot-ord-aes
 
 #' @inheritParams ggplot2::layer
-#' @template param-stat
+#' @template param-layer
 #' @param origin Logical; whether to include the origin with the transformed
 #'   data. Defaults to `FALSE`.
 #' @template return-layer
@@ -37,7 +37,7 @@ stat_cone <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

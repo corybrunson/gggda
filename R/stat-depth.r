@@ -44,7 +44,7 @@
 #'   [ddalpha::depth.()]).
 #' @param notion_params List of additional parameters passed via `...` to
 #'   [ddalpha::depth.()].
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-depth.r
@@ -105,7 +105,7 @@ stat_depth_filled <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -190,7 +190,7 @@ StatDepth <- ggproto(
   }
 )
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

@@ -8,9 +8,8 @@
 #' @template biplot-ord-aes
 
 #' @inheritParams ggplot2::layer
-#' @inheritParams stat_rows
 #' @param mult Numeric value used to scale the coordinates.
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @export
@@ -37,7 +36,7 @@ stat_scale <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

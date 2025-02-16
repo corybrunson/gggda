@@ -1,7 +1,8 @@
-#' @title Biplot key drawing functions
+#' @title Key drawing functions for bivariable intervals.
 #'
 #' @description These key drawing functions supplement those built into
-#'   **[ggplot2][ggplot2::ggplot2]** for producing legends suitable to biplots.
+#'   **[ggplot2][ggplot2::ggplot2]** for legend glyphs suitable to bivariate
+#'   [line-ranges and point-ranges][geom_lineranges()].
 
 #' @details
 #'
@@ -13,7 +14,6 @@
 #' @name draw-key
 #' @inheritParams ggplot2::draw_key
 #' @return A grid grob.
-#' @example inst/examples/ex-ggbiplot-key-iris.r
 #' @seealso [ggplot2::draw_key] for key glyphs installed with **ggplot2**.
 NULL
 

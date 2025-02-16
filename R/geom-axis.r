@@ -16,8 +16,7 @@
 #'   scatterplots and used both to recover variable values from case markers
 #'   (prediction) and to position new case markers from variables
 #'   (interpolation). When they are not orthogonal, these two uses conflict, so
-#'   interpolative versus predictive axes must be used appropriately; see
-#'   [ggbiplot()].
+#'   interpolative versus predictive axes must be used appropriately.
 #' 
 
 #' @template ref-gower1996
@@ -136,7 +135,7 @@ geom_axis <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

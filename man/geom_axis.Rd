@@ -164,8 +164,7 @@ Axes positioned orthogonally at the origin are a ubiquitous feature of
 scatterplots and used both to recover variable values from case markers
 (prediction) and to position new case markers from variables
 (interpolation). When they are not orthogonal, these two uses conflict, so
-interpolative versus predictive axes must be used appropriately; see
-\code{\link[=ggbiplot]{ggbiplot()}}.
+interpolative versus predictive axes must be used appropriately.
 }
 \section{Biplot layers}{
 
@@ -261,10 +260,8 @@ and Data Analysis: Recent Advances and Applications}: 169--176.
 \seealso{
 Other geom layers: 
 \code{\link{geom_bagplot}()},
-\code{\link{geom_interpolation}()},
 \code{\link{geom_isoline}()},
 \code{\link{geom_lineranges}()},
-\code{\link{geom_origin}()},
 \code{\link{geom_rule}()},
 \code{\link{geom_text_radiate}()},
 \code{\link{geom_vector}()}

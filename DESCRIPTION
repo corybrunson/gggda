@@ -9,41 +9,36 @@ Authors@R: c(
   person("John", "Gracey", email = "jbgracey6@gmail.com",
     role = "aut")
   )
-Description: Ordination comprises several multivariate exploratory and
-    explanatory techniques with theoretical foundations in geometric data
-    analysis; see Podani (2000, ISBN:90-5782-067-6) for techniques and
-    applications and Le Roux & Rouanet (2005) <doi:10.1007/1-4020-2236-0> for
-    foundations.
-    Greenacre (2010, ISBN:978-84-923846) shows how the most established of
-    these, including principal components analysis, correspondence analysis,
-    multidimensional scaling, factor analysis, and discriminant analysis,
-    rely on eigen-decompositions or singular value decompositions of
-    pre-processed numeric matrix data.
-    These decompositions give rise to a set of shared coordinates along which
-    the row and column elements can be measured. The overlay of their
-    scatterplots on these axes, introduced by Gabriel (1971)
-    <doi:10.1093/biomet/58.3.453>, is called a biplot.
-    'ordr' provides inspection, extraction, manipulation, and visualization
-    tools for several popular ordination classes supported by a set of recovery
-    methods. It is inspired by and designed to integrate into 'tidyverse'
-    workflows provided by Wickham et al (2019) <doi:10.21105/joss.01686>.
+Description: A variety of multivariable data summary statistics and 
+    constructions have been proposed, either to generalize univariable analogs 
+    or to exploit multivariable properties.
+    Notable among these are the bivariable peelings surveyed by Green 
+    (1981, ISBN:978-0-471-28039-2),
+    the bag-and-bolster plots proposed by Rousseeuw &al (1999) 
+    <doi:10.1080/00031305.1999.10474494>, and the minimum spanning trees used by
+    Jolliffe (2002) <doi:10.1007/b98835> to represent high-dimensional 
+    relationships among data in a low-dimensional plot.
+    Additionally, biplots of singular value--decomposed tabular data, such as
+    from principal components analysis, make use of vectors, calibrated axes,
+    and other representations of variable elements to complement point markers
+    for case elements; see Gabriel (1971) <doi:10.1093/biomet/58.3.453> and
+    Gower & Harding (1988) <doi:10.1093/biomet/75.3.445> for original proposals.
+    Because they treat the abscissa and ordinate as commensurate or the data
+    elements themselves as point masses or unit vectors, these multivariable
+    tools can be thought of as belonging to geometric data analysis; see Podani
+    (2000, ISBN:90-5782-067-6) for techniques and applications and Le Roux &
+    Rouanet (2005) <doi:10.1007/1-4020-2236-0> for foundations. 'gggda' extends
+    Wickham's (2010) <doi:10.1198/jcgs.2009.07098> layered grammar of graphics
+    with statistical transformation ("stat") and geometric construction ("geom")
+    layers for many of these tools, as well as convenience coordinate systems
+    to emphasize intrinsic geometry of the data.
 Depends:
     R (>= 3.3.0),
     ggplot2
 Imports:
     rlang,
-    cli,
-    stringr,
-    tidyselect,
-    scales,
-    generics,
-    magrittr,
     tibble,
-    tidyr,
-    dplyr,
-    purrr,
     labeling,
-    ggrepel,
 Suggests:
     testthat,
     sessioninfo,
@@ -56,70 +51,31 @@ Suggests:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/corybrunson/ordr, https://corybrunson.github.io/ordr/
-BugReports: https://github.com/corybrunson/ordr/issues
+URL: https://github.com/corybrunson/gggda, https://corybrunson.github.io/gggda/
+BugReports: https://github.com/corybrunson/gggda/issues
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Collate:
     'aaa-.r'
-    'biplot-key.r'
-    'biplot.r'
     'coord-rect.r'
-    'coord-scaffold.r'
-    'data.r'
-    'dplyr-verbs.r'
-    'utils.r'
-    'ord-recoverers.r'
-    'ord-augmentation.r'
-    'ord-conference.r'
-    'ord-tbl.r'
-    'fun-lda.r'
-    'fun-lra.r'
-    'fun-wrap.r'
     'geom-axis.r'
     'geom-bagplot.r'
-    'geom-interpolation.r'
+    'key-intervals.r'
     'geom-intervals.r'
     'geom-isoline.r'
-    'geom-origin.r'
     'geom-rule.r'
     'geom-text-radiate.r'
     'geom-utils.r'
     'geom-vector.r'
-    'methods-base-eigen.r'
-    'methods-base-svd.r'
-    'methods-mass-correspondence.r'
-    'methods-mass-lda.r'
-    'methods-mass-mca.r'
-    'methods-ordr-lra.r'
-    'methods-stats-cancor.r'
-    'methods-stats-cmds.r'
-    'methods-stats-factanal.r'
-    'methods-stats-kmeans.r'
-    'methods-stats-lm.r'
-    'methods-stats-prcomp.r'
-    'methods-stats-princomp.r'
-    'ord-annotation.r'
-    'ord-format.r'
-    'ord-negation.r'
-    'ord-plot.r'
-    'ord-supplementation.r'
-    'ord-tidiers.r'
-    'ordinate.r'
-    'ordr.r'
+    'gggda.r'
     'stat-chull.r'
     'stat-depth.r'
     'stat-bagplot.r'
     'stat-center.r'
     'stat-cone.r'
-    'stat-matrix.r'
     'stat-referent.r'
-    'stat-projection.r'
     'stat-rule.r'
     'stat-scale.r'
     'stat-spantree.r'
-    'theme-scaffold.r'
-    'zzz-biplot-geoms.r'
-    'zzz-biplot-stats.r'
-    'zzz.r'
+    'utils.r'
 VignetteBuilder: knitr

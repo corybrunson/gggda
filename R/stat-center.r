@@ -18,7 +18,7 @@
 #'   supply a summary function that takes a matrix as input and returns a named
 #'   column summary vector. Overridden by `fun.data` and `fun`, cannot be used
 #'   together with `fun.min` and `fun.max`.
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-center.r
@@ -56,7 +56,7 @@ stat_center <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -132,7 +132,7 @@ stat_star <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

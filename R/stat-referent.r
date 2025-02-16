@@ -22,7 +22,7 @@
 #' 
 
 #' @inheritParams ggplot2::layer
-#' @inheritParams stat_rows
+#' @template param-layer
 #' @inheritParams ggplot2::ggplot_add
 #' @param referent The reference data set; see Details.
 #' @template return-layer
@@ -57,7 +57,7 @@ stat_referent <- function(
   LayerRef
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

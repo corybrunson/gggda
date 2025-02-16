@@ -34,7 +34,7 @@
 #' @param cut Character; one of `"above"` and `"below"`, indicating whether each
 #'   hull should contain at least or at most `breaks` of the data,
 #'   respectively.
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-chull.r
@@ -60,7 +60,7 @@ stat_chull <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -104,7 +104,7 @@ stat_peel <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

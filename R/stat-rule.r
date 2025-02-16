@@ -50,7 +50,7 @@
 #' @inheritParams ggplot2::layer
 #' @inheritParams stat_referent
 #' @inheritParams stat_center
-#' @template param-stat
+#' @template param-layer
 #' @param fun.lower,fun.upper,fun.offset Functions used to determine the limits
 #'   of the rules and the translations of the axes from the projections of
 #'   `referent` onto the axes and onto their normal vectors.
@@ -89,7 +89,7 @@ stat_rule <- function(
   LayerRef
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

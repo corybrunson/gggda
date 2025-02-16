@@ -127,10 +127,4 @@ ggplot(subcars, aes(x = hp00, y = wt)) +
   coord_equal() +
   stat_referent(geom = "point", referent = grad)
 }
-\seealso{
-Other biplot layers: 
-\code{\link{biplot-geoms}},
-\code{\link{biplot-stats}},
-\code{\link{stat_rows}()}
-}
 \concept{biplot layers}
