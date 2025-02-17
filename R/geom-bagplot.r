@@ -23,8 +23,6 @@
 #'   different random seeds.
 #' 
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_bagplot()` understands the following aesthetics (required aesthetics

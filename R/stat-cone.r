@@ -3,8 +3,7 @@
 #' @description Restrict planar data to the points that lie on its conical hull.
 #' 
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template ord-aes
 
 #' @inheritParams ggplot2::layer
 #' @template param-layer

@@ -4,8 +4,7 @@
 #' This layer is **deprecated**.
 #' 
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template ord-aes
 
 #' @inheritParams ggplot2::layer
 #' @param mult Numeric value used to scale the coordinates.

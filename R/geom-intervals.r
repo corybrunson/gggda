@@ -11,8 +11,6 @@
 #'   practice the summary values do not need to be manually passed.
 #' 
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_lineranges()` and `geom_pointranges()` understand the following

@@ -12,8 +12,6 @@
 #'   to `geom = "rule"`; see [stat_rule()] for details on this pairing.
 #' 
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_rule()` understands the following aesthetics (required aesthetics are

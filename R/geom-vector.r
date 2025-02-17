@@ -18,8 +18,6 @@
 #' @template ref-greenacre2010
 #' @template ref-gardner2002
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_vector()` understands the following aesthetics (required aesthetics

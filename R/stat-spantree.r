@@ -26,8 +26,7 @@
 #' @template ref-jolliffe2002
 #'   
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template ord-aes
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed

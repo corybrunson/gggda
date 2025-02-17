@@ -35,7 +35,6 @@
 #'   
 
 #' @template stat-referent
-#' @template biplot-layers
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed

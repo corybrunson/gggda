@@ -1,8 +1,7 @@
 #' @title Compute geometric centers and spreads for ordination factors
 #'
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template ord-aes
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed

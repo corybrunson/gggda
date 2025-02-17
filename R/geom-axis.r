@@ -22,8 +22,6 @@
 #' @template ref-gower1996
 #' @template ref-gardner2002
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_axis()` understands the following aesthetics (required aesthetics are
