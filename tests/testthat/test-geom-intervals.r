@@ -11,7 +11,9 @@ f <- function(y) data.frame(
 )
 
 test_that("`geom_lineranges()` alerts when no function is provided", {
+  rmv_old <- options(rlib_message_verbosity = "verbose")$rlib_message_verbosity
   expect_message(print(p + geom_lineranges()), regexp = "function")
+  options(rlib_message_verbosity = rmv_old)
 })
 
 test_that("`geom_lineranges()` computes summary values correctly", {

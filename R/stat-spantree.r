@@ -76,11 +76,17 @@ stat_spantree <- function(
 StatSpantree <- ggproto(
   "StatSpantree", Stat,
   
-  required_aes = c("x", "y"),
+  required_aes = c("x|..coord1", "y|..coord2"),
   
   compute_group = function(data, scales,
                            engine = "mlpack", method = "euclidean") {
-    data_ord <- data[, get_ord_aes(data), drop = FALSE]
+    ord_cols <- get_ord_aes(data)
+    data_ord <- data[, ord_cols, drop = FALSE]
+    # introduce or override `x` and `y` if `..coord*` are present
+    if (! setequal(names(data)[ord_cols], c("x", "y"))) {
+      data$x <- data$..coord1
+      data$y <- data$..coord2
+    }
     
     # minimum spanning tree engine
     mst_engines <- c("mlpack", "vegan", "ade4")
