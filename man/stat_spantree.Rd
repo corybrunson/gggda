@@ -106,10 +106,10 @@ higher-dimensional space. Plotting this high-dimensional MST on the
 dimensions can encapsulate the "true" distances between points (Jolliffe,
 2002).
 }
-\section{Ordination aesthetics}{
+\section{Multidimensional position aesthetics}{
 
 This statistical transformation is compatible with the convenience function
-\code{\link[=ord_aes]{ord_aes()}}.
+\code{\link[=coord_aes]{coord_aes()}}.
 
 Some transformations (e.g. \code{\link[=stat_center]{stat_center()}}) commute with projection to the
 lower (1 or 2)-dimensional biplot space. If they detect aesthetics of the
@@ -123,7 +123,7 @@ transformation is performed before projection, and the results in the first
 two dimensions are returned as \code{x} and \code{y}.
 
 A small number of transformations (\code{\link[=stat_rule]{stat_rule()}}) are incompatible with
-ordination aesthetics but will accept \code{ord_aes()} without warning.
+these aesthetics but will accept \code{coord_aes()} without warning.
 }
 
 \section{Computed variables}{
@@ -135,14 +135,17 @@ transformation and can be accessed with \link[ggplot2:aes_eval]{delayed evaluati
 }
 
 \examples{
-UScitiesD |> 
-  cmdscale() |> 
+eurodist |> 
+  cmdscale(k = 6) |> 
   as.data.frame() |> 
   tibble::rownames_to_column(var = "city") ->
-  us_mds
-ggplot(us_mds, aes(-V1, -V2, label = city)) +
+  euro_mds
+ggplot(euro_mds, aes(V1, V2, label = city)) +
   stat_spantree() +
-  geom_label()
+  geom_label(alpha = .25)
+ggplot(euro_mds, c(coord_aes(euro_mds, "V"), aes(label = city))) +
+  stat_spantree() +
+  geom_label(aes(x = V1, y = V2), alpha = .25)
 }
 \references{
 Jolliffe IT (2002) \emph{Principal Component Analysis}, Second Edition.

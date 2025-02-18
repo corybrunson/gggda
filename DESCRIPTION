@@ -12,7 +12,7 @@ Authors@R: c(
 Description: A variety of multivariable data summary statistics and 
     constructions have been proposed, either to generalize univariable analogs 
     or to exploit multivariable properties.
-    Notable among these are the bivariable peelings surveyed by Green 
+    Notable among these are the bivariate peelings surveyed by Green 
     (1981, ISBN:978-0-471-28039-2),
     the bag-and-bolster plots proposed by Rousseeuw &al (1999) 
     <doi:10.1080/00031305.1999.10474494>, and the minimum spanning trees used by
@@ -57,6 +57,7 @@ RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Collate:
     'aaa-.r'
+    'aes-coord.r'
     'coord-rect.r'
     'geom-axis.r'
     'geom-bagplot.r'

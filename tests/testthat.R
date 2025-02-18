@@ -1,4 +1,4 @@
 library(testthat)
-library(ordr)
+library(gggda)
 
-test_check("ordr")
+test_check("gggda")

@@ -21,6 +21,5 @@ ability_cor_eigen |>
   ggplot(aes(-V1, -V2, label = test)) +
   coord_square() + theme_void() +
   geom_vector(check_overlap = TRUE) +
-  geom_unit_circle() +
   expand_limits(x = c(-1, 1), y = c(-1, 1)) +
   ggtitle("Ability and intelligence test covariances")

@@ -26,7 +26,7 @@
 #' @template ref-jolliffe2002
 #'   
 
-#' @template ord-aes
+#' @template coord-aes
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -79,10 +79,10 @@ StatSpantree <- ggproto(
   
   compute_group = function(data, scales,
                            engine = "mlpack", method = "euclidean") {
-    ord_cols <- get_ord_aes(data)
-    data_ord <- data[, ord_cols, drop = FALSE]
+    coord_cols <- get_coord_aes(data)
+    data_ord <- data[, coord_cols, drop = FALSE]
     # introduce or override `x` and `y` if `..coord*` are present
-    if (! setequal(names(data)[ord_cols], c("x", "y"))) {
+    if (! setequal(names(data)[coord_cols], c("x", "y"))) {
       data$x <- data$..coord1
       data$y <- data$..coord2
     }
@@ -98,8 +98,8 @@ StatSpantree <- ggproto(
              "{", paste(mst_engines, collapse = "}, {"), "}")
       } else {
         rlang::warn(
-          paste("Package {", engine, "} not installed; ",
-                "using {", engine_alt[[1L]], "} instead."),
+          paste0("Package {", engine, "} not installed; ",
+                 "using {", engine_alt[[1L]], "} instead."),
           .frequency = "regularly",
           .frequency_id = "StatSpantree$compute_group-engine"
         )
@@ -113,8 +113,8 @@ StatSpantree <- ggproto(
       mlpack = {
         if (method != "euclidean") {
           rlang::warn(
-            paste("{", engine, "} engine uses the euclidean distance; ",
-                  "`method` will be ignored."),
+            paste0("{", engine, "} engine uses the euclidean distance; ",
+                   "`method` will be ignored."),
             .frequency = "regularly",
             .frequency_id = "StatSpantree$compute_group-links"
           )

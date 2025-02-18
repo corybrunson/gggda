@@ -15,7 +15,7 @@
 
 #' @template ref-barnett1976
 
-#' @template ord-aes
+#' @template coord-aes
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -71,9 +71,9 @@ StatChull <- ggproto(
   compute_group = function(
     data, scales
   ) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_coord_aes(data)
     
-    data[chull(data[, ord_cols, drop = FALSE]), , drop = FALSE]
+    data[chull(data[, coord_cols, drop = FALSE]), , drop = FALSE]
   }
 )
 
@@ -115,10 +115,10 @@ StatPeel <- ggproto(
     breaks = c(.5), cut = c("above", "below")
   ) {
     
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_coord_aes(data)
     
     peel_data <- peel_hulls(
-      data[, ord_cols, drop = FALSE],
+      data[, coord_cols, drop = FALSE],
       breaks = breaks, cut = cut
     )
     

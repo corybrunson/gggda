@@ -4,7 +4,7 @@
 #' This layer is **deprecated**.
 #' 
 
-#' @template ord-aes
+#' @template coord-aes
 
 #' @inheritParams ggplot2::layer
 #' @param mult Numeric value used to scale the coordinates.

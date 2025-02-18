@@ -1,7 +1,7 @@
-#' @title Compute geometric centers and spreads for ordination factors
+#' @title Centers and spreads for bivariate data
 #'
 
-#' @template ord-aes
+#' @template coord-aes
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -93,10 +93,10 @@ StatCenter <- ggproto(
                            fun.ord = NULL,
                            fun.args = list(),
                            na.rm = FALSE) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_coord_aes(data)
     cfun <- 
       make_center_fun(fun.data, fun, fun.min, fun.max, fun.ord, fun.args)
-    cfun(data[, ord_cols, drop = FALSE])
+    cfun(data[, coord_cols, drop = FALSE])
   }
 )
 
@@ -142,9 +142,9 @@ StatStar <- ggproto(
                            fun.data = NULL, fun = NULL,
                            fun.ord = NULL, fun.args = list(),
                            na.rm = FALSE) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_coord_aes(data)
     cfun <- make_center_fun(fun.data, fun, NULL, NULL, fun.ord, fun.args)
-    cdata <- cfun(data[, ord_cols, drop = FALSE])
+    cdata <- cfun(data[, coord_cols, drop = FALSE])
     
     data$xend <- data$x
     data$yend <- data$y

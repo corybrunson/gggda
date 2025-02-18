@@ -139,10 +139,10 @@ several flavors and is the basis for \link[=stat_bagplot]{bagplots}.
 depth values over a grid in the same format, so it is neatly paired with
 \code{\link[ggplot2:geom_contour]{ggplot2::geom_contour()}}.
 }
-\section{Ordination aesthetics}{
+\section{Multidimensional position aesthetics}{
 
 This statistical transformation is compatible with the convenience function
-\code{\link[=ord_aes]{ord_aes()}}.
+\code{\link[=coord_aes]{coord_aes()}}.
 
 Some transformations (e.g. \code{\link[=stat_center]{stat_center()}}) commute with projection to the
 lower (1 or 2)-dimensional biplot space. If they detect aesthetics of the
@@ -156,7 +156,7 @@ transformation is performed before projection, and the results in the first
 two dimensions are returned as \code{x} and \code{y}.
 
 A small number of transformations (\code{\link[=stat_rule]{stat_rule()}}) are incompatible with
-ordination aesthetics but will accept \code{ord_aes()} without warning.
+these aesthetics but will accept \code{coord_aes()} without warning.
 }
 
 \section{Computed variables}{

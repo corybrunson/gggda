@@ -14,7 +14,7 @@
 
 #' @template ref-rousseeuw1999
 
-#' @template ord-aes
+#' @template coord-aes
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -154,7 +154,7 @@ StatDepth <- ggproto(
     notion = "zonoid", notion_params = list(),
     n = 100L, ...
   ) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_coord_aes(data)
     notion <- match.arg(
       notion,
       # `eval(formals(ddalpha::depth.)$notion)`
@@ -171,7 +171,7 @@ StatDepth <- ggproto(
     )
     depth_args <- list(
       x = xy_grid,
-      data = data[, ord_cols[seq(2L)], drop = FALSE],
+      data = data[, coord_cols[seq(2L)], drop = FALSE],
       notion = notion
     )
     depth_args <- c(depth_args, notion_params)

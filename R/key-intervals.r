@@ -1,4 +1,4 @@
-#' @title Key drawing functions for bivariable intervals.
+#' @title Key drawing functions for bivariate intervals.
 #'
 #' @description These key drawing functions supplement those built into
 #'   **[ggplot2][ggplot2::ggplot2]** for legend glyphs suitable to bivariate

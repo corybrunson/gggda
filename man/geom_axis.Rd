@@ -202,7 +202,7 @@ stackloss |>
 # gradient axis with respect to two predictors
 scale(stackloss, scale = FALSE) |> 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
-  coord_square() + geom_origin() +
+  coord_square() +
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   geom_axis(data = coef_data)
@@ -210,7 +210,7 @@ scale(stackloss, scale = FALSE) |>
 stackloss_centered <- scale(stackloss, scale = FALSE)
 stackloss_centered |> 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
-  coord_square() + geom_origin() +
+  coord_square() +
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   stat_rule(

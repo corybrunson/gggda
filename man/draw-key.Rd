@@ -5,7 +5,7 @@
 \alias{draw_key_line}
 \alias{draw_key_crosslines}
 \alias{draw_key_crosspoint}
-\title{Key drawing functions for bivariable intervals.}
+\title{Key drawing functions for bivariate intervals.}
 \usage{
 draw_key_line(data, params, size)
 
