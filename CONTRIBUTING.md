@@ -1,10 +1,10 @@
-# Contributing to **ordr** development
+# Contributing to **gggda** development
 
-The goal of this guide is to help contributors to **ordr** plan their contributions and navigate the process. The sections below cover different types of contributions, usually with increasing degrees of proposed change.
+The goal of this guide is to help contributors to **gggda** plan their contributions and navigate the process. The sections below cover different types of contributions, usually with increasing degrees of proposed change.
 
-Note that **ordr** is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing, you agree to its terms.
+Note that **gggda** is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing, you agree to its terms.
 
-This guide was copied from [that of **ggalluvial**](https://github.com/corybrunson/ggalluvial/blob/main/CONTRIBUTING.md), which was loosely adapted from the contributing guides [for **ggplot2**](https://github.com/tidyverse/ggplot2/blob/main/CONTRIBUTING.md) and [from ropensci](https://github.com/ropensci/dotgithubfiles/blob/main/dotgithub/CONTRIBUTING.md).
+This guide was copied from [that of **ordr**](https://github.com/corybrunson/ordr/blob/main/CONTRIBUTING.md), which was loosely adapted from the contributing guides [for **ggplot2**](https://github.com/tidyverse/ggplot2/blob/main/CONTRIBUTING.md) and [from ropensci](https://github.com/ropensci/dotgithubfiles/blob/main/dotgithub/CONTRIBUTING.md).
 If you have questions about or suggestions for this guide, please feel free to contact a package maintainer.
 
 ## Editor
@@ -32,7 +32,7 @@ For more guidance on reproducible examples, see [this vignette](https://reprex.t
 
 **Bug fixes, feature upgrades, and other substantive, self-contained changes** may be contributed via [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests). Unless previously discussed with a maintainer, please follow these steps:
 
-1. Fork the home repository (`corybrunson/ordr`).
+1. Fork the home repository (`corybrunson/gggda`).
 2. Create a new (local) branch on which to make changes. If appropriate, update the documentation on this branch and run functionality checks (e.g. using the **devtools** package).
 3. Push this branch to the fork and open a pull request to the home repository.
 4. With the maintainer(s), discuss and (if necessary) update the pull request until it is accepted or decided against. _In the latter case, a clear and consistent reason should be provided by the maintainer(s)._
