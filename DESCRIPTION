@@ -40,13 +40,14 @@ Imports:
     tibble,
     labeling,
 Suggests:
-    testthat,
-    sessioninfo,
     gridExtra,
     MASS,
+    Hmisc,
     mlpack,
     ddalpha,
+    testthat,
     knitr,
+    sessioninfo,
     rmarkdown
 License: GPL-3
 Encoding: UTF-8

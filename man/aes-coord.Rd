@@ -11,7 +11,7 @@ coord_aes(.data, prefix)
 
 get_coord_aes(data)
 
-\method{c}{uneval}(..., recursive = FALSE)
+\method{c}{uneval}(...)
 }
 \arguments{
 \item{.data, data}{A data frame. \code{.data} stands in for the data passed to
@@ -20,6 +20,10 @@ before being passed to a \verb{Stat*$compute_*()} function.}
 
 \item{prefix}{A regular expression used to identify the coordinate columns
 of \code{.data}.}
+
+\item{...}{objects to be concatenated.  All \code{\link[base]{NULL}} entries
+    are dropped before method dispatch unless at the very beginning of the
+    argument list.}
 }
 \value{
 A list with class \code{uneval}. Components of the list are either

@@ -17,6 +17,7 @@
 #' 
 
 #' @name aes-coord
+#' @inheritParams base::c
 #' @param .data,data A data frame. `.data` stands in for the data passed to
 #'   [ggplot2::ggplot()], while `data` is expected to have been pre-processed
 #'   before being passed to a `Stat*$compute_*()` function.
@@ -59,7 +60,7 @@ get_coord_aes <- function(data) {
 # WARNING: This is experimental and might cause unforeseen problems.
 #' @rdname aes-coord
 #' @export
-c.uneval <- function(..., recursive = FALSE) {
+c.uneval <- function(...) {
   # NB: Unlike `modifyList()`, this does not overwrite duplicate aesthetics.
   res <- c(unlist(lapply(list(...), unclass)))
   class(res) <- "uneval"
