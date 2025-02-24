@@ -4,7 +4,7 @@
 #'   the same scale. The coordinate system `CoordRect`, alias `CoordSquare`,
 #'   provides control of both coordinate and window aspect ratios.
 #' 
-#' @importFrom scales expand_range
+#' @importFrom scales expand_range censor
 #' @inheritParams ggplot2::coord_fixed
 #' @param window_ratio aspect ratio of plotting window
 #' @example inst/examples/ex-coord-rect.r
@@ -67,7 +67,8 @@ CoordRect <- ggproto(
     )
     
     view_scales_x <- list(
-      ggplot2:::view_scale_primary(scale_x, limits$x, continuous_range$x),
+      # ggplot2:::view_scale_primary(scale_x, limits$x, continuous_range$x),
+      view_scale_primary(scale_x, limits$x, continuous_range$x),
       sec = ggplot2:::view_scale_secondary(scale_x, limits$x, continuous_range$x),
       range = continuous_range$x
     )
@@ -75,7 +76,8 @@ CoordRect <- ggproto(
       c(aesthetic_x, paste0(aesthetic_x, ".", names(view_scales_x)[-1]))
     
     view_scales_y <- list(
-      ggplot2:::view_scale_primary(scale_y, limits$y, continuous_range$y),
+      # ggplot2:::view_scale_primary(scale_y, limits$y, continuous_range$y),
+      view_scale_primary(scale_y, limits$y, continuous_range$y),
       sec = ggplot2:::view_scale_secondary(scale_y, limits$y, continuous_range$y),
       range = continuous_range$y
     )
@@ -110,14 +112,13 @@ check_coord_limits <- function(limits) {
 # mimic `ggplot2:::default_expansion()`
 default_expansion <- function(
     scale,
-    discrete = expansion(add = 0.6), continuous = expansion(mult = 0.05),
+    continuous = expansion(mult = 0.05),
     expand = TRUE
 ) {
   if (! expand) return(expansion(0, 0))
+  forbid_discrete(scale)
   if (! inherits(scale$expand, "waiver"))
     scale$expand
-  else if (scale$is_discrete())
-    discrete
   else
     continuous
 }
@@ -134,8 +135,7 @@ expand_limits_scale_continuous <- function (
   else
     scale$get_limits()
   
-  if (scale$is_discrete()) 
-    stop("This coordinate system is designed only for continuous scales.")
+  forbid_discrete(scale)
   
   transformation <- scale$get_transformation()
   coord_limits <- 
@@ -158,3 +158,40 @@ expand_range4 <- function(limits, expand) {
   upper <- expand_range(limits, expand[3], expand[4])[2]
   c(lower, upper)
 }
+
+# mimic `ggplot2:::view_scale_primary()`
+view_scale_primary <- function(
+    scale,
+    limits = scale$get_limits(),
+    continuous_range = scale$dimension(limits = limits)
+) {
+  forbid_discrete(scale)
+  
+  continuous_scale_sorted <- sort(continuous_range)
+  breaks <- scale$get_breaks(continuous_scale_sorted)
+  minor_breaks <- 
+    scale$get_breaks_minor(b = breaks, limits = continuous_scale_sorted)
+  breaks <- censor(breaks, continuous_scale_sorted, only.finite = FALSE)
+  
+  minor_breaks <- censor(minor_breaks, continuous_range, only.finite = FALSE)
+  ggproto(
+    NULL, ggplot2:::ViewScale,
+    scale = scale,
+    guide = scale$guide, 
+    position = scale$position,
+    aesthetics = scale$aesthetics, 
+    name = scale$name,
+    scale_is_discrete = scale$is_discrete(), 
+    limits = limits,
+    continuous_range = continuous_range, 
+    breaks = breaks,
+    minor_breaks = minor_breaks
+  )
+}
+
+forbid_discrete <- function(scale) {
+  if (scale$is_discrete())
+    stop("This coordinate system is designed only for continuous scales.")
+}
+
+# TODO: Write rectangular view scale constructor `ViewScaleRect`.
