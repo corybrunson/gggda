@@ -4,7 +4,7 @@
 #'   the same scale. The coordinate system `CoordRect`, alias `CoordSquare`,
 #'   provides control of both coordinate and window aspect ratios.
 #' 
-#' @importFrom scales expand_range censor
+#' @importFrom scales expand_range censor rescale
 #' @inheritParams ggplot2::coord_fixed
 #' @param window_ratio aspect ratio of plotting window
 #' @example inst/examples/ex-coord-rect.r
@@ -69,7 +69,8 @@ CoordRect <- ggproto(
     view_scales_x <- list(
       # ggplot2:::view_scale_primary(scale_x, limits$x, continuous_range$x),
       view_scale_primary(scale_x, limits$x, continuous_range$x),
-      sec = ggplot2:::view_scale_secondary(scale_x, limits$x, continuous_range$x),
+      # sec = ggplot2:::view_scale_secondary(scale_x, limits$x, continuous_range$x),
+      sec = view_scale_secondary(scale_x, limits$x, continuous_range$x),
       range = continuous_range$x
     )
     names(view_scales_x) <- 
@@ -78,7 +79,8 @@ CoordRect <- ggproto(
     view_scales_y <- list(
       # ggplot2:::view_scale_primary(scale_y, limits$y, continuous_range$y),
       view_scale_primary(scale_y, limits$y, continuous_range$y),
-      sec = ggplot2:::view_scale_secondary(scale_y, limits$y, continuous_range$y),
+      # sec = ggplot2:::view_scale_secondary(scale_y, limits$y, continuous_range$y),
+      sec = view_scale_secondary(scale_y, limits$y, continuous_range$y),
       range = continuous_range$y
     )
     names(view_scales_y) <- 
@@ -175,7 +177,7 @@ view_scale_primary <- function(
   
   minor_breaks <- censor(minor_breaks, continuous_range, only.finite = FALSE)
   ggproto(
-    NULL, ggplot2:::ViewScale,
+    NULL, ViewScaleRect,
     scale = scale,
     guide = scale$guide, 
     position = scale$position,
@@ -187,6 +189,68 @@ view_scale_primary <- function(
     breaks = breaks,
     minor_breaks = minor_breaks
   )
+}
+
+# mimic `ggplot2:::view_scale_secondary()`
+view_scale_secondary <- function(
+    scale,
+    limits = scale$get_limits(),
+    continuous_range = scale$dimension(limits = limits)
+) {
+  if (is.null(scale$secondary.axis) ||
+      inherits(scale$secondary.axis, "waiver") || 
+      scale$secondary.axis$empty()) {
+    primary_scale <- view_scale_primary(scale, limits, continuous_range)
+    scale_flip_position(primary_scale)
+    primary_scale$guide <- guide_none()
+    primary_scale
+  } else {
+    scale$secondary.axis$init(scale)
+    break_info <- scale$secondary.axis$break_info(continuous_range, scale)
+    names(break_info) <- gsub("sec\\.", "", names(break_info))
+    position <- switch(
+      scale$position,
+      top = "bottom",
+      bottom = "top",
+      left = "right",
+      right = "left",
+      scale$position
+    )
+    ggproto(
+      NULL, ViewScaleRect,
+      scale = scale,
+      guide = scale$secondary.axis$guide, 
+      position = position,
+      break_info = break_info,
+      aesthetics = scale$aesthetics, 
+      name = scale$sec_name(),
+      make_title = function(self, title) self$scale$make_sec_title(title),
+      continuous_range = sort(continuous_range), 
+      dimension = function(self) self$break_info$range, 
+      get_limits = function(self) self$break_info$range, 
+      get_breaks = function(self) self$break_info$major_source, 
+      get_breaks_minor = function(self) self$break_info$minor_source, 
+      break_positions = function(self) self$break_info$major, 
+      break_positions_minor = function(self) self$break_info$minor, 
+      get_labels = function(self, breaks = self$get_breaks()) {
+        self$break_info$labels
+      }, 
+      rescale = function(x) rescale(x, from = break_info$range, to = c(0, 1))
+    )
+  }
+}
+
+# mimic `ggplot2:::scale_flip_position()`
+scale_flip_position <- function (scale) {
+  scale$position <- switch(
+    scale$position,
+    top = "bottom",
+    bottom = "top",
+    left = "right",
+    right = "left",
+    scale$position
+  )
+  invisible()
 }
 
 forbid_discrete <- function(scale) {

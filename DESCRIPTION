@@ -70,6 +70,7 @@ Collate:
     'geom-utils.r'
     'geom-vector.r'
     'gggda.r'
+    'scale-view-rect.r'
     'stat-chull.r'
     'stat-depth.r'
     'stat-bagplot.r'
