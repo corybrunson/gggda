@@ -4,14 +4,14 @@
 \alias{aes-coord}
 \alias{coord_aes}
 \alias{get_coord_aes}
-\alias{c.uneval}
+\alias{aes_c}
 \title{Multidimensional coordinate mappings}
 \usage{
 coord_aes(.data, prefix)
 
 get_coord_aes(data)
 
-\method{c}{uneval}(...)
+aes_c(...)
 }
 \arguments{
 \item{.data, data}{A data frame. \code{.data} stands in for the data passed to

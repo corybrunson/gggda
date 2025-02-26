@@ -16,9 +16,9 @@ test_that("`coord_aes()` warns about non-sequential coordinates", {
   options(rlib_warning_verbosity = rwv_old)
 })
 
-test_that("`c.uneval()` aborts when duplicates are passed", {
-  expect_error(c(coord_aes(d, prefix = "x"), aes(..coord1 = x)), "multiple")
-  expect_error(c(aes(..coord1 = x), coord_aes(d, prefix = "x")), "multiple")
+test_that("`aes_c()` aborts when duplicates are passed", {
+  expect_error(aes_c(coord_aes(d, prefix = "x"), aes(..coord1 = x)), "multiple")
+  expect_error(aes_c(aes(..coord1 = x), coord_aes(d, prefix = "x")), "multiple")
 })
 
 test_that("`get_coord_aes()` retrieves `..coord*` columns, else `x,y`", {

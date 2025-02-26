@@ -60,7 +60,7 @@ get_coord_aes <- function(data) {
 # WARNING: This is experimental and might cause unforeseen problems.
 #' @rdname aes-coord
 #' @export
-c.uneval <- function(...) {
+aes_c <- function(...) {
   res <- c(unlist(lapply(list(...), unclass)))
   dupe <- rev(duplicated(rev(names(res))))
   if (any(dupe)) {
