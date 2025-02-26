@@ -61,8 +61,20 @@ get_coord_aes <- function(data) {
 #' @rdname aes-coord
 #' @export
 c.uneval <- function(...) {
-  # NB: Unlike `modifyList()`, this does not overwrite duplicate aesthetics.
   res <- c(unlist(lapply(list(...), unclass)))
+  dupe <- rev(duplicated(rev(names(res))))
+  if (any(dupe)) {
+    stop(
+      "Some aesthetics matched by multiple arguments: ",
+      paste0("`", paste0(unique(names(res)[dupe]), collapse = "`, `"), "`")
+    )
+    # warning(
+    #   "Some aesthetics matched by multiple arguments: ",
+    #   paste0("`", paste0(unique(names(res)[dupe]), collapse = "`, `"), "`"),
+    #   "; the last argument(s) will be used."
+    # )
+    # res <- res[! dupe]
+  }
   class(res) <- "uneval"
   res
 }
