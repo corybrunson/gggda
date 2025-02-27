@@ -14,8 +14,77 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Introduction
 
+The {gggda} package is a mostly standard-issue extension to [{ggplot2}](https://github.com/tidyverse/ggplot2): It consists of [ggprotos](https://ggplot2.tidyverse.org/reference/ggplot2-ggproto.html) for a coordinate system ("coord") and several statistical transformations ("stat"), and geographic constructions ("geom") that almost exclusively use standard aesthetic mappings and recognizable parameters and defaults.
 
 ```{r setup}
 library(gggda)
+```
+
+The coords, stats, and geoms implement a variety of tools used in multivariate data analysis.
+By design, tools implemented in other {ggplot2} extensions are not reinvented here---or, at least, they're not meant to be! For example, [the {ggdensity} package](https://github.com/jamesotto852/ggdensity) provides plot layers for quantile-based density estimates and contours, extending the native {ggplot2} layers for level-based density visualizations, and users are encouraged to use it in tandem with the {gggda}. As a result, though, those included in the package may seem somewhat arbitrary.
+That said, the plot layers provided by {gggda} implement methods that emerged from two distinct threads, which the vignette will consider in turn.
+
+### Data
+
+To motivate and illustrate these tools, let's investigate the `USJudgeRatings` data set included with the basic `R` installation. These data were obtained from the 1977 _New Haven Register_ and contain several lawyers' evaluations of 43 Superior Court judges based, or so i infer (i have not found a journal article citation or been able to access the newspaper edition), on a number of interactions with them. The variables include the (standardized) number of interactions, ratings of 10 criteria ranging from judicial integrity to physical ability, and a final rating of retention worthiness; the ratings all use a 10-point scale. Here are those ratings for a sample of the judges:
+
+```{r data}
+print(USJudgeRatings[sample(nrow(USJudgeRatings), 4L, replace = FALSE), ])
+```
+
+For convenience, we reformat the data with an additional column for the name of the judge:
+
+```{r tibble}
+USJudgeRatings |> 
+  tibble::rownames_to_column(var = "NAME") ->
+  us_judge_ratings
+head(us_judge_ratings)
+```
+
+## Multivariate summaries
+
+The first set of methods is the extension of univariate summaries to multivariate, and usually bivariate, data.
+For example, univariate data have a natural ranking by value: Arrange the cases in order of a variable value, and the rank of each case is its position in order:
+
+```{r rank}
+us_judge_ratings |> 
+  subset(select = c(NAME, RTEN)) |> 
+  # NB: This requires R version 4.4.0.
+  sort_by(~ list(-RTEN)) |> 
+  transform(RANK = seq(nrow(us_judge_ratings))) |> 
+  head()
+```
+
+There's no obvious analog to this for bivariate data:
+Suppose we want to rank judges by how well they maintain the legitimacy of their court. This might implicate two ratings in the data in particular, their integrity (`INTG`) and the promptness of their decisions (`DECI`):
+
+```{r soundness}
+judge_plot <- ggplot(us_judge_ratings, aes(x = INTG, y = DECI, label = NAME))
+judge_plot +
+  geom_text(aes(label = NAME), size = 3)
+```
+
+While these ratings are correlated, several individual judges were rated significantly more highly on one criterion than on the other, and there is a clear "core" of judges who received average ratings on both.
+In the next section we'll see how these ratings might be combined into an aggregate; for now, we'll consider how to rank the judges not by the values of their ratings but by their typicality or "averageness": On this score, middling judges should be ranked highly while outlying judges should be ranked lowly.
+Visually, this property can be captured by sequentially "peeling" outer layers of the point cloud and giving each layer the same rank. The most common way to do this is probably via convex hulls:
+
+```{r peel}
+judge_plot +
+  geom_text(size = 3, hjust = "outward", vjust = "outward") +
+  # TODO: A single parameter should enable a total peeling.
+  stat_peel(breaks = seq(0, 1, .0001), color = "black", fill = "transparent")
+```
+
+The plot identifies Judges Saden and Mignone, for example, as outliers, though the more middling judges' names are harder to read. For that, we can extract the hull numbers:
+
+```{r bar}
+(judge_plot + geom_text() + stat_peel(breaks = seq(0, 1, .0001))) |> 
+  ggplot_build() |> 
+  # FIXME: Merge is not one-to-one.
+  getElement("data") |> c(list(by = c("x", "y"))) |> 
+  do.call(what = merge) |> 
+  subset(select = c(label, hull)) |> 
+  sort_by(~ hull)
 ```
