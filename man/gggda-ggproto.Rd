@@ -30,10 +30,43 @@
 \alias{StatSpantree}
 \title{ggproto classes created and adapted for gggda}
 \description{
-\strong{gggda} introduces several \link[ggplot2:ggproto]{ggproto}
-classes for coordinate systems, statistical transformations, and geometric
+\strong{gggda} introduces several \link[ggplot2:ggproto]{ggproto} classes
+for coordinate systems, statistical transformations, and geometric
 constructions specific to multivariate analysis or following geometric data
 analysis principles.
+}
+\details{
+The new ggprotos are inspired by two entangled but distinct threads
+in multivariate data visualization: First, several geometric constsructions
+have been proposed to generalize both numeric and graphical summaries of
+univariate data to the bivariate setting. Among these are various "peeling"
+procedures like that by successive convex hulls, which generalize the
+concept of rank (Green, 1981); and the depth-based bag-and-bolster plot,
+designed as a bivariate analog of the box-and-whisker plot (Rousseeuw &al,
+1999). Second, the use of biplots to visualize singular value--decomposed
+data benefits from being able to encode variables with different graphical
+elements than the markers used to encode cases---for example, vectors
+(arrows emanating from the origin; Gabriel, 1971), calibrated axes (Gower &
+Hand, 1996), and prediction regions (Gardner & le Roux, 2002).
+}
+\references{
+Green PJ (1981) "Peeling Bivariate Data". \emph{Interpreting Multivariate Data}
+Chapter 1, 3--19. John Wiley & Sons, Ltd, ISBN 978-0-471-28039-2.
+
+Rousseeuw PJ, Ruts I, & Tukey JW (1999) "The Bagplot: A Bivariate Boxplot".
+\emph{The American Statistician}, \strong{53}(4): 382--387.
+\doi{10.1080/00031305.1999.10474494}
+
+Gabriel KR (1971) "The biplot graphic display of matrices with application to
+principal component analysis". \emph{Biometrika} 58(3), 453--467.
+\doi{10.1093/biomet/58.3.453}
+
+Gower JC & Hand DJ (1996) \emph{Biplots}. Chapman & Hall, ISBN: 0-412-71630-5.
+
+Gardner S, le Roux N (2002) "Biplot Methodology for Discriminant Analysis
+Based upon Robust Methods and Principal Curves". \emph{Classification, Clustering,
+and Data Analysis: Recent Advances and Applications}: 169--176.
+\url{https://link.springer.com/chapter/10.1007/978-3-642-56181-8_18}
 }
 \seealso{
 \code{\link[ggplot2:ggplot2-ggproto]{ggplot2::ggplot2-ggproto}} and \link[ggplot2:ggproto]{ggplot2::ggproto} for explanations
