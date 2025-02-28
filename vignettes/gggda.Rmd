@@ -14,6 +14,45 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r sort_by, echo=FALSE}
+# define `sort_by()` if R version is < 4.4.0
+if ( as.integer(R.Version()$major) < 4L ||
+     (R.Version()$major == "4" && as.double(R.Version()$minor) < 4) ) {
+  .formula2varlist <- 
+    function(formula, data, warnLHS = TRUE, ignoreLHS = warnLHS) {
+      if (!inherits(formula, "formula")) stop("'formula' must be a formula")
+      if (!is.list(data) && !is.environment(data)) data <- as.data.frame(data)
+      if (length(formula) == 3) {
+        if (warnLHS) {
+          if (ignoreLHS)
+            warning("Unexpected LHS in 'formula' has been ignored.")
+          else
+            warning("Unexpected LHS in 'formula' has been combined with RHS.")
+        }
+        if (ignoreLHS) formula <- formula[-2]
+      }
+      ## If formula = ~list(...)
+      if (length(formula[[2]]) > 1L && formula[[2]][[1]] == quote(list)) {
+        ans <- eval(formula[[2]], data, environment(formula))
+      }
+      else {
+        fterms <- stats::terms(formula)
+        ans <- eval(attr(fterms, "variables"), data, environment(formula))
+        names(ans) <- attr(fterms, "term.labels")
+      }
+      ans
+    }
+  sort_by <- function(x, y, ...) UseMethod("sort_by")
+  sort_by.default <- function(x, y, ...) x[order(y, ...)]
+  sort_by.data.frame <- function(x, y, ...) {
+    if (inherits(y, "formula")) y <- .formula2varlist(y, x)
+    if (!is.list(y)) y <- list(y)
+    o <- do.call(order, c(unname(y), list(...)))
+    x[o, , drop = FALSE]
+  }
+}
+```
+
 ## Introduction
 
 The {gggda} package is a mostly standard-issue extension to [{ggplot2}](https://github.com/tidyverse/ggplot2): It consists of [ggprotos](https://ggplot2.tidyverse.org/reference/ggplot2-ggproto.html) for a coordinate system ("coord") and several statistical transformations ("stat"), and geographic constructions ("geom") that almost exclusively use standard aesthetic mappings and recognizable parameters and defaults.
@@ -73,13 +112,14 @@ Visually, this property can be captured by sequentially "peeling" outer layers o
 ```{r peel}
 judge_plot +
   geom_text(size = 3, hjust = "outward", vjust = "outward") +
-  # TODO: A single parameter should enable a total peeling.
-  stat_peel(breaks = seq(0, 1, .0001), color = "black", fill = "transparent")
+  # TODO: Ensure that correct grouping structure is inferred.
+  stat_peel(num = Inf, color = "black", fill = "transparent")
 ```
 
 The plot identifies Judges Saden and Mignone, for example, as outliers, though the more middling judges' names are harder to read. For that, we can extract the hull numbers:
 
 ```{r bar}
+# FIXME: Enable `peel_hulls()`, like `chull()`, to accept a matrix or data frame.
 (judge_plot + geom_text() + stat_peel(breaks = seq(0, 1, .0001))) |> 
   ggplot_build() |> 
   # FIXME: Merge is not one-to-one.

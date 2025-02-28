@@ -5,5 +5,11 @@ ggplot(USJudgeRatings, aes(x = INTG, y = PREP)) +
 ggplot(USJudgeRatings, aes(x = INTG, y = PREP)) +
   stat_peel(
     aes(alpha = after_stat(hull)),
-    breaks = seq(.1, .9, .2), color = "black"
+    breaks = seq(.1, .9, .2)
+  )
+
+ggplot(USJudgeRatings, aes(x = INTG, y = PREP)) +
+  stat_peel(
+    aes(alpha = after_stat(hull)),
+    num = 6, by = 2, color = "black"
   )

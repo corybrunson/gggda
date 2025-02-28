@@ -26,17 +26,13 @@
 #'   \item{`prop`}{the actual proportion of data within each hull}
 #' }
 
-#' @importFrom grDevices chull
+#' @include peel.r
 #' @inheritParams ggplot2::layer
-#' @param breaks A numeric vector of fractions (between `0` and `1`) of the
-#'   data to contain in each hull.
-#' @param cut Character; one of `"above"` and `"below"`, indicating whether each
-#'   hull should contain at least or at most `breaks` of the data,
-#'   respectively.
+#' @inheritParams peel_hulls
 #' @template param-layer
 #' @template return-layer
 #' @family stat layers
-#' @example inst/examples/ex-stat-chull.r
+#' @example inst/examples/ex-stat-peel.r
 #' @export
 stat_chull <- function(
   mapping = NULL, data = NULL, geom = "polygon", position = "identity",
@@ -81,7 +77,7 @@ StatChull <- ggproto(
 #' @export
 stat_peel <- function(
     mapping = NULL, data = NULL, geom = "polygon", position = "identity",
-    breaks = c(.5), cut = c("above", "below"),
+    num = NULL, by = 1L, breaks = c(.5), cut = c("above", "below"),
     show.legend = NA, 
     inherit.aes = TRUE,
     ...
@@ -95,6 +91,8 @@ stat_peel <- function(
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
+      num = num,
+      by = by,
       breaks = breaks,
       cut = cut,
       na.rm = FALSE,
@@ -112,15 +110,28 @@ StatPeel <- ggproto(
   
   compute_group = function(
     data, scales,
-    breaks = c(.5), cut = c("above", "below")
+    num = NULL, by = 1L, breaks = c(.5), cut = c("above", "below")
   ) {
+    # save(data, scales, num, by, breaks, cut,
+    #      file = "stat-peel-compute-group.rda")
+    # load(file = "stat-peel-compute-group.rda")
     
     coord_cols <- get_coord_aes(data)
     
+    # peel data (matrix output)
     peel_data <- peel_hulls(
-      data[, coord_cols, drop = FALSE],
-      breaks = breaks, cut = cut
+      data[[coord_cols[1L]]], data[[coord_cols[2L]]],
+      num = num, by = by, breaks = breaks, cut = cut
     )
+    
+    # reformat result
+    peel_data <- as.data.frame(peel_data)
+    names(peel_data)[seq(2L)] <- names(data)[seq(2L)]
+    
+    # factorize hull numbers
+    hull_levels <- 
+      if (is.null(num)) seq_along(breaks) else seq(max(peel_data$hull))
+    peel_data$hull <- factor(peel_data$hull, levels = hull_levels)
     
     # interact existing group with hull
     peel_data$group <- 
@@ -129,67 +140,3 @@ StatPeel <- ggproto(
     peel_data
   }
 )
-
-# convex hull peelings
-# adapted from `aplpack::plothulls()`
-# https://cran.r-project.org/package=aplpack
-peel_hulls <- function(
-    data, breaks = c(.5), cut = c("above", "below"), nonempty = FALSE
-) {
-  
-  # behave like `chull()`: assume first two columns are `x` and `y`
-  x <- data[[1L]]; y <- data[[2L]]
-  xy <- names(data)[seq(2L)]
-  n <- nrow(data)
-  breaks <- rev(sort(unique(breaks)))
-  cut <- match.arg(cut, c("above", "below"))
-  
-  # initialize output
-  res <- tibble::tibble()
-  
-  # initial convex hull contains all points
-  cut_prop <- length(x) / n
-  i_hull <- chull(x, y)
-  x_hull <- x[i_hull]; y_hull <- y[i_hull]
-  x <- x[-i_hull]; y <- y[-i_hull]
-  
-  # sequentially obtain proportional hulls
-  dupe <- FALSE
-  for (i in seq_along(breaks)) {
-    
-    # peel convex hulls until next one drops below `breaks[i]`
-    while (length(x) / n >= breaks[i] && length(x) > 0L) {
-      dupe <- FALSE
-      cut_prop <- length(x) / n
-      i_hull <- chull(x, y)
-      x_hull <- x[i_hull]; y_hull <- y[i_hull]
-      x <- x[-i_hull]; y <- y[-i_hull]
-    }
-    # peel last hull to cut below `breaks`
-    if (cut_prop > breaks[i] && cut == "below") {
-      dupe <- FALSE
-      cut_prop <- length(x) / n
-      i_hull <- chull(x, y)
-      if (length(i_hull) == 0L && nonempty) break
-      x_hull <- x[i_hull]; y_hull <- y[i_hull]
-      x <- x[-i_hull]; y <- y[-i_hull]
-    }
-    
-    if (! dupe) {
-      # append data
-      res_p <- tibble::tibble(
-        x = x_hull,
-        y = y_hull,
-        hull = i,
-        frac = breaks[i],
-        prop = cut_prop
-      )
-      res <- rbind(res, res_p)
-    }
-    dupe <- TRUE
-  }
-  
-  names(res)[seq(2L)] <- xy
-  res$hull <- factor(res$hull, levels = seq_along(breaks))
-  return(res)
-}

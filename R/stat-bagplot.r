@@ -33,7 +33,7 @@
 #'   \item{`component`}{the component of the composite plot; used internally}
 #' }
 
-#' @include stat-depth.r stat-chull.r
+#' @include stat-depth.r stat-peel.r
 #' @inheritParams ggplot2::layer
 #' @param median,fence,outliers Logical indicators whether to include median,
 #'   fence, and outliers in the composite output.

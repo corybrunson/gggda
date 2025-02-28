@@ -38,12 +38,12 @@ Depends:
 Imports:
     rlang,
     scales,
-    tibble,
     labeling,
 Suggests:
     gridExtra,
     MASS,
     Hmisc,
+    tibble,
     mlpack,
     ddalpha,
     testthat,
@@ -70,8 +70,9 @@ Collate:
     'geom-utils.r'
     'geom-vector.r'
     'gggda.r'
+    'peel.r'
     'scale-view-rect.r'
-    'stat-chull.r'
+    'stat-peel.r'
     'stat-depth.r'
     'stat-bagplot.r'
     'stat-center.r'
