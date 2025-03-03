@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7, fig.height = 6, fig.align = "center"
 )
 ```
 
@@ -58,7 +59,8 @@ if ( as.integer(R.Version()$major) < 4L ||
 The {gggda} package is a mostly standard-issue extension to [{ggplot2}](https://github.com/tidyverse/ggplot2): It consists of [ggprotos](https://ggplot2.tidyverse.org/reference/ggplot2-ggproto.html) for a coordinate system ("coord") and several statistical transformations ("stat"), and geographic constructions ("geom") that almost exclusively use standard aesthetic mappings and recognizable parameters and defaults.
 
 ```{r setup}
-library(gggda)
+# library(gggda)
+devtools::load_all()
 ```
 
 The coords, stats, and geoms implement a variety of tools used in multivariate data analysis.
@@ -75,7 +77,7 @@ print(USJudgeRatings[sample(nrow(USJudgeRatings), 4L, replace = FALSE), ])
 
 For convenience, we reformat the data with an additional column for the name of the judge:
 
-```{r tibble}
+```{r frame}
 USJudgeRatings |> 
   tibble::rownames_to_column(var = "NAME") ->
   us_judge_ratings
@@ -112,19 +114,50 @@ Visually, this property can be captured by sequentially "peeling" outer layers o
 ```{r peel}
 judge_plot +
   geom_text(size = 3, hjust = "outward", vjust = "outward") +
-  # TODO: Ensure that correct grouping structure is inferred.
   stat_peel(num = Inf, color = "black", fill = "transparent")
 ```
 
-The plot identifies Judges Saden and Mignone, for example, as outliers, though the more middling judges' names are harder to read. For that, we can extract the hull numbers:
+The plot identifies Judges Saden and Driscoll, for example, as outliers, despite their average or just-below-average ratings on both criteria. The more middling judges' names are harder to read, but we can extract the assignments directly to examine the most peripheral and core hulls:
 
 ```{r bar}
 # FIXME: Enable `peel_hulls()`, like `chull()`, to accept a matrix or data frame.
-(judge_plot + geom_text() + stat_peel(breaks = seq(0, 1, .0001))) |> 
-  ggplot_build() |> 
-  # FIXME: Merge is not one-to-one.
-  getElement("data") |> c(list(by = c("x", "y"))) |> 
-  do.call(what = merge) |> 
-  subset(select = c(label, hull)) |> 
-  sort_by(~ hull)
+peel_hulls(us_judge_ratings$INTG, us_judge_ratings$DECI, num = Inf) |> 
+  as.data.frame() |> 
+  merge(
+    transform(us_judge_ratings, i = seq(nrow(us_judge_ratings))),
+    by = "i"
+  ) |> 
+  subset(select = -c(i, x, y, prop)) |> 
+  sort_by(~ hull + NAME) ->
+  us_judge_hulls
+us_judge_hulls |> 
+  subset(subset = hull %in% range(hull))
 ```
+
+Judges Aaronson, Armentano, and Stapleton constitute the innermost hull, and again the density of the core makes it difficult to build intuition about this stratification.
+We can, for example, check whether peripherality with respect to the nested hulls is systematically related to overall retention rating:
+
+```{r order}
+us_judge_hulls |> 
+  transform(hull = factor(hull, levels = seq(max(hull)))) |> 
+  ggplot(aes(x = hull, y = RTEN)) +
+  geom_boxplot()
+```
+
+While the fewer data in each hull yield narrower boxplots, there is no evident upward or downward trend.
+But peeling data from the outside inward is not the only way to stratify by centrality.
+Another approach is is called _data depth_, based on a family of notions of _global_ depth that are distinct from _local_ notions of density.
+One of the most famous deployments of data depth is the "bag-and-bolster plot" comprising a "bag" delineated by a depth contour and a "fence" by expanding the bag outward from the depth median. As with a box-and-whisker plot, markers outside the fence identify outliers.
+In the bag-and-bolster plot below, we used trial and error to customize the fraction contained in the bag and the scale factor of the fence, add text labels to the judges of the outermost and innermost hulls:
+
+```{r bag}
+judge_plot +
+  stat_bagplot(fraction = 1/3, coef = 3) +
+  geom_text(
+    data = subset(us_judge_hulls, hull %in% range(hull)),
+    size = 3, hjust = "outward", vjust = "outward"
+  )
+```
+
+For these data, the two stratifications are broadly consistent.
+However, the data seem to have a greater skew toward lower values on the periphery than in the core, resulting in Judges Naruk and Rubinow lying well within the fence while Judges Cohen and Mignone lie near its boundary, despite all four belonging to the outermost hull.

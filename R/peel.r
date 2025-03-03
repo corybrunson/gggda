@@ -62,19 +62,20 @@ peel_hulls_by <- function(
   colnames(res) <- c("x", "y", "i", "hull", "prop")
   
   # obtain sequential hulls
+  i_orig <- seq(n)
   for (i in seq(num)) {
     
     # peel hull and remove from point cloud
     i_hull <- chull(x, y)
-    x_hull <- x[i_hull]; y_hull <- y[i_hull]
-    x <- x[-i_hull]; y <- y[-i_hull]
+    x_hull <- x[i_hull]; y_hull <- y[i_hull]; i_peel <- i_orig[i_hull]
+    i_orig <- i_orig[-i_hull]; x <- x[-i_hull]; y <- y[-i_hull]
     
     # break if data set has been exhausted
     if (length(i_hull) == 0L) break
     
     if ( by == 1L || (i %% by) == 1L ) {
       # append data
-      res <- rbind(res, cbind(x_hull, y_hull, i_hull, i, length(x) / n))
+      res <- rbind(res, cbind(x_hull, y_hull, i_peel, i, length(x) / n))
     }
   }
   
@@ -94,11 +95,13 @@ peel_hulls_at <- function(
   res <- matrix(NA_real_, nrow = 0L, ncol = 6L)
   colnames(res) <- c("x", "y", "i", "hull", "frac", "prop")
   
+  i_orig <- seq(n)
+  
   # initial convex hull contains all points
   cut_prop <- length(x) / n
   i_hull <- chull(x, y)
-  x_hull <- x[i_hull]; y_hull <- y[i_hull]
-  x <- x[-i_hull]; y <- y[-i_hull]
+  x_hull <- x[i_hull]; y_hull <- y[i_hull]; i_peel <- i_orig[i_hull]
+  i_orig <- i_orig[-i_hull]; x <- x[-i_hull]; y <- y[-i_hull]
   h <- 1L
   
   # sequentially obtain proportional hulls
@@ -110,8 +113,8 @@ peel_hulls_at <- function(
       dupe <- FALSE
       cut_prop <- length(x) / n
       i_hull <- chull(x, y)
-      x_hull <- x[i_hull]; y_hull <- y[i_hull]
-      x <- x[-i_hull]; y <- y[-i_hull]
+      x_hull <- x[i_hull]; y_hull <- y[i_hull]; i_peel <- i_orig[i_hull]
+      i_orig <- i_orig[-i_hull]; x <- x[-i_hull]; y <- y[-i_hull]
       h <- h + 1L
     }
     # peel last hull to cut below `breaks`
@@ -130,7 +133,7 @@ peel_hulls_at <- function(
     
     if (! dupe) {
       # append data
-      res <- rbind(res, cbind(x_hull, y_hull, i_hull, h, breaks[i], cut_prop))
+      res <- rbind(res, cbind(x_hull, y_hull, i_peel, h, breaks[i], cut_prop))
     }
     dupe <- TRUE
   }
