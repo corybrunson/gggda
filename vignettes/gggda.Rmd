@@ -80,8 +80,8 @@ For convenience, we reformat the data with an additional column for the name of 
 ```{r frame}
 USJudgeRatings |> 
   tibble::rownames_to_column(var = "NAME") ->
-  us_judge_ratings
-head(us_judge_ratings)
+  judge_ratings
+head(judge_ratings)
 ```
 
 ## Multivariate summaries
@@ -90,11 +90,11 @@ The first set of methods is the extension of univariate summaries to multivariat
 For example, univariate data have a natural ranking by value: Arrange the cases in order of a variable value, and the rank of each case is its position in order:
 
 ```{r rank}
-us_judge_ratings |> 
+judge_ratings |> 
   subset(select = c(NAME, RTEN)) |> 
   # NB: This requires R version 4.4.0.
   sort_by(~ list(-RTEN)) |> 
-  transform(RANK = seq(nrow(us_judge_ratings))) |> 
+  transform(RANK = seq(nrow(judge_ratings))) |> 
   head()
 ```
 
@@ -102,7 +102,7 @@ There's no obvious analog to this for bivariate data:
 Suppose we want to rank judges by how well they maintain the legitimacy of their court. This might implicate two ratings in the data in particular, their integrity (`INTG`) and the promptness of their decisions (`DECI`):
 
 ```{r soundness}
-judge_plot <- ggplot(us_judge_ratings, aes(x = INTG, y = DECI, label = NAME))
+judge_plot <- ggplot(judge_ratings, aes(x = INTG, y = DECI, label = NAME))
 judge_plot +
   geom_text(aes(label = NAME), size = 3)
 ```
@@ -121,16 +121,16 @@ The plot identifies Judges Saden and Driscoll, for example, as outliers, despite
 
 ```{r bar}
 # FIXME: Enable `peel_hulls()`, like `chull()`, to accept a matrix or data frame.
-peel_hulls(us_judge_ratings$INTG, us_judge_ratings$DECI, num = Inf) |> 
+peel_hulls(judge_ratings$INTG, judge_ratings$DECI, num = Inf) |> 
   as.data.frame() |> 
   merge(
-    transform(us_judge_ratings, i = seq(nrow(us_judge_ratings))),
+    transform(judge_ratings, i = seq(nrow(judge_ratings))),
     by = "i"
   ) |> 
   subset(select = -c(i, x, y, prop)) |> 
   sort_by(~ hull + NAME) ->
-  us_judge_hulls
-us_judge_hulls |> 
+  judge_hulls
+judge_hulls |> 
   subset(subset = hull %in% range(hull))
 ```
 
@@ -138,7 +138,7 @@ Judges Aaronson, Armentano, and Stapleton constitute the innermost hull, and aga
 We can, for example, check whether peripherality with respect to the nested hulls is systematically related to overall retention rating:
 
 ```{r order}
-us_judge_hulls |> 
+judge_hulls |> 
   transform(hull = factor(hull, levels = seq(max(hull)))) |> 
   ggplot(aes(x = hull, y = RTEN)) +
   geom_boxplot()
@@ -154,10 +154,80 @@ In the bag-and-bolster plot below, we used trial and error to customize the frac
 judge_plot +
   stat_bagplot(fraction = 1/3, coef = 3) +
   geom_text(
-    data = subset(us_judge_hulls, hull %in% range(hull)),
+    data = subset(judge_hulls, hull %in% range(hull)),
     size = 3, hjust = "outward", vjust = "outward"
   )
 ```
 
 For these data, the two stratifications are broadly consistent.
 However, the data seem to have a greater skew toward lower values on the periphery than in the core, resulting in Judges Naruk and Rubinow lying well within the fence while Judges Cohen and Mignone lie near its boundary, despite all four belonging to the outermost hull.
+
+## Ordination and biplots
+
+The second set of methods enables analysis of many variables at once.
+These _ordination_ models typically use linear algebra to obtain a sequence of artificial coordinates, each of which captures the most desired behavior after adjusting for the previous.
+In the most popular ordination model, principal components analysis, the principal components (PCs) account for the maximum amount of inertia, or multidimensional variance in each successive residual subspace.
+
+PCA is often applied to heterogeneous data, which requires that the variables be rescaled to have common variance.
+In this case, however, each criterion is rated on the same scale, so the simplifying assumption that their distsributions (specifically their variances) are equivalent in the population is plausible.
+
+```{r pca}
+judge_ratings |> 
+  subset(select = -c(NAME, CONT, RTEN)) |> 
+  princomp(cor = FALSE) ->
+  judge_pca
+```
+
+As a technique for dimension reduction, PCA works best when the variables are highly dependent---not necessarily pairwise correlated, but such that the low-dimensional subspace coordinatized by the first few PCs contains a large share of the inertia.
+The componentwise variance and cumulative inertia are reported in the summary.
+We also examine the variable loadings onto the PCs, which allow us to interpret the PCs as latent variables (as in factor analysis, though the theoretical justification is weaker and their meanings are less straightforward).
+
+```{r quality}
+summary(judge_pca)
+print(judge_pca$loadings)
+```
+
+The PCA summary shows that the vast majority of the variance (92%) already lies in a single dimension, along the first PC, and that roughly half of the remainder (4%) lies along the second; 96% lies within the plane of the first two PCs and would therefore be visualized in a plot using them as axes.
+The loadings suggest that some of the ratings (diligence, soundness of oral and written rulings) align more closely with PC1 and some (integrity and demeanor) with PC2, while others (management of case flow, promptness of decisions, physical ability) are similarly aligned with both.
+
+These insights can be efficiently visualized by plotting the cases (judges) and for the variables (criteria) on the plane defined by the first two PCs.
+The quality of the resulting _biplot_ depends on the proportion of variance along those PCs.
+In the biplot below, the cases are represented by circular markers and the variables by arrows, using a geometric construction provided by {gggda}.
+The aspect ratio is fixed at 1 to avoid misrepresenting the inertia.
+
+```{r vector}
+ggplot(mapping = aes(x = Comp.1, y = Comp.2)) +
+  geom_point(data = judge_pca$scores) +
+  geom_vector(data = unclass(judge_pca$loadings), color = "goldenrod") +
+  coord_equal()
+```
+
+The plot makes clear the singular importance of PC1: Indeed, all rating scales load positively onto it, so it could be interpreted as a dimension of overall quality.
+It is also clear that most of the criteria are tightly correlated into two roughly orthogonal groups, though these groups don't line up perfectly with the two PCs. (A rotation might be applied that would improve the "simple structure" of the PCA, but that is beyond the scope of this introduction.)
+
+However, the plot is limited in several ways: We can't tell which marker represents which judge or which arrow represents which criterion, and the quiver of arrows is quite small due to the different scales of the cases and the variables.
+In the code chunk below, we pre-process the scores and loadings into data frames with additional variables and use these variables to improve the annotations.
+(Notice our clever double-use of `NAME` for cases and variables, which allows us to distribute the aesthetic `label = NAME` across both layers.)
+We also remove gridlines from the theme since the PCs are not themselves meaningful, and we use a new coordinate system that expands the plotting window to a square while holding the aspect ratio fixed.
+
+```{r biplot}
+judge_pca$scores |> 
+  as.data.frame() |> 
+  transform(NAME = judge_ratings$NAME) ->
+  judge_scores
+judge_pca$loadings |> 
+  unclass() |> as.data.frame() |> 
+  tibble::rownames_to_column(var = "NAME") ->
+  judge_loadings
+ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
+  geom_text(data = judge_scores, size = 3) +
+  geom_vector(data = judge_loadings, color = "goldenrod",
+              stat = "scale", mult = 5) +
+  coord_square() +
+  theme(panel.grid = element_blank()) +
+  scale_x_continuous(sec.axis = sec_axis(~ . / 5)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 5)) +
+  expand_limits(x = c(-6, 8))
+```
+
+
