@@ -1,7 +1,7 @@
 #' @title Multiply artificial coordinates by a scale factor
-#' 
-#' @description
-#' This layer is **deprecated**.
+#'
+#' @description This is a simple stat that applies a constant scale factor to
+#'   both positional coordinates. It can be handy in tandem with secondary axes.
 #' 
 
 #' @template coord-aes
@@ -45,10 +45,10 @@ StatScale <- ggproto(
   required_aes = c("x", "y"),
   
   compute_group = function(data, scales, mult = 1) {
-    rlang::warn(
-      "`StatScale` is deprecated and will be removed next release.",
-      .frequency = "regularly", .frequency_id = "StatScale$compute_group"
-    )
+    # rlang::warn(
+    #   "`StatScale` is deprecated and will be removed next release.",
+    #   .frequency = "regularly", .frequency_id = "StatScale$compute_group"
+    # )
     data[, c("x", "y")] <- data[, c("x", "y")] * mult
     data
   }

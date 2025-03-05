@@ -81,7 +81,8 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 A ggproto \link[ggplot2:layer]{layer}.
 }
 \description{
-This layer is \strong{deprecated}.
+This is a simple stat that applies a constant scale factor to
+both positional coordinates. It can be handy in tandem with secondary axes.
 }
 \section{Multidimensional position aesthetics}{
 
