@@ -58,14 +58,15 @@ if ( as.integer(R.Version()$major) < 4L ||
 
 The {gggda} package is a mostly standard-issue extension to [{ggplot2}](https://github.com/tidyverse/ggplot2): It consists of [ggprotos](https://ggplot2.tidyverse.org/reference/ggplot2-ggproto.html) for a coordinate system ("coord") and several statistical transformations ("stat"), and geographic constructions ("geom") that almost exclusively use standard aesthetic mappings and recognizable parameters and defaults.
 
-```{r setup}
-# library(gggda)
-devtools::load_all()
-```
-
 The coords, stats, and geoms implement a variety of tools used in multivariate data analysis.
 By design, tools implemented in other {ggplot2} extensions are not reinvented here---or, at least, they're not meant to be! For example, [the {ggdensity} package](https://github.com/jamesotto852/ggdensity) provides plot layers for quantile-based density estimates and contours, extending the native {ggplot2} layers for level-based density visualizations, and users are encouraged to use it in tandem with the {gggda}. As a result, though, those included in the package may seem somewhat arbitrary.
 That said, the plot layers provided by {gggda} implement methods that emerged from two distinct threads, which the vignette will consider in turn.
+
+```{r setup}
+# library(gggda)
+devtools::load_all()
+theme_set(theme_bw())
+```
 
 ### Data
 
@@ -92,7 +93,6 @@ For example, univariate data have a natural ranking by value: Arrange the cases 
 ```{r rank}
 judge_ratings |> 
   subset(select = c(NAME, RTEN)) |> 
-  # NB: This requires R version 4.4.0.
   sort_by(~ list(-RTEN)) |> 
   transform(RANK = seq(nrow(judge_ratings))) |> 
   head()
@@ -101,7 +101,7 @@ judge_ratings |>
 There's no obvious analog to this for bivariate data:
 Suppose we want to rank judges by how well they maintain the legitimacy of their court. This might implicate two ratings in the data in particular, their integrity (`INTG`) and the promptness of their decisions (`DECI`):
 
-```{r soundness}
+```{r text}
 judge_plot <- ggplot(judge_ratings, aes(x = INTG, y = DECI, label = NAME))
 judge_plot +
   geom_text(aes(label = NAME), size = 3)
@@ -195,10 +195,10 @@ The quality of the resulting _biplot_ depends on the proportion of variance alon
 In the biplot below, the cases are represented by circular markers and the variables by arrows, using a geometric construction provided by {gggda}.
 The aspect ratio is fixed at 1 to avoid misrepresenting the inertia.
 
-```{r vector}
+```{r vector, fig.height=2.5}
 ggplot(mapping = aes(x = Comp.1, y = Comp.2)) +
   geom_point(data = judge_pca$scores) +
-  geom_vector(data = unclass(judge_pca$loadings), color = "goldenrod") +
+  geom_vector(data = unclass(judge_pca$loadings), color = "#007a3d") +
   coord_equal()
 ```
 
@@ -209,8 +209,9 @@ However, the plot is limited in several ways: We can't tell which marker represe
 In the code chunk below, we pre-process the scores and loadings into data frames with additional variables and use these variables to improve the annotations.
 (Notice our clever double-use of `NAME` for cases and variables, which allows us to distribute the aesthetic `label = NAME` across both layers.)
 We also remove gridlines from the theme since the PCs are not themselves meaningful, and we use a new coordinate system that expands the plotting window to a square while holding the aspect ratio fixed.
+Finally, we rescale the variables to be distinguishable at the same scale as the cases and add additional axis legends for this new scale. (While we don't illustrate it here, knowing the artificial coordinates of elements on both layers of a biplot allows the original data elements to be recovered via inner product.)
 
-```{r biplot}
+```{r square, fig.height=7}
 judge_pca$scores |> 
   as.data.frame() |> 
   transform(NAME = judge_ratings$NAME) ->
@@ -221,13 +222,50 @@ judge_pca$loadings |>
   judge_loadings
 ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
   geom_text(data = judge_scores, size = 3) +
-  geom_vector(data = judge_loadings, color = "goldenrod",
+  geom_vector(data = judge_loadings, color = "#007a3d",
               stat = "scale", mult = 5) +
-  coord_square() +
   theme(panel.grid = element_blank()) +
+  coord_square() +
   scale_x_continuous(sec.axis = sec_axis(~ . / 5)) +
   scale_y_continuous(sec.axis = sec_axis(~ . / 5)) +
-  expand_limits(x = c(-6, 8))
+  expand_limits(x = c(-8, 6))
 ```
 
 
+
+```{r axis, fig.height=7}
+ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
+  geom_axis(data = judge_loadings, color = "#007a3d") +
+  geom_text(data = judge_scores, size = 3) +
+  theme(panel.grid = element_blank()) +
+  coord_square() +
+  expand_limits(x = c(-8, 6))
+```
+
+
+
+```{r lm}
+judge_ratings |> 
+  subset(select = RTEN) |> 
+  cbind(judge_scores) |> 
+  lm(formula = RTEN ~ Comp.1 + Comp.2) ->
+  judge_lm
+summary(judge_lm)
+```
+
+
+
+```{r rule, fig.height=7}
+judge_lm |> 
+  coefficients() |> 
+  t() |> as.data.frame() |> 
+  transform(NAME = "RTEN") ->
+  judge_coef
+ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
+  geom_axis(data = judge_loadings, color = "#007a3d") +
+  geom_text(data = judge_scores, size = 3) +
+  stat_rule(data = judge_coef, referent = judge_scores, color = "#ce1126") +
+  theme(panel.grid = element_blank()) +
+  coord_square() +
+  expand_limits(x = c(-8, 6))
+```
