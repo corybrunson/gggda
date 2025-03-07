@@ -63,8 +63,7 @@ By design, tools implemented in other {ggplot2} extensions are not reinvented he
 That said, the plot layers provided by {gggda} implement methods that emerged from two distinct threads, which the vignette will consider in turn.
 
 ```{r setup}
-# library(gggda)
-devtools::load_all()
+library(gggda)
 theme_set(theme_bw())
 ```
 
