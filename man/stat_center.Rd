@@ -3,6 +3,7 @@
 \name{stat_center}
 \alias{stat_center}
 \alias{stat_star}
+\alias{depth_median}
 \title{Centers and spreads for bivariate data}
 \usage{
 stat_center(
@@ -36,6 +37,8 @@ stat_star(
   fun.ord = NULL,
   fun.args = list()
 )
+
+depth_median(x, notion = "zonoid", ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{aes()}}. If specified and

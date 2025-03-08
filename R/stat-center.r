@@ -246,7 +246,9 @@ make_center_fun <- function(
   }
 }
 
-depth_median <- function(x, notion = "halfspace", ...) {
+#' @rdname stat_center
+#' @export
+depth_median <- function(x, notion = "zonoid", ...) {
   x <- as.matrix(x)
   d <- ddalpha::depth.(x, x, notion = notion)
   i <- which(d == max(d))

@@ -53,14 +53,15 @@ ggplot(mpg, aes(x = cty, y = hwy)) +
 ![](man/figures/README-coord-2.png)<!-- -->
 
 Some new statistical transformations provide new ways of analyzing
-bivariate data, for example the bag-and-bolster plot (paired with a
-dedicated composite geom):
+bivariate data, for example the depth stat that deploys [the {ddalpha}
+package](https://cran.r-project.org/package=ddalpha) and mimics the
+density stat by pairing with the contour geom.:
 
 ``` r
-# bags encompassing one third of each group
+# depth medians and quartiles contours by group
 ggplot(mpg, aes(displ, cty, color = drv, fill = drv)) +
-  stat_bagplot(fraction = 1/3) +
-  scale_color_brewer(type = "qual", aesthetics = c("color", "fill"))
+  stat_depth(bins = 4) +
+  stat_center(fun.ord = depth_median)
 ```
 
 ![](man/figures/README-stat-1.png)<!-- -->
@@ -73,6 +74,9 @@ biplots, with two-dimensional errorbars an underused example:
 ggplot(mpg, aes(displ, cty, color = factor(cyl))) +
   geom_point() +
   geom_pointranges(fun.data = mean_sdl)
+#> Warning: Computation failed in `stat_center()`.
+#> Caused by error in `fun.data.y()` at gggda/R/stat-center.r:173:7:
+#> ! The package "Hmisc" is required.
 ```
 
 ![](man/figures/README-geom-1.png)<!-- -->
