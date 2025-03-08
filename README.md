@@ -55,7 +55,7 @@ ggplot(mpg, aes(x = cty, y = hwy)) +
 Some new statistical transformations provide new ways of analyzing
 bivariate data, for example the depth stat that deploys [the {ddalpha}
 package](https://cran.r-project.org/package=ddalpha) and mimics the
-density stat by pairing with the contour geom.:
+density stat by pairing with the contour geom:
 
 ``` r
 # depth medians and quartiles contours by group
