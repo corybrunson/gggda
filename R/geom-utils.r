@@ -1,10 +1,9 @@
-
-#' A synchronization flag.
+#' @title A synchronization flag
 #'
-#' The inert function `sync()` operates analogously to [ggplot2::waiver()] to
-#' indicate that an auxiliary aesthetic should be synchronized to a standard
-#' aesthetic (when it is mapped from data). `is.sync()` reports whether an
-#' object is of this class.
+#' @description The inert function `sync()` operates analogously to
+#'   [ggplot2::waiver()] to indicate that an auxiliary aesthetic should be
+#'   synchronized to a standard aesthetic (when it is mapped from data).
+#'   `is.sync()` reports whether an object is of this class.
 #'
 #' @export
 #' @keywords internal

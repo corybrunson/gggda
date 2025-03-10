@@ -39,13 +39,13 @@ Imports:
     rlang,
     scales,
     labeling,
+    ddalpha
 Suggests:
     gridExtra,
     MASS,
     Hmisc,
     tibble,
     mlpack,
-    ddalpha,
     testthat,
     knitr,
     rmarkdown
@@ -60,6 +60,7 @@ Collate:
     'aaa-.r'
     'aes-coord.r'
     'coord-rect.r'
+    'depth-median.r'
     'geom-axis.r'
     'geom-bagplot.r'
     'key-intervals.r'

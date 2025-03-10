@@ -245,12 +245,3 @@ make_center_fun <- function(
     }
   }
 }
-
-#' @rdname stat_center
-#' @export
-depth_median <- function(x, notion = "zonoid", ...) {
-  x <- as.matrix(x)
-  d <- ddalpha::depth.(x, x, notion = notion)
-  i <- which(d == max(d))
-  apply(x[i, , drop = FALSE], 2L, mean, na.rm = FALSE, simplify = TRUE)
-}

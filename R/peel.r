@@ -15,6 +15,7 @@
 #' @template ref-green1981
 
 #' @importFrom grDevices chull
+#' @inheritParams grDevices::chull
 #' @param num A positive integer; the number of hulls to peel. Pass `Inf` for
 #'   all hulls.
 #' @param by A positive integer; with what frequency to include consecutive

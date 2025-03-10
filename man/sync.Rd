@@ -3,7 +3,7 @@
 \name{sync}
 \alias{sync}
 \alias{is.sync}
-\title{A synchronization flag.}
+\title{A synchronization flag}
 \usage{
 sync()
 
@@ -13,9 +13,9 @@ is.sync(x)
 \item{x}{An object to test}
 }
 \description{
-The inert function \code{sync()} operates analogously to \code{\link[ggplot2:waiver]{ggplot2::waiver()}} to
-indicate that an auxiliary aesthetic should be synchronized to a standard
-aesthetic (when it is mapped from data). \code{is.sync()} reports whether an
-object is of this class.
+The inert function \code{sync()} operates analogously to
+\code{\link[ggplot2:waiver]{ggplot2::waiver()}} to indicate that an auxiliary aesthetic should be
+synchronized to a standard aesthetic (when it is mapped from data).
+\code{is.sync()} reports whether an object is of this class.
 }
 \keyword{internal}

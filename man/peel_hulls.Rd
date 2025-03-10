@@ -14,6 +14,10 @@ peel_hulls(
 )
 }
 \arguments{
+\item{x, y}{coordinate vectors of points. This can be specified as two
+    vectors \code{x} and \code{y}, a 2-column matrix \code{x}, a list
+    \code{x} with two components, etc, see \code{\link[grDevices]{xy.coords}}.}
+
 \item{num}{A positive integer; the number of hulls to peel. Pass \code{Inf} for
 all hulls.}
 
