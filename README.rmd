@@ -47,7 +47,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point()
 # square window (unit aspect ratio)
 ggplot(mpg, aes(x = cty, y = hwy)) +
-  coord_square() +
+  coord_square(xlim = c(0, NA), ylim = c(0, NA)) +
   geom_point()
 ```
 

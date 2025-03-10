@@ -27,7 +27,14 @@ coord_rect <- function(
 #' @rdname coord_rect
 #' @usage NULL
 #' @export
-coord_square <- coord_rect
+coord_square <- function(
+    xlim = NULL, ylim = NULL, expand = TRUE, clip = "on"
+) {
+  coord_rect(
+    ratio = 1, window_ratio = 1,
+    xlim = xlim, ylim = ylim, expand = expand, clip = clip
+  )
+}
 
 #' @rdname gggda-ggproto
 #' @format NULL

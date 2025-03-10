@@ -8,3 +8,6 @@ p + coord_rect(ratio = 5)
 p + coord_rect(ratio = 1/5)
 p + coord_rect(xlim = c(15, 30))
 p + coord_rect(ylim = c(15, 30))
+
+# square (even excluding some geometric constructions)
+p + coord_square(xlim = c(0, 30), ylim = c(20, 40))

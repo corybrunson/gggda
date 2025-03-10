@@ -46,7 +46,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ``` r
 # square window (unit aspect ratio)
 ggplot(mpg, aes(x = cty, y = hwy)) +
-  coord_square() +
+  coord_square(xlim = c(0, NA), ylim = c(0, NA)) +
   geom_point()
 ```
 
@@ -74,9 +74,6 @@ biplots, with two-dimensional errorbars an underused example:
 ggplot(mpg, aes(displ, cty, color = factor(cyl))) +
   geom_point() +
   geom_pointranges(fun.data = mean_sdl)
-#> Warning: Computation failed in `stat_center()`.
-#> Caused by error in `fun.data.y()` at gggda/R/stat-center.r:173:7:
-#> ! The package "Hmisc" is required.
 ```
 
 ![](man/figures/README-geom-1.png)<!-- -->
