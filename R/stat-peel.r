@@ -120,7 +120,7 @@ StatPeel <- ggproto(
     
     # peel data (matrix output)
     peel_data <- peel_hulls(
-      data[[coord_cols[1L]]], data[[coord_cols[2L]]],
+      data[, coord_cols[seq(2L)]],
       num = num, by = by, breaks = breaks, cut = cut
     )
     

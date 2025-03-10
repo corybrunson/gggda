@@ -100,7 +100,7 @@ judge_ratings |>
 ```
 
 There's no obvious analog to this for bivariate data:
-Suppose we want to rank judges by how well they maintain the legitimacy of their court. This might implicate two ratings in the data in particular, their integrity (`INTG`) and the promptness of their decisions (`DECI`):
+Suppose we want to rank judges by how well they maintain the legitimacy of their court. This might implicate two ratings in the data in particular, their integrity and the promptness of their decisions:
 
 ```{r text}
 judge_plot <- ggplot(judge_ratings, aes(x = INTG, y = DECI, label = NAME))
@@ -121,8 +121,9 @@ judge_plot +
 The plot identifies Judges Saden and Driscoll, for example, as outliers, despite their average or just-below-average ratings on both criteria. The more middling judges' names are harder to read, but we can extract the assignments directly to examine the most peripheral and core hulls:
 
 ```{r bar}
-# FIXME: Enable `peel_hulls()`, like `chull()`, to accept a matrix or data frame.
-peel_hulls(judge_ratings$INTG, judge_ratings$DECI, num = Inf) |> 
+judge_ratings |> 
+  subset(select = c(INTG, DECI)) |> 
+  peel_hulls(num = Inf) |> 
   as.data.frame() |> 
   merge(
     transform(judge_ratings, i = seq(nrow(judge_ratings))),

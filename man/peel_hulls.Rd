@@ -6,7 +6,7 @@
 \usage{
 peel_hulls(
   x,
-  y,
+  y = NULL,
   num = NULL,
   by = 1L,
   breaks = c(0.5),
@@ -14,8 +14,6 @@ peel_hulls(
 )
 }
 \arguments{
-\item{x, y}{Numeric vectors of the same length.}
-
 \item{num}{A positive integer; the number of hulls to peel. Pass \code{Inf} for
 all hulls.}
 

@@ -15,7 +15,6 @@
 #' @template ref-green1981
 
 #' @importFrom grDevices chull
-#' @param x,y Numeric vectors of the same length.
 #' @param num A positive integer; the number of hulls to peel. Pass `Inf` for
 #'   all hulls.
 #' @param by A positive integer; with what frequency to include consecutive
@@ -27,29 +26,31 @@
 #' @example inst/examples/ex-peel.r
 #' @export
 peel_hulls <- function(
-    x, y,
+    x, y = NULL,
     num = NULL, by = 1L,
     breaks = c(.5), cut = c("above", "below")
 ) {
   
-  # behave like `chull()`: assume first two columns are `x` and `y`
+  # behave like `chull()` and other R functions
+  X <- grDevices::xy.coords(x, y, recycle = TRUE, setLab = FALSE)
+  x <- cbind(X$x, X$y)
   
   # deploy a peeling function
   res <- if (is.null(num)) {
-    peel_hulls_at(x, y, breaks = breaks, cut = cut)
+    peel_hulls_at(x, breaks = breaks, cut = cut)
   } else {
-    peel_hulls_by(x, y, num = num, by = by)
+    peel_hulls_by(x, num = num, by = by)
   }
   
   res
 }
 
 peel_hulls_by <- function(
-    x, y, num = Inf, by = 1L
+    x, num = Inf, by = 1L
 ) {
   
-  n <- length(x)
-  stopifnot(n == length(y))
+  stopifnot(is.numeric(x), ncol(x) == 2L)
+  n <- nrow(x)
   if (num == Inf) num <- n
   
   # ensure that `num` is meaningful
@@ -66,16 +67,16 @@ peel_hulls_by <- function(
   for (i in seq(num)) {
     
     # peel hull and remove from point cloud
-    i_hull <- chull(x, y)
-    x_hull <- x[i_hull]; y_hull <- y[i_hull]; i_peel <- i_orig[i_hull]
-    i_orig <- i_orig[-i_hull]; x <- x[-i_hull]; y <- y[-i_hull]
+    i_hull <- chull(x)
+    x_hull <- x[i_hull, ]; i_peel <- i_orig[i_hull]
+    i_orig <- i_orig[-i_hull]; x <- x[-i_hull, ]
     
     # break if data set has been exhausted
     if (length(i_hull) == 0L) break
     
     if ( by == 1L || (i %% by) == 1L ) {
       # append data
-      res <- rbind(res, cbind(x_hull, y_hull, i_peel, i, length(x) / n))
+      res <- rbind(res, cbind(x_hull, i_peel, i, nrow(x) / n))
     }
   }
   
@@ -83,11 +84,11 @@ peel_hulls_by <- function(
 }
 
 peel_hulls_at <- function(
-    x, y, breaks = c(.5), cut = c("above", "below")
+    x, breaks = c(.5), cut = c("above", "below")
 ) {
   
-  n <- length(x)
-  stopifnot(n == length(y))
+  stopifnot(is.numeric(x), ncol(x) == 2L)
+  n <- nrow(x)
   breaks <- rev(sort(unique(breaks)))
   cut <- match.arg(cut, c("above", "below"))
   
@@ -98,10 +99,10 @@ peel_hulls_at <- function(
   i_orig <- seq(n)
   
   # initial convex hull contains all points
-  cut_prop <- length(x) / n
-  i_hull <- chull(x, y)
-  x_hull <- x[i_hull]; y_hull <- y[i_hull]; i_peel <- i_orig[i_hull]
-  i_orig <- i_orig[-i_hull]; x <- x[-i_hull]; y <- y[-i_hull]
+  cut_prop <- nrow(x) / n
+  i_hull <- chull(x)
+  x_hull <- x[i_hull, ]; i_peel <- i_orig[i_hull]
+  i_orig <- i_orig[-i_hull]; x <- x[-i_hull, ]
   h <- 1L
   
   # sequentially obtain proportional hulls
@@ -109,22 +110,22 @@ peel_hulls_at <- function(
   for (i in seq_along(breaks)) {
     
     # peel convex hulls until next one drops below `breaks[i]`
-    while (length(x) / n >= breaks[i] && length(x) > 0L) {
+    while (nrow(x) / n >= breaks[i] && nrow(x) > 0L) {
       dupe <- FALSE
-      cut_prop <- length(x) / n
-      i_hull <- chull(x, y)
-      x_hull <- x[i_hull]; y_hull <- y[i_hull]; i_peel <- i_orig[i_hull]
-      i_orig <- i_orig[-i_hull]; x <- x[-i_hull]; y <- y[-i_hull]
+      cut_prop <- nrow(x) / n
+      i_hull <- chull(x)
+      x_hull <- x[i_hull, ]; i_peel <- i_orig[i_hull]
+      i_orig <- i_orig[-i_hull]; x <- x[-i_hull, ]
       h <- h + 1L
     }
     # peel last hull to cut below `breaks`
     if (cut_prop > breaks[i] && cut == "below") {
       dupe <- FALSE
-      cut_prop <- length(x) / n
-      i_hull <- chull(x, y)
+      cut_prop <- nrow(x) / n
+      i_hull <- chull(x)
       # if (length(i_hull) == 0L && nonempty) break
-      x_hull <- x[i_hull]; y_hull <- y[i_hull]
-      x <- x[-i_hull]; y <- y[-i_hull]
+      x_hull <- x[i_hull, ]
+      x <- x[-i_hull, ]
       h <- h + 1L
     }
     
@@ -133,7 +134,7 @@ peel_hulls_at <- function(
     
     if (! dupe) {
       # append data
-      res <- rbind(res, cbind(x_hull, y_hull, i_peel, h, breaks[i], cut_prop))
+      res <- rbind(res, cbind(x_hull, i_peel, h, breaks[i], cut_prop))
     }
     dupe <- TRUE
   }
