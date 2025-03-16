@@ -71,7 +71,9 @@ A brief caution: Some code below uses the `sort_by()` function [introduced in R 
 
 ### Data
 
-To motivate and illustrate these tools, let's investigate the `USJudgeRatings` data set included with the basic `R` installation. These data were obtained from the 1977 _New Haven Register_ and contain several lawyers' evaluations of 43 Superior Court judges based, or so i infer (i have not found a journal article citation or been able to access the newspaper edition), on a number of interactions with them. The variables include the (standardized) number of interactions, ratings of 10 criteria ranging from judicial integrity to physical ability, and a final rating of retention worthiness; the ratings all use a 10-point scale. Here are those ratings for a sample of the judges:
+To motivate and illustrate these tools, let's investigate the `USJudgeRatings` data set included with the basic `R` installation. These data were obtained from the 1977 _New Haven Register_ and contain several lawyers' evaluations of 43 Superior Court[^superior] judges based, or so i infer (i have not found a journal article citation or been able to access the newspaper edition), on a number of interactions with them. The variables include the (standardized) number of interactions, ratings of 10 criteria ranging from judicial integrity to physical ability, and a final rating of retention worthiness; the ratings all use a 10-point scale. Here are those ratings for a sample of the judges:
+
+[^superior]: Presumably this was the [Connecticut Superior Court](https://www.jud.ct.gov/superiorcourt/).
 
 ```{r data}
 print(USJudgeRatings[sample(nrow(USJudgeRatings), 6L, replace = FALSE), ])
@@ -110,6 +112,7 @@ judge_plot +
 
 While these ratings are correlated, several individual judges were rated significantly more highly on one criterion than on the other, and there is a clear "core" of judges who received average ratings on both.
 In the next section we'll see how these ratings might be combined into an aggregate; for now, we'll consider how to rank the judges not by the values of their ratings but by their typicality or "averageness": On this score, middling judges should be ranked highly while outlying judges should be ranked lowly.
+Such a measure might be useful for identifying idiosyncratic judges for recruitment to consensus working groups or even those whose rankings should be re-evaluated.
 Visually, this property can be captured by sequentially "peeling" outer layers of the point cloud and giving each layer the same rank. The most common way to do this is probably via convex hulls:
 
 ```{r peel}
@@ -171,7 +174,7 @@ These _ordination_ models typically use linear algebra to obtain a sequence of a
 In the most popular ordination model, principal components analysis, the principal components (PCs) account for the maximum amount of inertia, or multidimensional variance in each successive residual subspace.
 
 PCA is often applied to heterogeneous data, which requires that the variables be rescaled to have common variance.
-In this case, however, each criterion is rated on the same scale, so the simplifying assumption that their distsributions (specifically their variances) are equivalent in the population is plausible.
+In this case, however, each criterion is rated on the same scale, so the simplifying assumption that their distributions (specifically their variances) are equivalent in the population is plausible.
 
 ```{r pca}
 judge_ratings |> 
@@ -286,7 +289,7 @@ ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
 ```
 
 It is perhaps surprising that demeanor and integrity exert such a significant (counterclockwise) pull on retention worthiness in relation to the first PC, given the larger number of criteria whose ratings tug in the opposite direction.
-This has the effect of positioning Judge Driscoll similarly to Judge Saden, despite Saden's superior rating on every other criterion.[^quality]
+This has the effect of positioning Judge Driscoll similarly to Judge Saden, despite Saden's higher rating on every other criterion.[^quality]
 Indeed, Judge Driscoll was rated slightly more retention-worthy:
 
 ```{r subset}
@@ -301,6 +304,6 @@ First, multivariate data visualization is a component of multivariate data analy
 Second, data may be multivariate in different ways that call for different analytic and graphical approaches. Other multivariate data may involve incommensurate variables unsuited for unscaled PCA, for example.
 
 Finally, multivariate graphics are highly versatile. This is a feature from the perspective of communication but has a double-edge with respect to the design of an analysis toward a specific task (question, hypothesis, objective): At the outset, the analyst must choose (not to say pre-register, but not _not_ to say that) settings that are appropriate to the data and the task, and as the analysis progresses they must balance an adaptability to revealed patterns with a rigor toward the theory behind the task and the original analysis plan.
-The larger {ggplot2} extension family provides sevenal additional tools for multivariate data visualization to both facilitate and complicate your efforts.
+The larger {ggplot2} extension family provides several additional tools for multivariate data visualization to both facilitate and complicate your efforts.
 
 [^quality]: We can confidently infer these inequalities from the biplot only because it accounts for the vast majority of the variance in the data, i.e. it is very high quality.
