@@ -66,7 +66,7 @@ CoordRect <- ggproto(
     aesthetic_y <- scale_y$aesthetics[1]
     
     # synchronize limits and ranges according to `window_ratio` after adjusting
-    # for `ratio` (if it is provided; it isn't in `CoordScaffold`)
+    # for `ratio` (if it is provided; it isn't in `ordr::CoordScaffold`)
     adj_ratio <- self$window_ratio / (self$ratio %||% 1)
     limits <- reconcile_rectangle(limits_x, limits_y, adj_ratio)
     continuous_range <- reconcile_rectangle(
@@ -264,5 +264,3 @@ forbid_discrete <- function(scale) {
   if (scale$is_discrete())
     stop("This coordinate system is designed only for continuous scales.")
 }
-
-# TODO: Write rectangular view scale constructor `ViewScaleRect`.
