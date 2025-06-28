@@ -7,7 +7,8 @@ p <- ggplot(m) + geom_text(aes(x = V1, y = V2, label = city))
 q <- ggplot(m, aes(x = V1, y = V2, label = city)) + geom_text()
 
 test_that("`StatSpantree` can process artificial coordinates", {
-  # NB: Use `ade4::mstree()` for simplicity; itdepends on no other packages.
+  # NB: Use `ade4::mstree()` for simplicity; it depends on no other packages.
+  skip_if_not_installed("ade4")
   
   # produce low-dimensional plot (independent aesthetics)
   p1 <- p + stat_spantree(coord_aes(m, "V"), engine = "ade4")

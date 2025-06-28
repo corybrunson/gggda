@@ -87,12 +87,14 @@ of the rules and the translations of the axes from the projections of
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
@@ -136,7 +138,7 @@ This statistical transformation is done with respect to reference data passed
 to \code{referent} (ignored if \code{NULL}, the default, possibly resulting in empty
 output). See \code{\link[=stat_referent]{stat_referent()}} for more details. This relies on a sleight of
 hand through a new undocumented \code{LayerRef} class and associated
-\code{\link[ggplot2:ggplot_add]{ggplot2::ggplot_add()}} method. As a result, only layers constructed using
+\code{\link[ggplot2:update_ggplot]{ggplot2::ggplot_add()}} method. As a result, only layers constructed using
 this \verb{stat_*()} shortcut will pass the necessary positional aesthetics to the
 \verb{$setup_params()} step, making them available to pre-process \code{referent} data.
 

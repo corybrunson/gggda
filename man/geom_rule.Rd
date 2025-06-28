@@ -69,7 +69,7 @@ from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{stat}{The statistical transformation to use on the data for this layer.
 When using a \verb{geom_*()} function to construct a layer, the \code{stat}
-argument can be used the override the default coupling between geoms and
+argument can be used to override the default coupling between geoms and
 stats. The \code{stat} argument accepts the following:
 \itemize{
 \item A \code{Stat} ggproto subclass, for example \code{StatCount}.
@@ -121,8 +121,9 @@ for labels. Set to NULL to inherit from the data's aesthetics.}
 \item{tick.linewidth, tick.colour, tick.color, tick.alpha}{Default aesthetics
 for tick marks. Set to NULL to inherit from the data's aesthetics.}
 
-\item{text.size, text.angle, text.hjust, text.vjust, text.family, text.fontface, text.colour, text.color, text.alpha}{Default aesthetics for tick mark labels. Set to NULL to inherit from the
-data's aesthetics.}
+\item{text.colour, text.color}{Colour of the text. When \code{NULL} (default), the
+\code{colour} aesthetic determines the colour of the text. \code{text.color} is an
+alias for \code{text.colour}.}
 
 \item{parse}{If \code{TRUE}, the labels will be parsed into expressions and
 displayed as described in \code{?plotmath}.}
@@ -139,12 +140,14 @@ supported by \code{geom_label()}.}
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 }
 \value{
 A ggproto \link[ggplot2:layer]{layer}.

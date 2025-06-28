@@ -8,7 +8,8 @@
 #'   the univariate concept of rank to separate core versus peripheral cases
 #'   (Green, 1981).
 #'
-#'   The code for peeling convex hulls was adapted from [aplpack::plothulls()].
+#'   The code for peeling convex hulls was adapted from `plothulls()` in the
+#'   **[aplpack](https://cran.r-project.org/package=aplpack)** package.
 #'   Other peeling options should be implemented soon.
 #' 
 

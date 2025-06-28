@@ -39,7 +39,8 @@ Methods for peeling bivariate data into concentric tiers generalize
 the univariate concept of rank to separate core versus peripheral cases
 (Green, 1981).
 
-The code for peeling convex hulls was adapted from \code{\link[aplpack:plothulls]{aplpack::plothulls()}}.
+The code for peeling convex hulls was adapted from \code{plothulls()} in the
+\strong{\href{https://cran.r-project.org/package=aplpack}{aplpack}} package.
 Other peeling options should be implemented soon.
 }
 \examples{

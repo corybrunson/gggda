@@ -102,7 +102,7 @@ StatReferent <- ggproto(
 # QUESTION: Why are the arguments apparently out of order?
 #' @rdname stat_referent
 #' @export
-ggplot_add.LayerRef <- function(object, plot, object_name) {
+ggplot_add.LayerRef <- function(object, plot, ...) {
   
   # store global position mappings as a parameter
   object$stat_params$mapping <- plot$mapping[c("x", "y")]
