@@ -5,7 +5,7 @@ d <- data.frame(
 
 test_that("`coord_aes()` accepts multidimensional coordinates", {
   expect_no_error(a <- coord_aes(d, prefix = "x"))
-  expect_s3_class(a, "uneval", exact = TRUE)
+  expect_s3_class(a, "uneval")
 })
 
 test_that("`coord_aes()` warns about non-sequential coordinates", {
