@@ -38,8 +38,8 @@
 
 #' @import ggplot2
 #' @inheritParams ggplot2::layer
-#' @inheritParams ggplot2::geom_text
 #' @inheritParams geom_axis
+#' @inheritParams ggplot2::geom_text
 #' @template param-geom
 #' @param snap_rule Logical; whether to snap rule segments to grid values.
 #' @template return-layer
