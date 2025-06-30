@@ -1,4 +1,4 @@
-# next version
+# gggda 0.1.0
 
 The inaugural version of {gggda} was spun off the post-v0.1.1 development version of {ordr}.
 Upgrades to {ordr} components since that release that are included in {gggda} are listed here.
