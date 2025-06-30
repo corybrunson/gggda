@@ -20,7 +20,10 @@ devtools::load_all()
 [![CRAN](http://www.r-pkg.org/badges/version/gggda)](https://cran.r-project.org/package=gggda)
 <!-- badges: end -->
 
-{gggda} extends [{ggplot2}](https://github.com/tidyverse/ggplot2) with coordinate systems, statistical transformations, and geometric constructions useful to the analysis and visualization of multivariate data, including bivariate generalizations of univariate tools and tools designed for geometric data analysis and ordination. It is spun off from and designed to interoperate with [{ordr}](https://github.com/corybrunson/ordr).
+{gggda} extends [{ggplot2}](https://github.com/tidyverse/ggplot2) with coordinate systems, statistical transformations, and geometric constructions useful to the analysis and visualization of multivariate data, including bivariate generalizations of univariate tools and tools designed for geometric data analysis and ordination.
+
+It is spun off from and designed to interoperate with [{ordr}](https://github.com/corybrunson/ordr).
+However, the two packages remain to be completely harmonized.
 
 ## usage
 

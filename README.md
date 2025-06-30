@@ -14,9 +14,11 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 coordinate systems, statistical transformations, and geometric
 constructions useful to the analysis and visualization of multivariate
 data, including bivariate generalizations of univariate tools and tools
-designed for geometric data analysis and ordination. It is spun off from
-and designed to interoperate with
-[{ordr}](https://github.com/corybrunson/ordr).
+designed for geometric data analysis and ordination.
+
+It is spun off from and designed to interoperate with
+[{ordr}](https://github.com/corybrunson/ordr). However, the two packages
+remain to be completely harmonized.
 
 ## usage
 
