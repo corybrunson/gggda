@@ -139,7 +139,7 @@ display.</p></dd>
 <dd><p>If <code>FALSE</code>, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. <code><a href="https://ggplot2.tidyverse.org/reference/borders.html" class="external-link">borders()</a></code>.</p></dd>
+the default plot specification, e.g. <code><a href="https://ggplot2.tidyverse.org/reference/annotation_borders.html" class="external-link">borders()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -189,7 +189,7 @@ parameter.</p>
 to <code>referent</code> (ignored if <code>NULL</code>, the default, possibly resulting in empty
 output). See <code><a href="stat_referent.html">stat_referent()</a></code> for more details. This relies on a sleight of
 hand through a new undocumented <code>LayerRef</code> class and associated
-<code><a href="https://ggplot2.tidyverse.org/reference/ggplot_add.html" class="external-link">ggplot2::ggplot_add()</a></code> method. As a result, only layers constructed using
+<code><a href="https://ggplot2.tidyverse.org/reference/update_ggplot.html" class="external-link">ggplot2::ggplot_add()</a></code> method. As a result, only layers constructed using
 this <code>stat_*()</code> shortcut will pass the necessary positional aesthetics to the
 <code>$setup_params()</code> step, making them available to pre-process <code>referent</code> data.</p>
 <p>The biplot shortcuts automatically substitute the complementary matrix factor
