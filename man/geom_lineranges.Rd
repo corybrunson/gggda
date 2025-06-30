@@ -138,7 +138,7 @@ if (require(Hmisc)) {
 mpg \%>\% 
   aggregate(
     x = cbind(displ, hwy) ~ 0,
-    FUN = \(z) c(min = min(z), med = median(z), max = max(z))
+    FUN = function(z) c(min = min(z), med = median(z), max = max(z))
   ) \%>\% 
   do.call(what = data.frame) \%>\% 
   ggplot(aes(displ.med, hwy.med)) +

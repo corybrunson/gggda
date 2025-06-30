@@ -22,8 +22,9 @@ stackloss_centered %>%
   stat_rule(
     geom = "axis", data = coef_data,
     referent = stackloss_centered,
-    fun.lower = \(x) minpp(x, p = 1), fun.upper = \(x) maxpp(x, p = 1),
-    fun.offset = \(x) minabspp(x, p = 1)
+    fun.lower = function(x) minpp(x, p = 1),
+    fun.upper = function(x) maxpp(x, p = 1),
+    fun.offset = function(x) minabspp(x, p = 1)
   )
 # NB: `geom_axis(stat = "rule")` would fail to pass positional aesthetics.
 

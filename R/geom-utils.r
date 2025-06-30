@@ -233,7 +233,7 @@ offset_xy <- function(data) {
   # positional variables to offset
   offset_cols <- lapply(
     c("x", "y"),
-    \(xy) paste0(xy, c("", "end", "tick"))
+    function(xy) paste0(xy, c("", "end", "tick"))
   )
   offset_cols <- lapply(offset_cols, intersect, names(data))
   names(offset_cols) <- c("x", "y")

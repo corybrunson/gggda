@@ -82,7 +82,7 @@ print(USJudgeRatings[sample(nrow(USJudgeRatings), 6L, replace = FALSE), ])
 For convenience, we reformat the data with an additional column for the name of the judge:
 
 ```{r frame}
-USJudgeRatings |> 
+USJudgeRatings %>% 
   tibble::rownames_to_column(var = "NAME") ->
   judge_ratings
 head(judge_ratings)
@@ -94,10 +94,10 @@ The first set of methods is the extension of univariate summaries to multivariat
 For example, univariate data have a natural ranking by value: Arrange the cases in order of a variable value, and the rank of each case is its position in order:
 
 ```{r rank}
-judge_ratings |> 
-  subset(select = c(NAME, RTEN)) |> 
-  sort_by(~ list(-RTEN)) |> 
-  transform(RANK = seq(nrow(judge_ratings))) |> 
+judge_ratings %>% 
+  subset(select = c(NAME, RTEN)) %>% 
+  sort_by(~ list(-RTEN)) %>% 
+  transform(RANK = seq(nrow(judge_ratings))) %>% 
   head()
 ```
 
@@ -124,18 +124,18 @@ judge_plot +
 The plot identifies Judges Saden and Driscoll, for example, as outliers, despite their average or just-below-average ratings on both criteria. The more middling judges' names are harder to read, but we can extract the assignments directly to examine the most peripheral and core hulls:
 
 ```{r bar}
-judge_ratings |> 
-  subset(select = c(INTG, DECI)) |> 
-  peel_hulls(num = Inf) |> 
-  as.data.frame() |> 
+judge_ratings %>% 
+  subset(select = c(INTG, DECI)) %>% 
+  peel_hulls(num = Inf) %>% 
+  as.data.frame() %>% 
   merge(
     transform(judge_ratings, i = seq(nrow(judge_ratings))),
     by = "i"
-  ) |> 
-  subset(select = -c(i, x, y, prop)) |> 
+  ) %>% 
+  subset(select = -c(i, x, y, prop)) %>% 
   sort_by(~ hull + NAME) ->
   judge_hulls
-judge_hulls |> 
+judge_hulls %>% 
   subset(subset = hull %in% range(hull))
 ```
 
@@ -143,8 +143,8 @@ Judges Aaronson, Armentano, and Stapleton constitute the innermost hull, and aga
 We can, for example, check whether peripherality with respect to the nested hulls is systematically related to overall retention rating:
 
 ```{r order}
-judge_hulls |> 
-  transform(hull = factor(hull, levels = seq(max(hull)))) |> 
+judge_hulls %>% 
+  transform(hull = factor(hull, levels = seq(max(hull)))) %>% 
   ggplot(aes(x = hull, y = RTEN)) +
   geom_boxplot()
 ```
@@ -177,8 +177,8 @@ PCA is often applied to heterogeneous data, which requires that the variables be
 In this case, however, each criterion is rated on the same scale, so the simplifying assumption that their distributions (specifically their variances) are equivalent in the population is plausible.
 
 ```{r pca}
-judge_ratings |> 
-  subset(select = -c(NAME, CONT, RTEN)) |> 
+judge_ratings %>% 
+  subset(select = -c(NAME, CONT, RTEN)) %>% 
   princomp(cor = FALSE) ->
   judge_pca
 ```
@@ -219,12 +219,12 @@ Finally, we rescale the variables to be distinguishable at the same scale as the
 [^reconstruct]: While we don't illustrate it here, knowing the artificial coordinates of elements on both layers of a biplot allows the original data elements to be recovered via inner product.)
 
 ```{r square, fig.height=7}
-judge_pca$scores |> 
-  as.data.frame() |> 
+judge_pca$scores %>% 
+  as.data.frame() %>% 
   transform(NAME = judge_ratings$NAME) ->
   judge_scores
-judge_pca$loadings |> 
-  unclass() |> as.data.frame() |> 
+judge_pca$loadings %>% 
+  unclass() %>% as.data.frame() %>% 
   tibble::rownames_to_column(var = "NAME") ->
   judge_loadings
 ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
@@ -262,9 +262,9 @@ Axes also provide a natural way to interpolate additional variables onto an exis
 We omitted worthiness of retention ratings from this analysis because it was less objective a criterion, but we can regress its values on the first two PCs to get a sense of how it relates to the picture they paint:
 
 ```{r lm}
-judge_ratings |> 
-  subset(select = RTEN) |> 
-  cbind(judge_scores) |> 
+judge_ratings %>% 
+  subset(select = RTEN) %>% 
+  cbind(judge_scores) %>% 
   lm(formula = RTEN ~ Comp.1 + Comp.2) ->
   judge_lm
 summary(judge_lm)
@@ -274,9 +274,9 @@ Retention worthiness depends importantly on both PCs, though more strongly on th
 We superimpose a ruler for this effect on the biplot and offset it from the point cloud using the `referent` parameter, which accepts data in the same format as `data` and pre-processes it in the same way:
 
 ```{r rule, fig.height=7}
-judge_lm |> 
-  coefficients() |> 
-  t() |> as.data.frame() |> 
+judge_lm %>% 
+  coefficients() %>% 
+  t() %>% as.data.frame() %>% 
   transform(NAME = "RTEN") ->
   judge_coef
 ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
@@ -293,7 +293,7 @@ This has the effect of positioning Judge Driscoll similarly to Judge Saden, desp
 Indeed, Judge Driscoll was rated slightly more retention-worthy:
 
 ```{r subset}
-judge_ratings |> 
+judge_ratings %>% 
   subset(subset = grepl("SADEN|DRISCOLL", NAME))
 ```
 

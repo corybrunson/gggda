@@ -16,5 +16,5 @@ stackloss_centered %>%
     geom = "axis",
     data = coef_data,
     referent = stackloss_centered,
-    fun.offset = \(x) minabspp(x, p = .5)
+    fun.offset = function(x) minabspp(x, p = .5)
   )

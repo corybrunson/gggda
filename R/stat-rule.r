@@ -205,11 +205,11 @@ make_limits_offset_fun <- function(fun.lower, fun.upper, fun.offset, fun.args) {
       # TODO: If either range limit is `NULL`, make it the reverse of the other?
       if (is.null(fun.lower)) {
         fun.upper <- match.fun(fun.upper)
-        # fun.lower <- \(x) x[which(-x == fun.upper(-x))[1L]]
+        # fun.lower <- function(x) x[which(-x == fun.upper(-x))[1L]]
         fun.lower <- const0
       } else if (is.null(fun.upper)) {
         fun.lower <- match.fun(fun.lower)
-        # fun.upper <- \(x) x[which(-x == fun.lower(-x))[1L]]
+        # fun.upper <- function(x) x[which(-x == fun.lower(-x))[1L]]
         fun.upper <- const0
       }
     }

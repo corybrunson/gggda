@@ -7,7 +7,7 @@ p <- ggplot(d, aes(x, y))
 p1 <- p + stat_center(fun.data = mean_se)
 
 test_that("`stat_center()` correctly handles anonymous functions", {
-  p2 <- p + stat_center(fun.data = \(z) {
+  p2 <- p + stat_center(fun.data = function(z) {
     zest <- mean(z)
     zse <- sqrt(var(z) / length(z))
     data.frame(y = zest, ymin = zest - zse, ymax = zest + zse)
@@ -16,7 +16,7 @@ test_that("`stat_center()` correctly handles anonymous functions", {
 })
 
 test_that("`fun.ord` generalizes `fun.data`", {
-  p3 <- p + stat_center(fun.ord = \(z) {
+  p3 <- p + stat_center(fun.ord = function(z) {
     zest <- apply(z, 2L, mean)
     zse <- sqrt( apply(z, 2L, var) / nrow(z) )
     zmin <- zest - zse; zmax <- zest + zse

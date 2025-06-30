@@ -1,5 +1,5 @@
 k <- 6L
-m <- UScitiesD |> cmdscale(k = k) %>% as.data.frame()
+m <- UScitiesD %>% cmdscale(k = k) %>% as.data.frame()
 m$city <- rownames(m)
 # independent aesthetics
 p <- ggplot(m) + geom_text(aes(x = V1, y = V2, label = city))
