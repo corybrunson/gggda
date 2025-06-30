@@ -26,8 +26,8 @@ of \code{.data}.}
     argument list.}
 }
 \value{
-An S7 object representing a list with class \code{mapping}. Components of
-the list are either quosures or constants.
+A list with class \code{uneval}. Components of the list are either
+quosures or constants.
 }
 \description{
 Allow stat layers to receive a sequence of positional variables
