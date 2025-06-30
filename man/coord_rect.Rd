@@ -15,10 +15,7 @@ coord_rect(
 )
 }
 \arguments{
-\item{ratio}{aspect ratio, expressed as \code{y / x}. Can be \code{NULL} (default) to
-not use an aspect ratio. Using \code{1} ensures that one unit on the x-axis
-is the same length as one unit on the y-axis. Ratios higher than one make
-units on the y-axis longer than units on the x-axis, and vice versa.}
+\item{ratio}{aspect ratio, expressed as \code{y / x}}
 
 \item{window_ratio}{aspect ratio of plotting window}
 
@@ -26,11 +23,7 @@ units on the y-axis longer than units on the x-axis, and vice versa.}
 
 \item{expand}{If \code{TRUE}, the default, adds a small expansion factor to
 the limits to ensure that data and axes don't overlap. If \code{FALSE},
-limits are taken exactly from the data or \code{xlim}/\code{ylim}.
-Giving a logical vector will separately control the expansion for the four
-directions (top, left, bottom and right). The \code{expand} argument will be
-recycled to length 4 if necessary. Alternatively, can be a named logical
-vector to control a single direction, e.g. \code{expand = c(bottom = FALSE)}.}
+limits are taken exactly from the data or \code{xlim}/\code{ylim}.}
 
 \item{clip}{Should drawing be clipped to the extent of the plot panel? A
 setting of \code{"on"} (the default) means yes, and a setting of \code{"off"}

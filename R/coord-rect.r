@@ -6,6 +6,7 @@
 #' 
 #' @importFrom scales expand_range censor rescale
 #' @inheritParams ggplot2::coord_cartesian
+#' @inheritParams ggplot2::coord_fixed
 #' @param window_ratio aspect ratio of plotting window
 #' @example inst/examples/ex-coord-rect.r
 #' @export
