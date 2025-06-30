@@ -38,10 +38,8 @@ These functions coordinate (pun intended) the use of more than two positional
 variables in plot layers. Pass multidimensional coordinates to a stat via
 \code{mapping = coord_aes(...)} and reconcile the recovered coordinates with \code{x}
 and \code{y} (which are overridden if present) in \verb{Stat*$compute_*()}; see the
-\link{StatChull} source code for an example.
-
-The \code{uneval} method of \code{\link[base:c]{base::c()}} allows for aesthetic mappings to be
-concatenated.
+\link{StatChull} source code for an example. Use \code{aes_c()} to concatenate
+aesthetic mappings.
 }
 \seealso{
 \code{\link[ggplot2:aes]{ggplot2::aes()}} for standard \strong{ggplot2} aesthetic mappings.
