@@ -1,6 +1,6 @@
 ## version 0.1.0
 
-This is the initial release.
+This is a new submission of the initial release of {gggda}.
 Local checks were performed both with the current CRAN version 3.5.2 of {ggplot2} and with the current development version (2025 Jun 30).
 
 ## R CMD checks
@@ -18,6 +18,7 @@ Local checks were performed both with the current CRAN version 3.5.2 of {ggplot2
 
 ### local results
 
+There were no ERRORs or WARNINGs.
 Two NOTEs were consistently produced:
 
 ```
@@ -29,11 +30,26 @@ Two NOTEs were consistently produced:
 ```
 
 The first is intentional, as in {ordr}; the relevant functionality locates any of three "engine" packages to run the required operation.
-The second is a recurring pattern in my checks, presumably due to internet speeds.
+The second is presumably due to internet speeds.
+
+The third check additionally produced the "New submission" NOTE as well as the following NOTE:
+
+```
+❯ checking dependencies in R code ... NOTE
+  Namespaces in Imports field not imported from:
+    ‘dplyr’ ‘tidyr’
+    All declared Imports should be used.
+```
+
+I believe this is in error; both packages are used internally via the double-colon operator `::`.
 
 ### Win-Builder results
 
+There were no ERRORs or WARNINGs.
+Notably, the "not imported" NOTE did not arise.
+All NOTEs not seen above are addressed below.
 
+The following names and words are spelled as intended ("al" appears as part of "&al"):
 
 ```
 Possibly misspelled words in DESCRIPTION:
@@ -50,15 +66,10 @@ Possibly misspelled words in DESCRIPTION:
   univariable (13:60)
 ```
 
-
+The following URLs work for me:
 
 ```
 Found the following (possibly) invalid URLs:
-  URL: https://corybrunson.github.io/gggda/
-    From: DESCRIPTION
-          man/gggda.Rd
-    Status: 404
-    Message: Not Found
   URL: https://stackoverflow.com/help/minimal-reproducible-example
     From: README.md
     Status: 404
@@ -67,5 +78,5 @@ Found the following (possibly) invalid URLs:
     From: inst/doc/gggda.html
     Status: Error
     Message: Timeout was reached [www.jud.ct.gov]:
-      Failed to connect to www.jud.ct.gov port 443 after 21296 ms: Could not connect to server
+      Failed to connect to www.jud.ct.gov port 443 after 21050 ms: Could not connect to server
 ```

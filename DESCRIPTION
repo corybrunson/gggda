@@ -37,6 +37,8 @@ Depends:
     ggplot2
 Imports:
     rlang,
+    tidyr,
+    dplyr,
     magrittr,
     scales,
     labeling,
