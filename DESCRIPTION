@@ -72,7 +72,6 @@ Collate:
     'geom-vector.r'
     'gggda.r'
     'peel.r'
-    'scale-view-rect.r'
     'stat-peel.r'
     'stat-depth.r'
     'stat-bagplot.r'
