@@ -32,7 +32,9 @@ Two NOTEs were consistently produced:
 The first is intentional, as in {ordr}; the relevant functionality locates any of three "engine" packages to run the required operation.
 The second is presumably due to internet speeds.
 
-The third check additionally produced the "New submission" NOTE as well as the following NOTE:
+The third check additionally produced the "New submission" NOTE.
+
+Some checks also produced the following NOTE:
 
 ```
 ❯ checking dependencies in R code ... NOTE
