@@ -26,7 +26,7 @@ test_that("`geom_rule()` correctly handles required aesthetics", {
   
   # segment limits are correctly positioned
   ( as.matrix(unlist(d[c("start", "end")])) %*% 
-      unlist(d[c("abscissa", "ordinate")]) / d$length ) |> 
+      unlist(d[c("abscissa", "ordinate")]) / d$length ) %>%
     as.vector() ->
     endpts
   expect_equal(unname(unlist(l0[c("xmin", "xmax", "ymin", "ymax")])), endpts)

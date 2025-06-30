@@ -106,11 +106,12 @@ StatBagplot <- ggproto(
     
     # locate the median at (the centroid of) the maximum density point(s)
     median_df <- if (median || fence) {
-      data |> 
-        subset(depth == max(depth), select = c("x", "y")) |> 
-        lapply(mean) |> as.data.frame() |> 
-        # cannot be empty so this will work
-        transform(component = "median", PANEL = data_PANEL, group = data_group)
+      df <- subset(data, depth == max(depth), select = c("x", "y"))
+      df <- as.data.frame(lapply(df, mean))
+      transform(
+        df,
+        component = "median", PANEL = data_PANEL, group = data_group
+      )
     } else {
       data.frame()
     }
@@ -136,14 +137,19 @@ StatBagplot <- ggproto(
     if (fence || outliers) {
       
       # begin fence by expanding the convex hull of the bag by `coef`
-      bag_df |> 
-        subset(select = c("x", "y")) |> 
-        filter_hull() |> 
-        as.matrix() |> 
-        sweep(2L, as.matrix(median_df[, c("x", "y"), drop = FALSE]), "-") |> 
-        magrittr::multiply_by(coef) |> 
-        sweep(2L, as.matrix(median_df[, c("x", "y"), drop = FALSE]), "+") |> 
-        as.data.frame() -> fence_hull
+      fence_hull <- subset(bag_df, select = c("x", "y"))
+      fence_hull <- filter_hull(fence_hull)
+      fence_hull <- as.matrix(fence_hull)
+      fence_hull <- sweep(
+        fence_hull, 2L,
+        as.matrix(median_df[, c("x", "y"), drop = FALSE]), "-"
+      )
+      fence_hull <- fence_hull * coef
+      fence_hull <- sweep(
+        fence_hull, 2L,
+        as.matrix(median_df[, c("x", "y"), drop = FALSE]), "+"
+      )
+      fence_hull <- as.data.frame(fence_hull)
       
       # tag inliers & outliers
       outlying <- lie_without(data, fence_hull)
@@ -155,11 +161,10 @@ StatBagplot <- ggproto(
     
     # end fence as the convex hull of the expanded bag hull and the inliers
     fence_df <- if (fence) {
-      data |> 
-        subset(! outlying, select = c("x", "y")) |> 
-        rbind(fence_hull) |> 
-        filter_hull() |> 
-        transform(component = "fence", PANEL = data_PANEL, group = data_group)
+      df <- subset(data, ! outlying, select = c("x", "y"))
+      df <- rbind(df, fence_hull)
+      df <- filter_hull(df)
+      transform(df, component = "fence", PANEL = data_PANEL, group = data_group)
     } else {
       data.frame()
     }

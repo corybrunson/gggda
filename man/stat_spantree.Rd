@@ -135,9 +135,9 @@ transformation and can be accessed with \link[ggplot2:aes_eval]{delayed evaluati
 }
 
 \examples{
-eurodist |> 
-  cmdscale(k = 6) |> 
-  as.data.frame() |> 
+eurodist \%>\% 
+  cmdscale(k = 6) \%>\% 
+  as.data.frame() \%>\% 
   tibble::rownames_to_column(var = "city") ->
   euro_mds
 ggplot(euro_mds, aes(V1, V2, label = city)) +

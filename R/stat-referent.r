@@ -83,10 +83,11 @@ StatReferent <- ggproto(
     # (code adapted from `ggplot2:::Layer$compute_aesthetics()`)
     # NB: No checks are conducted here as in `$compute_aesthetics()`.
     if (! is.null(params$referent)) {
-      params$mapping |> 
-        lapply(rlang::eval_tidy, data = as.data.frame(params$referent)) |> 
-        as.data.frame() ->
-        params$referent
+      params$referent <- lapply(
+        params$mapping,
+        rlang::eval_tidy, data = as.data.frame(params$referent)
+      )
+      params$referent <- as.data.frame(params$referent)
     }
     
     # discard combined mapping parameter

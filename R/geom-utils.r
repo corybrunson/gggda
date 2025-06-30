@@ -234,9 +234,9 @@ offset_xy <- function(data) {
   offset_cols <- lapply(
     c("x", "y"),
     \(xy) paste0(xy, c("", "end", "tick"))
-  ) |> 
-    lapply(intersect, names(data)) |> 
-    stats::setNames(c("x", "y"))
+  )
+  offset_cols <- lapply(offset_cols, intersect, names(data))
+  names(offset_cols) <- c("x", "y")
   
   # offset positional variables
   for (col in offset_cols$x) data[[col]] <- data[[col]] + data$x_0

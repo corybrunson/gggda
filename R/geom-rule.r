@@ -239,19 +239,24 @@ GeomRule <- ggproto(
     if ((axis_ticks || axis_text) && snap_rule) {
       
       # compute extended value range
-      mark_data |> 
-        dplyr::transmute(axis, label, x = x_t + x_0, y = y_t + y_0) |> 
-        dplyr::group_by(axis) |> 
-        dplyr::filter(label == min(label) | label == max(label)) |> 
-        dplyr::mutate(ext = ifelse(label == min(label), "min", "max")) |> 
-        dplyr::filter(all(c("min", "max") %in% ext)) |>
-        dplyr::ungroup() |> 
-        dplyr::distinct() |>
-        tidyr::pivot_wider(
-          id_cols = axis,
-          names_from = ext, values_from = c(x, y), names_sep = ""
-        ) -> 
-        mark_range
+      mark_range <- 
+        dplyr::transmute(mark_data, axis, label, x = x_t + x_0, y = y_t + y_0)
+      mark_range <- dplyr::group_by(mark_range, axis)
+      mark_range <-
+        dplyr::filter(mark_range, label == min(label) | label == max(label))
+      mark_range <- dplyr::mutate(
+        mark_range,
+        ext = ifelse(label == min(label), "min", "max")
+      )
+      mark_range <-
+        dplyr::filter(mark_range, all(c("min", "max") %in% ext))
+      mark_range <- dplyr::ungroup(mark_range)
+      mark_range <- dplyr::distinct(mark_range)
+      mark_range <- tidyr::pivot_wider(
+        mark_range,
+        id_cols = axis,
+        names_from = ext, values_from = c(x, y), names_sep = ""
+      )
       
       # extend segment to value range (when available)
       mark_axes <- match(axis_data$axis, mark_range$axis)

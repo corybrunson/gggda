@@ -29,8 +29,8 @@ test_that("only inherited data influences plotting window", {
 
 test_that("reference data does not affect computation in base layer", {
   expect_equal(
-    StatReferent$compute_group(df1) |> head(n = 2),
-    StatReferent$compute_group(df1, referent = df2) |> head(n = 2)
+    StatReferent$compute_group(df1) %>% head(n = 2),
+    StatReferent$compute_group(df1, referent = df2) %>% head(n = 2)
   )
 })
 

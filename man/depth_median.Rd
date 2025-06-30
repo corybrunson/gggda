@@ -27,13 +27,13 @@ passed to \code{\link[=stat_center]{stat_center()}} but is also exported directl
 }
 \examples{
 # sample median
-iris |> 
-  subset(select = -Species) |> 
+iris \%>\% 
+  subset(select = -Species) \%>\% 
   depth_median()
 # groupwise medians
-iris |> 
-  split(~ Species) |> 
-  lapply(subset, select = -Species) |> 
-  lapply(depth_median) |> 
-  simplify2array() |> t() |> as.data.frame()
+iris \%>\% 
+  split(~ Species) \%>\% 
+  lapply(subset, select = -Species) \%>\% 
+  lapply(depth_median) \%>\% 
+  simplify2array() \%>\% t() \%>\% as.data.frame()
 }

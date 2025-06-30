@@ -164,8 +164,8 @@ are in bold):
 
 \examples{
 # Motor Trends base plot with factorized cylinder counts
-p <- mtcars |> 
-  transform(cyl = factor(cyl)) |> 
+p <- mtcars \%>\% 
+  transform(cyl = factor(cyl)) \%>\% 
   ggplot(aes(x = wt, y = disp)) +
   theme_bw()
 # basic bagplot

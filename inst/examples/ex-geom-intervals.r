@@ -8,12 +8,12 @@ if (require(Hmisc)) {
     geom_pointranges(fun.data = mean_sdl, shape = "circle open")
 }
 
-mpg |> 
+mpg %>% 
   aggregate(
     x = cbind(displ, hwy) ~ 0,
     FUN = \(z) c(min = min(z), med = median(z), max = max(z))
-  ) |> 
-  do.call(what = data.frame) |> 
+  ) %>% 
+  do.call(what = data.frame) %>% 
   ggplot(aes(displ.med, hwy.med)) +
   geom_pointranges(
     stat = "identity",
