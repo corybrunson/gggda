@@ -11,14 +11,14 @@ test_that("`StatSpantree` can process artificial coordinates", {
   skip_if_not_installed("ade4")
   
   # produce low-dimensional plot (independent aesthetics)
-  p1 <- p + stat_spantree(coord_aes(m, "V"), engine = "ade4")
+  p1 <- p + stat_spantree(aes_coord(m, "V"), engine = "ade4")
   d1.1 <- layer_data(p1, 1)
   d1.2 <- layer_data(p1, 2)
   expect_setequal(d1.1$x, c(d1.2$x, d1.2$xend))
   expect_setequal(d1.1$y, c(d1.2$y, d1.2$yend))
   
   # produce low-dimensional plot (simultaneous aesthetics)
-  q1 <- q + stat_spantree(coord_aes(m, "V"), engine = "ade4")
+  q1 <- q + stat_spantree(aes_coord(m, "V"), engine = "ade4")
   e1.1 <- layer_data(q1, 1)
   e1.2 <- layer_data(q1, 2)
   expect_setequal(e1.1$x, c(e1.2$x, e1.2$xend))

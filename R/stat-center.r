@@ -1,7 +1,7 @@
 #' @title Centers and spreads for bivariate data
 #'
 
-#' @template coord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -93,7 +93,7 @@ StatCenter <- ggproto(
                            fun.ord = NULL,
                            fun.args = list(),
                            na.rm = FALSE) {
-    coord_cols <- get_coord_aes(data)
+    coord_cols <- get_aes_coord(data)
     cfun <- 
       make_center_fun(fun.data, fun, fun.min, fun.max, fun.ord, fun.args)
     cfun(data[, coord_cols, drop = FALSE])
@@ -142,7 +142,7 @@ StatStar <- ggproto(
                            fun.data = NULL, fun = NULL,
                            fun.ord = NULL, fun.args = list(),
                            na.rm = FALSE) {
-    coord_cols <- get_coord_aes(data)
+    coord_cols <- get_aes_coord(data)
     cfun <- make_center_fun(fun.data, fun, NULL, NULL, fun.ord, fun.args)
     cdata <- cfun(data[, coord_cols, drop = FALSE])
     

@@ -2,14 +2,14 @@
 % Please edit documentation in R/aes-coord.r
 \name{aes-coord}
 \alias{aes-coord}
-\alias{coord_aes}
-\alias{get_coord_aes}
+\alias{aes_coord}
+\alias{get_aes_coord}
 \alias{aes_c}
 \title{Multidimensional coordinate mappings}
 \usage{
-coord_aes(.data, prefix)
+aes_coord(.data, prefix)
 
-get_coord_aes(data)
+get_aes_coord(data)
 
 aes_c(...)
 }
@@ -36,7 +36,7 @@ rather than only \code{x} and \code{y}.
 \details{
 These functions coordinate (pun intended) the use of more than two positional
 variables in plot layers. Pass multidimensional coordinates to a stat via
-\code{mapping = coord_aes(...)} and reconcile the recovered coordinates with \code{x}
+\code{mapping = aes_coord(...)} and reconcile the recovered coordinates with \code{x}
 and \code{y} (which are overridden if present) in \verb{Stat*$compute_*()}; see the
 \link{StatChull} source code for an example. Use \code{aes_c()} to concatenate
 aesthetic mappings.

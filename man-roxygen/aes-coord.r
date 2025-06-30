@@ -1,7 +1,7 @@
 #' @section Multidimensional position aesthetics:
 
 #' This statistical transformation is compatible with the convenience function
-#' [coord_aes()].
+#' [aes_coord()].
 #'
 #' Some transformations (e.g. [stat_center()]) commute with projection to the
 #' lower (1 or 2)-dimensional biplot space. If they detect aesthetics of the
@@ -15,5 +15,5 @@
 #' two dimensions are returned as `x` and `y`.
 #'
 #' A small number of transformations ([stat_rule()]) are incompatible with
-#' these aesthetics but will accept `coord_aes()` without warning.
+#' these aesthetics but will accept `aes_coord()` without warning.
 #' 

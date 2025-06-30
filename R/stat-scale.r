@@ -4,7 +4,7 @@
 #'   both positional coordinates. It can be handy in tandem with secondary axes.
 #' 
 
-#' @template coord-aes
+#' @template aes-coord
 
 #' @inheritParams ggplot2::layer
 #' @param mult Numeric value used to scale the coordinates.

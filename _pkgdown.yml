@@ -1,57 +1,47 @@
+template:
+  bootstrap: 5
+
 reference:
-- title: "'ordr' package"
+- title: "'gggda' package"
   desc: >
-    A unified framework for ordination objects and biplot methods using tidy
-    principles
+    Visualization methods from and for geometric data analysis
   contents:
-  - '`ordr`'
-- title: "Functions, classes, and methods"
+  - '`gggda`'
+- title: "GDA tools"
   desc: >
-    Introducing and adapting ordination techniques for the **ordr** workflow
+    Helper functions to perform geometric data analysis.
   contents:
-  - ends_with("-ord")
-- title: "Data sets"
+  - 'peel_hulls'
+  - 'depth_median'
+- title: "'ggproto' classes"
   desc: >
-    Additional data sets used to illustrate ordination techniques
+    New `'ggproto'` classes.
   contents:
-  - '`glass`'
-  - '`qswur_usa`'
-- title: "Tidy ordination"
+  - 'gggda-ggproto'
+- title: "Coordinate systems"
   desc: >
-    The 'tbl_ord' class wrapper, with methods for accessing components and for
-    querying and manipulating metadata
-  contents:
-  - '`recoverers`'
-  - '`augmentation`'
-  - '`tidiers`'
-  - '`annotation`'
-  - '`negation`'
-  - '`conference`'
-  - '`supplementation`'
-  - '`tbl_ord`'
-  - 'format.tbl_ord'
-  - 'plot.tbl_ord'
-  - '`dplyr-verbs`'
-  - 'ordinate'
-- title: "Layered grammar for biplots"
-  desc: >
-    Functions to generate and annotate biplots from 'tbl_ord' objects, following
-    the layered grammar of graphics
+    New `Coord*` ggprotos and `coord_*()` layers.
   contents:
   - starts_with("coord_")
-  - '`ggbiplot`'
-  - 'stat_rows'
+- title: "Statistical transformations"
+  desc: >
+    New `Stat*` ggprotos and `stat_*()` layers.
+  contents:
   - 'stat_referent'
   - has_concept("stat layers")
-  - '`geom_origin`'
-  - '`geom_unit_circle`'
+- title: "Geometric constructions"
+  desc: >
+    New `Geom*` ggprotos and `geom_*()` layers.
+  contents:
   - has_concept("geom layers")
+- title: "Aesthetic mapping"
+  desc: >
+    Functions for handling aesthetic mappings.
+  contents:
+  - starts_with("aes")
+- title: "Themes"
+  desc: >
+    New themes and theme elements.
+  contents:
   - starts_with("theme_")
   - '`draw-key`'
-  - 'ordr-ggproto'
-  - has_concept("biplot layers")
-- title: "Class methods"
-  desc: >
-    Recovery and augmentation methods for ordination model classes
-  contents:
-  - starts_with("methods-")

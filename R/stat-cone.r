@@ -3,7 +3,7 @@
 #' @description Restrict planar data to the points that lie on its conical hull.
 #' 
 
-#' @template coord-aes
+#' @template aes-coord
 
 #' @inheritParams ggplot2::layer
 #' @template param-layer
@@ -49,7 +49,7 @@ StatCone <- ggproto(
     data, scales,
     origin = FALSE
   ) {
-    coord_cols <- get_coord_aes(data)
+    coord_cols <- get_aes_coord(data)
     
     # if the data set contains the origin, then the convex hull suffices
     if (any(apply(as.matrix(data[, coord_cols, drop = FALSE]) == 0, 1L, all))) {

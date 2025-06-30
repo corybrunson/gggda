@@ -8,7 +8,7 @@
 #'
 #' These functions coordinate (pun intended) the use of more than two positional
 #' variables in plot layers. Pass multidimensional coordinates to a stat via
-#' `mapping = coord_aes(...)` and reconcile the recovered coordinates with `x`
+#' `mapping = aes_coord(...)` and reconcile the recovered coordinates with `x`
 #' and `y` (which are overridden if present) in `Stat*$compute_*()`; see the
 #' [StatChull] source code for an example. Use `aes_c()` to concatenate
 #' aesthetic mappings.
@@ -27,7 +27,7 @@ NULL
 
 #' @rdname aes-coord
 #' @export
-coord_aes <- function(.data, prefix) {
+aes_coord <- function(.data, prefix) {
   # select and order variable names
   coord_cols <- names(.data)[grep(paste0(prefix, "[0-9]+"), names(.data))]
   if (length(coord_cols) == 0L) 
@@ -37,7 +37,7 @@ coord_aes <- function(.data, prefix) {
   if (! all(coord_nums[coord_order] == seq_along(coord_nums)))
     rlang::warn(
       "Multidimensional coordinates are not indexed in sequence.",
-      .frequency = "once", .frequency_id = "coord_aes"
+      .frequency = "once", .frequency_id = "aes_coord"
     )
   coord_cols <- coord_cols[coord_order]
   
@@ -51,7 +51,7 @@ coord_aes <- function(.data, prefix) {
 
 #' @rdname aes-coord
 #' @export
-get_coord_aes <- function(data) {
+get_aes_coord <- function(data) {
   coord_cols <- grep("^\\.\\.coord[0-9]+$", names(data))
   if (length(coord_cols) == 0L) coord_cols <- match(c("x", "y"), names(data))
   coord_cols

@@ -14,7 +14,7 @@
 
 #' @template ref-rousseeuw1999
 
-#' @template coord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -154,7 +154,7 @@ StatDepth <- ggproto(
     notion = "zonoid", notion_params = list(),
     n = 100L, ...
   ) {
-    coord_cols <- get_coord_aes(data)
+    coord_cols <- get_aes_coord(data)
     notion <- match.arg(
       notion,
       # `eval(formals(ddalpha::depth.)$notion)`

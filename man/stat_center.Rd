@@ -122,7 +122,7 @@ Centers and spreads for bivariate data
 \section{Multidimensional position aesthetics}{
 
 This statistical transformation is compatible with the convenience function
-\code{\link[=coord_aes]{coord_aes()}}.
+\code{\link[=aes_coord]{aes_coord()}}.
 
 Some transformations (e.g. \code{\link[=stat_center]{stat_center()}}) commute with projection to the
 lower (1 or 2)-dimensional biplot space. If they detect aesthetics of the
@@ -136,7 +136,7 @@ transformation is performed before projection, and the results in the first
 two dimensions are returned as \code{x} and \code{y}.
 
 A small number of transformations (\code{\link[=stat_rule]{stat_rule()}}) are incompatible with
-these aesthetics but will accept \code{coord_aes()} without warning.
+these aesthetics but will accept \code{aes_coord()} without warning.
 }
 
 \section{Computed variables}{

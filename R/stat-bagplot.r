@@ -24,7 +24,7 @@
 
 #' @template ref-rousseeuw1999
 
-#' @template coord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed

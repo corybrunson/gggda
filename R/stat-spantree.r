@@ -26,7 +26,7 @@
 #' @template ref-jolliffe2002
 #'   
 
-#' @template coord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -79,7 +79,7 @@ StatSpantree <- ggproto(
   
   compute_group = function(data, scales,
                            engine = "mlpack", method = "euclidean") {
-    coord_cols <- get_coord_aes(data)
+    coord_cols <- get_aes_coord(data)
     data_ord <- data[, coord_cols, drop = FALSE]
     # introduce or override `x` and `y` if `..coord*` are present
     if (! setequal(names(data)[coord_cols], c("x", "y"))) {

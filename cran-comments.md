@@ -18,4 +18,17 @@ Local checks were performed both with the current CRAN version 3.5.2 of {ggplot2
 
 ### local results
 
+1 & 2 - ggplot2 v3.5.2
+
+❯ checking package dependencies ... NOTE
+  Package suggested but not available for checking: ‘mlpack’
+
+❯ checking for future file timestamps ... NOTE
+  unable to verify current time
+
+ggplot2 devel (2025 Jun 30)
+
+
+
 ### Win-Builder results
+

@@ -109,7 +109,7 @@ dimensions can encapsulate the "true" distances between points (Jolliffe,
 \section{Multidimensional position aesthetics}{
 
 This statistical transformation is compatible with the convenience function
-\code{\link[=coord_aes]{coord_aes()}}.
+\code{\link[=aes_coord]{aes_coord()}}.
 
 Some transformations (e.g. \code{\link[=stat_center]{stat_center()}}) commute with projection to the
 lower (1 or 2)-dimensional biplot space. If they detect aesthetics of the
@@ -123,7 +123,7 @@ transformation is performed before projection, and the results in the first
 two dimensions are returned as \code{x} and \code{y}.
 
 A small number of transformations (\code{\link[=stat_rule]{stat_rule()}}) are incompatible with
-these aesthetics but will accept \code{coord_aes()} without warning.
+these aesthetics but will accept \code{aes_coord()} without warning.
 }
 
 \section{Computed variables}{
@@ -143,7 +143,7 @@ eurodist |>
 ggplot(euro_mds, aes(V1, V2, label = city)) +
   stat_spantree() +
   geom_label(alpha = .25)
-ggplot(euro_mds, aes_c(coord_aes(euro_mds, "V"), aes(label = city))) +
+ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   stat_spantree() +
   geom_label(aes(x = V1, y = V2), alpha = .25)
 }
