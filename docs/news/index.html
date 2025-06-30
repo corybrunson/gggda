@@ -33,7 +33,72 @@
       <small>Source: <a href="https://github.com/corybrunson/gggda/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-  </main></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0" id="gggda-010">gggda 0.1.0<a class="anchor" aria-label="anchor" href="#gggda-010"></a></h2>
+<p>The inaugural version of {gggda} was spun off the post-v0.1.1 development version of {ordr}. Upgrades to {ordr} components since that release that are included in {gggda} are listed here.</p>
+<div class="section level3">
+<h3 id="infrastructure-and-standards-0-1-0">infrastructure and standards<a class="anchor" aria-label="anchor" href="#infrastructure-and-standards-0-1-0"></a></h3>
+<div class="section level4">
+<h4 id="unit-tests-0-1-0">unit tests<a class="anchor" aria-label="anchor" href="#unit-tests-0-1-0"></a></h4>
+<p>Unit tests have been written for all ggproto shortcuts.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="new-coordinate-systems-0-1-0">new coordinate systems<a class="anchor" aria-label="anchor" href="#new-coordinate-systems-0-1-0"></a></h3>
+<div class="section level4">
+<h4 id="gda-geared-coordinate-systems-0-1-0">GDA-geared coordinate systems<a class="anchor" aria-label="anchor" href="#gda-geared-coordinate-systems-0-1-0"></a></h4>
+<p>Two new coordinate systems provide control over the aspect ratio of the plotting window without compromising that of the (artificial) coordinate axes: <code>GeomRect</code> (alias <code>GeomSquare</code>) extends <code>GeomFixed</code> with an <code>window_ratio</code> parameter for the plotting window, while <code>GeomBiplot</code> removes the <code>ratio</code> parameter and forces the coordinate axes to have aspect ratio 1.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="up-or-downgrades-to-existing-plot-layers-0-1-0">up( or down)grades to existing plot layers<a class="anchor" aria-label="anchor" href="#up-or-downgrades-to-existing-plot-layers-0-1-0"></a></h3>
+<div class="section level4">
+<h4 id="combined-vector-and-radiating-text-geom-breaking-change-0-1-0">combined vector and radiating text geom (breaking change)<a class="anchor" aria-label="anchor" href="#combined-vector-and-radiating-text-geom-breaking-change-0-1-0"></a></h4>
+<p>The ‘vector’ and ‘text_radiate’ geoms have been combined. The shortcut <code><a href="../reference/geom_text_radiate.html">geom_text_radiate()</a></code> is deprecated, and <code><a href="../reference/geom_vector.html">geom_vector()</a></code> generates radiating labels by default.</p>
+</div>
+<div class="section level4">
+<h4 id="debugged-axis-geom-0-1-0">debugged axis geom<a class="anchor" aria-label="anchor" href="#debugged-axis-geom-0-1-0"></a></h4>
+<p>The ‘axis’ and ‘isoline’ geoms hit trouble when one or more points lay at the origin (<code>x^2 + y^2 == 0</code>). These cases have now been removed in <code>setup_data()</code>.</p>
+</div>
+<div class="section level4">
+<h4 id="reconciliation-of-summary-functions-0-1-0">reconciliation of summary functions<a class="anchor" aria-label="anchor" href="#reconciliation-of-summary-functions-0-1-0"></a></h4>
+<p>The ‘center’ and ‘star’ stats now follow the ‘summary’ stat convention of using <code>fun</code>, so <code>fun.center</code> is deprecated. Additionally, <code>fun.ord</code> accepts a function that summarizes the columns of a matrix, which accommodates summaries like the depth median that do not decompose along orthogonal axes.</p>
+</div>
+<div class="section level4">
+<h4 id="revamped-handling-of-secondary-aesthetics-breaking-change-0-1-0">revamped handling of secondary aesthetics (breaking change)<a class="anchor" aria-label="anchor" href="#revamped-handling-of-secondary-aesthetics-breaking-change-0-1-0"></a></h4>
+<p>Previously, underscore-separated parameters like <code>label_colour</code> were used to specify secondary aesthetics, i.e. aesthetics for graphical objects other than those considered “primary” for the layer. Their behavior has been debugged by mimicking the use of period-separated parameters like <code>label.colour</code> in {ggplot2} v3.5.1, except for the new bagplot geom, for which their behavior is based on that of <code><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot()</a></code> in the current development version of {ggplot2}. This induces some breaking changes due to the renaming of most, and the removal of some, such parameters.</p>
+</div>
+<div class="section level4">
+<h4 id="deprecation-of-scale-stat-0-1-0">deprecation of scale stat<a class="anchor" aria-label="anchor" href="#deprecation-of-scale-stat-0-1-0"></a></h4>
+<p>The simple and experimental <code>StatScale</code> has been deprecated.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="new-plot-layers-0-1-0">new plot layers<a class="anchor" aria-label="anchor" href="#new-plot-layers-0-1-0"></a></h3>
+<div class="section level4">
+<h4 id="referential-stats-0-1-0">referential stats<a class="anchor" aria-label="anchor" href="#referential-stats-0-1-0"></a></h4>
+<p>A new statistical transformation serves to parent specific “referential stats”, meaning those that depend on non-inherited (in this setting, positional) data to transform the inherited data. The reference data are passed to the new <code>referent</code> parameter. The new stat is coupled with an additional <code>LayerRef</code> class that enables <code><a href="https://ggplot2.tidyverse.org/reference/ggplot_add.html" class="external-link">ggplot_add()</a></code> to pass the inherited positional aesthetics to <code>$setup_params()</code>. Biplot-specific <code>stat_*_*()</code> shortcuts accept additional argument types to <code>referent</code> that result in the opposite matrix factor being used as reference data.</p>
+</div>
+<div class="section level4">
+<h4 id="rule-stat-0-1-0">rule stat<a class="anchor" aria-label="anchor" href="#rule-stat-0-1-0"></a></h4>
+<p>A new ‘rule’ statistical transformation computes additional position aesthetics that the ‘axis’ geom uses to limit and offset axes. The stat is referential and expects a set of functions that compute limits <code>lower</code> and <code>upper</code> along the axes and <code>yintercept</code> and <code>xintercept</code> associated with offset axes. The ‘axis’ geom preprocesses these aesthetics to rule endpoints <code>xmin,ymin,xmax,ymax</code> and offset vectors <code>xend,yend</code> to force the plotting window to contain the limited axis segments or, if the axes remain lines, the offsets where they are centered.</p>
+</div>
+<div class="section level4">
+<h4 id="peel-stat-0-1-0">peel stat<a class="anchor" aria-label="anchor" href="#peel-stat-0-1-0"></a></h4>
+<p>A new ‘peel’ statistical transformation computes nested convex hulls containing specified fractions of data.</p>
+</div>
+<div class="section level4">
+<h4 id="depth-stat-0-1-0">depth stat<a class="anchor" aria-label="anchor" href="#depth-stat-0-1-0"></a></h4>
+<p>A new ‘depth’ statistical transformation estimates depth across a grid and is paired with <code>GeomContour</code> to produce depth contours, which can be used to plot alpha bags.</p>
+</div>
+<div class="section level4">
+<h4 id="adapted-density-stat--geom-0-1-0">adapted density stat &amp; geom<a class="anchor" aria-label="anchor" href="#adapted-density-stat--geom-0-1-0"></a></h4>
+<p>Aided by element standardization, the classic <code>density_2d</code> statistical transformation and geometric construction are adapted to biplots. Currently, source code generation does not respect fixed parameters passed to <code><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer()</a></code> by the <code>stat_*()</code> and <code>geom_*()</code> shortcuts; as a consequence, <code>contour = TRUE</code> must be manually passed to <code>geom_*_density_2d()</code>.</p>
+</div>
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
