@@ -135,7 +135,7 @@ StatDepth <- ggproto(
     # update dropped aes
     contour_stat$dropped_aes <- c(contour_stat$dropped_aes, "depth", "ndepth")
     
-    ggplot2:::dapply(data, "PANEL", function(data) {
+    dapply(data, "PANEL", function(data) {
       scales <- layout$get_scales(data$PANEL[1L])
       rlang::try_fetch(
         rlang::inject(
@@ -198,3 +198,5 @@ StatDepthFilled <- ggproto(
   default_aes = aes(colour = NA, fill = after_stat(level)),
   contour_type = "bands"
 )
+
+dapply <- getFromNamespace("dapply", "ggplot2")

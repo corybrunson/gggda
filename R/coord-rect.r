@@ -84,7 +84,7 @@ reconcile_rectangle <- function(xlim, ylim, ratio) {
   )
 }
 
-# mimic `ggplot2:::check_coord_limits()`
+# mimic `ggplot2:::check_coord_limits()` but without {cli}
 check_coord_limits <- function(limits) {
   if (is.null(limits)) return(invisible(NULL))
   stopifnot(

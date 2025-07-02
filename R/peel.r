@@ -116,8 +116,8 @@ peel_hulls_at <- function(
       dupe <- FALSE
       cut_prop <- nrow(x) / n
       i_hull <- chull(x)
-      x_hull <- x[i_hull, ]; i_peel <- i_orig[i_hull]
-      i_orig <- i_orig[-i_hull]; x <- x[-i_hull, ]
+      x_hull <- x[i_hull, , drop = FALSE]; i_peel <- i_orig[i_hull]
+      i_orig <- i_orig[-i_hull]; x <- x[-i_hull, , drop = FALSE]
       h <- h + 1L
     }
     # peel last hull to cut below `breaks`
@@ -126,8 +126,8 @@ peel_hulls_at <- function(
       cut_prop <- nrow(x) / n
       i_hull <- chull(x)
       # if (length(i_hull) == 0L && nonempty) break
-      x_hull <- x[i_hull, ]
-      x <- x[-i_hull, ]
+      x_hull <- x[i_hull, , drop = FALSE]; i_peel <- i_orig[i_hull]
+      x <- x[-i_hull, , drop = FALSE]
       h <- h + 1L
     }
     

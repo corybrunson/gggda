@@ -126,7 +126,7 @@ StatPeel <- ggproto(
     
     # reformat result
     peel_data <- as.data.frame(peel_data)
-    names(peel_data)[seq(2L)] <- names(data)[seq(2L)]
+    names(peel_data)[seq(2L)] <- names(data)[coord_cols[seq(2L)]]
     
     # factorize hull numbers
     hull_levels <- 
