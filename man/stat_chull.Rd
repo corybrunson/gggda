@@ -163,9 +163,10 @@ ggplot(USJudgeRatings, aes(x = INTG, y = PREP)) +
   )
 
 # specify fractions of points
-# FIXME: These peels should not be empty!
 ggplot(iris, aes(Sepal.Width, Sepal.Length, color = Species)) +
-  stat_peel(fill = "transparent", breaks = .5) +
+  stat_peel(aes(fill = Species, alpha = after_stat(frac)),
+            breaks = seq(.1, .9, .2)) +
+  scale_alpha_continuous(trans = scales::reverse_trans()) +
   geom_point()
 # specify number of peels
 ggplot(iris, aes(Sepal.Width, Sepal.Length, color = Species)) +
