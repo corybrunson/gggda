@@ -1,6 +1,8 @@
 ## version 0.1.0
 
 This is a new submission of the initial release of {gggda}.
+This package is intentionally duplicative with {ordr}: It is meant to subsume the more "routine" {ggplot2} extensions, which will then be removed from {ordr} in favor of a `Suggests:` dependency on {gggda}.
+
 Local checks were performed both with the current CRAN version 3.5.2 of {ggplot2} and with the current development version (2025 Jun 30).
 
 ## R CMD checks

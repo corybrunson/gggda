@@ -1,7 +1,3 @@
-# next version
-
-Some bugs with the hull-peeling functions have been fixed. These were discovered while harmonizing the package with a branch of {ordr} stripped of the tools being migrated to {gggda}.
-
 # gggda 0.1.0
 
 The inaugural version of {gggda} was spun off the post-v0.1.1 development version of {ordr}.
