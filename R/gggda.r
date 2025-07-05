@@ -25,3 +25,9 @@
 if (getRversion() >= "2.15.1") utils::globalVariables(c(
   "."
 ))
+
+release_questions <- function() {
+  c(
+    "Do all functions have value sections detailing both structure and meaning?"
+  )
+}
