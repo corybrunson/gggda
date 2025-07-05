@@ -8,6 +8,7 @@
 #' @param x Matrix of data whose depth median is to be calculated; see
 #'   [ddalpha::depth.()].
 #' @inheritParams ddalpha::depth.
+#' @returns A one-row matrix of depth median coordinates.
 #' @example inst/examples/ex-depth-median.r
 #' @export
 depth_median <- function(x, notion = "zonoid", ...) {

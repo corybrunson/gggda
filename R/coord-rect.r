@@ -8,6 +8,7 @@
 #' @inheritParams ggplot2::coord_cartesian
 #' @inheritParams ggplot2::coord_fixed
 #' @param window_ratio aspect ratio of plotting window
+#' @returns A `Coord` [ggproto][gggda-ggproto] object.
 #' @example inst/examples/ex-coord-rect.r
 #' @export
 coord_rect <- function(

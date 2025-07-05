@@ -125,7 +125,7 @@ ten with \code{\link[=pretty]{pretty()}} breaks.}
   }}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 Estimate data depth using \code{\link[ddalpha:depth.]{ddalpha::depth.()}}.

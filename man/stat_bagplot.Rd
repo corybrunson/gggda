@@ -93,6 +93,9 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 \code{\link[ddalpha:depth.]{ddalpha::depth.()}}.}
   }}
 }
+\value{
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
+}
 \description{
 Construct medians, bags, fences, and outlier specifications for
 bagplots.

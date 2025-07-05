@@ -30,6 +30,16 @@ to contain in each hull; overridden by \code{num}.}
 \item{cut}{Character; one of \code{"above"} and \code{"below"}, indicating whether each
 hull should contain at least or at most \code{breaks} of the data, respectively.}
 }
+\value{
+A matrix with some or all of the following columns:
+\describe{
+\item{\code{x},\code{y}}{original coordinates}
+\item{\code{i}}{position in input matrix or vectors}
+\item{\code{hull}}{index of hull, starting from outermost}
+\item{\code{frac}}{value of \code{breaks} used to determine hull}
+\item{\code{prop}}{proportion of data within hull}
+}
+}
 \description{
 Use convex hulls (and eventually other peelings) to order
 bivariate data.

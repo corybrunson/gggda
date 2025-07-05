@@ -25,6 +25,14 @@
 #'   to contain in each hull; overridden by `num`.
 #' @param cut Character; one of `"above"` and `"below"`, indicating whether each
 #'   hull should contain at least or at most `breaks` of the data, respectively.
+#' @returns A matrix with some or all of the following columns:
+#'   \describe{
+#'     \item{`x`,`y`}{original coordinates}
+#'     \item{`i`}{position in input matrix or vectors}
+#'     \item{`hull`}{index of hull, starting from outermost}
+#'     \item{`frac`}{value of `breaks` used to determine hull}
+#'     \item{`prop`}{proportion of data within hull}
+#'   }
 #' @example inst/examples/ex-peel.r
 #' @export
 peel_hulls <- function(

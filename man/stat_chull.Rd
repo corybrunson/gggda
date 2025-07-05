@@ -102,7 +102,7 @@ to contain in each hull; overridden by \code{num}.}
 hull should contain at least or at most \code{breaks} of the data, respectively.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 Restrict planar data to the boundary points of its convex hull,

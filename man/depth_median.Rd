@@ -18,6 +18,9 @@ The name of the depth notion (shall also work with a user-defined depth function
 Additional parameters passed to the depth functions.
 }
 }
+\value{
+A one-row matrix of depth median coordinates.
+}
 \description{
 Compute the depth median of a data set.
 }

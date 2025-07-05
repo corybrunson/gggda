@@ -114,7 +114,7 @@ together with \code{fun.min} and \code{fun.max}.}
 \item{fun.args}{Optional additional arguments passed on to the functions.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 Centers and spreads for bivariate data

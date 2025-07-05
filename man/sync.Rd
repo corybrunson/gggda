@@ -12,6 +12,10 @@ is.sync(x)
 \arguments{
 \item{x}{An object to test}
 }
+\value{
+\code{sync()} returns an empty list with the \code{"sync"} class; \code{is.sync()}
+returns a logical value of whether \code{x} inherits this class.
+}
 \description{
 The inert function \code{sync()} operates analogously to
 \code{\link[ggplot2:waiver]{ggplot2::waiver()}} to indicate that an auxiliary aesthetic should be

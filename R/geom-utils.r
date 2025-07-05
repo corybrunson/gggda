@@ -5,6 +5,8 @@
 #'   synchronized to a standard aesthetic (when it is mapped from data).
 #'   `is.sync()` reports whether an object is of this class.
 #'
+#' @returns `sync()` returns an empty list with the `"sync"` class; `is.sync()`
+#'   returns a logical value of whether `x` inherits this class.
 #' @export
 #' @keywords internal
 sync <- function() structure(list(), class = "sync")
