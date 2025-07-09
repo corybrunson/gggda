@@ -46,6 +46,7 @@
 #' }
 
 #' @include stat-referent.r
+#' @importFrom tidyr nest unnest
 #' @inheritParams ggplot2::layer
 #' @inheritParams stat_referent
 #' @inheritParams stat_center
@@ -140,9 +141,9 @@ StatRule <- ggproto(
     
     # compute limits and offsets
     lofun <- make_limits_offset_fun(fun.lower, fun.upper, fun.offset, fun.args)
-    data <- tidyr::nest(data, df = -tidyselect::all_of(group_vars))
+    data <- nest(data, df = -tidyselect::all_of(group_vars))
     data$df <- lapply(data$df, lofun)
-    data <- tidyr::unnest(data, df)
+    data <- unnest(data, df)
     
     # additional computed variables
     if (! is.null(data[["offset"]])) {

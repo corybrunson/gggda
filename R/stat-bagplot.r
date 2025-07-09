@@ -34,6 +34,7 @@
 #' }
 
 #' @include stat-depth.r stat-peel.r
+#' @importFrom dplyr bind_rows
 #' @inheritParams ggplot2::layer
 #' @param median,fence,outliers Logical indicators whether to include median,
 #'   fence, and outliers in the composite output.
@@ -190,7 +191,7 @@ StatBagplot <- ggproto(
       outlier_df$group <- data_group
     }
     
-    dplyr::bind_rows(median_df, bag_df, fence_df, outlier_df)
+    bind_rows(median_df, bag_df, fence_df, outlier_df)
   }
 )
 

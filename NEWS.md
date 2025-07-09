@@ -2,6 +2,8 @@
 
 This patch fixes a bug in the peel stat and adds unit tests for it and the scale stat.
 
+To resolve outstanding CRAN checks, a cross-reference to {ordr} has been replaced with a URL and {dplyr} and {tidyr} functions previously called using the double-colon operator have been imported instead.
+
 # gggda 0.1.0
 
 The inaugural version of {gggda} was spun off the post-v0.1.1 development version of {ordr}.

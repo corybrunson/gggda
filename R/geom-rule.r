@@ -37,6 +37,8 @@
 #' 
 
 #' @import ggplot2
+#' @importFrom dplyr transmute group_by filter mutate ungroup distinct
+#' @importFrom tidyr pivot_wider
 #' @inheritParams ggplot2::layer
 #' @inheritParams geom_axis
 #' @inheritParams ggplot2::geom_text
@@ -240,19 +242,19 @@ GeomRule <- ggproto(
       
       # compute extended value range
       mark_range <- 
-        dplyr::transmute(mark_data, axis, label, x = x_t + x_0, y = y_t + y_0)
-      mark_range <- dplyr::group_by(mark_range, axis)
+        transmute(mark_data, axis, label, x = x_t + x_0, y = y_t + y_0)
+      mark_range <- group_by(mark_range, axis)
       mark_range <-
-        dplyr::filter(mark_range, label == min(label) | label == max(label))
-      mark_range <- dplyr::mutate(
+        filter(mark_range, label == min(label) | label == max(label))
+      mark_range <- mutate(
         mark_range,
         ext = ifelse(label == min(label), "min", "max")
       )
       mark_range <-
-        dplyr::filter(mark_range, all(c("min", "max") %in% ext))
-      mark_range <- dplyr::ungroup(mark_range)
-      mark_range <- dplyr::distinct(mark_range)
-      mark_range <- tidyr::pivot_wider(
+        filter(mark_range, all(c("min", "max") %in% ext))
+      mark_range <- ungroup(mark_range)
+      mark_range <- distinct(mark_range)
+      mark_range <- pivot_wider(
         mark_range,
         id_cols = axis,
         names_from = ext, values_from = c(x, y), names_sep = ""
