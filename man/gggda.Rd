@@ -12,8 +12,9 @@ extension for multivariate and geometric data analysis.
 \section{Acknowledgments}{
 
 
-This package was spun off from \strong{\link[ordr:ordr]{ordr::ordr}}.
-Many users have identified problems and suggested improvements.
+This package was spun off from
+\strong{\href{https://cran.r-project.org/package=ordr}{ordr}}. Many users have
+identified problems and suggested improvements.
 
 Development benefitted from the use of equipment and the support of
 colleagues at \href{https://health.uconn.edu/}{UConn Health} and at \href{https://ufhealth.org/}{UF Health}.
