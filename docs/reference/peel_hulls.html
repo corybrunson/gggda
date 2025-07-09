@@ -9,7 +9,7 @@ bivariate data."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">gggda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,6 +81,25 @@ to contain in each hull; overridden by <code>num</code>.</p></dd>
 <dt id="arg-cut">cut<a class="anchor" aria-label="anchor" href="#arg-cut"></a></dt>
 <dd><p>Character; one of <code>"above"</code> and <code>"below"</code>, indicating whether each
 hull should contain at least or at most <code>breaks</code> of the data, respectively.</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A matrix with some or all of the following columns:</p><dl><dt><code>x</code>,<code>y</code></dt>
+<dd><p>original coordinates</p></dd>
+
+<dt><code>i</code></dt>
+<dd><p>position in input matrix or vectors</p></dd>
+
+<dt><code>hull</code></dt>
+<dd><p>index of hull, starting from outermost</p></dd>
+
+<dt><code>frac</code></dt>
+<dd><p>value of <code>breaks</code> used to determine hull</p></dd>
+
+<dt><code>prop</code></dt>
+<dd><p>proportion of data within hull</p></dd>
+
 
 </dl></div>
     <div class="section level2">
@@ -189,8 +208,6 @@ Chapter 1, 3–19. John Wiley &amp; Sons, Ltd, ISBN 978-0-471-28039-2.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># tertile hulls, cut above</span></span></span>
 <span class="r-in"><span><span class="fu">peel_hulls</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, cut <span class="op">=</span> <span class="st">"below"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>number of rows of result is not a multiple of vector length (arg 2)</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>number of rows of result is not a multiple of vector length (arg 2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           x    y  i hull      frac    prop</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 400.0 19.2 25    1 1.0000000 1.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 440.0 14.7 17    1 1.0000000 1.00000</span>
@@ -201,18 +218,18 @@ Chapter 1, 3–19. John Wiley &amp; Sons, Ltd, ISBN 978-0-471-28039-2.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 108.0 22.8  3    1 1.0000000 1.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]  79.0 27.3 26    1 1.0000000 1.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]  71.1 33.9 20    1 1.0000000 1.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 258.0 21.4  5    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] 351.0 15.8  7    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12,] 301.0 15.0 24    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13,] 167.6 19.2 14    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14,] 140.8 22.8 30    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15,] 120.3 26.0 21    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]  95.1 30.4 19    3 0.6666667 0.46875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17,] 318.0 15.5  5    4 0.3333333 0.25000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18,] 304.0 15.2  7    4 0.3333333 0.25000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19,] 225.0 18.1 24    4 0.3333333 0.25000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20,] 160.0 21.0 14    4 0.3333333 0.25000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21,] 146.7 24.4 30    4 0.3333333 0.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 258.0 21.4  4    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] 351.0 15.8 29    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,] 301.0 15.0 31    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,] 167.6 19.2 10    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,] 140.8 22.8  9    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,] 120.3 26.0 27    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]  95.1 30.4 28    3 0.6666667 0.46875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,] 318.0 15.5 10    4 0.3333333 0.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,] 304.0 15.2 12    4 0.3333333 0.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,] 225.0 18.1  4    4 0.3333333 0.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20,] 160.0 21.0  2    4 0.3333333 0.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21,] 146.7 24.4  6    4 0.3333333 0.25000</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

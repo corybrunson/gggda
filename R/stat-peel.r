@@ -129,7 +129,10 @@ StatPeel <- ggproto(
     names(peel_data)[seq(2L)] <- names(data)[coord_cols[seq(2L)]]
     
     # factorize hull numbers
-    hull_levels <- seq(max(c(peel_data$hull, num)))
+    hull_levels <- seq(max(c(
+      peel_data$hull,
+      if ((! is.null(num)) && is.finite(num)) num else NULL
+    )))
     peel_data$hull <- factor(peel_data$hull, levels = hull_levels)
     
     # interact existing group with hull

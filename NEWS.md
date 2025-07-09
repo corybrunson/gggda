@@ -1,3 +1,7 @@
+# gggda 0.1.1
+
+This patch fixes a bug in the peel stat and adds unit tests for it and the scale stat.
+
 # gggda 0.1.0
 
 The inaugural version of {gggda} was spun off the post-v0.1.1 development version of {ordr}.
