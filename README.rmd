@@ -21,17 +21,21 @@ devtools::load_all()
 <!-- badges: end -->
 
 {gggda} extends [{ggplot2}](https://github.com/tidyverse/ggplot2) with coordinate systems, statistical transformations, and geometric constructions useful to the analysis and visualization of multivariate data, including bivariate generalizations of univariate tools and tools designed for geometric data analysis and ordination.
-
 It is spun off from and designed to interoperate with [{ordr}](https://github.com/corybrunson/ordr).
-However, the two packages remain to be completely harmonized.
 
 ## usage
 
 ### installation
 
-{gggda} is not yet on CRAN and can be installed as follows using [{pak}](https://github.com/r-lib/pak):
+{gggda} is now on CRAN and can be installed in the standard way:
 
-```{r install, eval=FALSE}
+```{r install cran, eval=FALSE}
+install.packages("gggda")
+```
+
+Or install the development version as follows using [{pak}](https://github.com/r-lib/pak):
+
+```{r install github, eval=FALSE}
 pak::pkg_install("corybrunson/gggda")
 ```
 
@@ -63,13 +67,22 @@ ggplot(mpg, aes(displ, cty, color = drv, fill = drv)) +
   stat_center(fun.ord = depth_median)
 ```
 
-Several new geometric constructions have a wide range of uses, including biplots, with two-dimensional errorbars an underused example:
+Several new geometric constructions have a wide range of uses, including biplots, with two-dimensional errorbars being an underused example:
 
 ```{r geom}
 # centroids with 2-standard deviation bars for both variables
 ggplot(mpg, aes(displ, cty, color = factor(cyl))) +
   geom_point() +
   geom_pointranges(fun.data = mean_sdl)
+```
+
+Finally, some stats and geoms are designed to work as pairs, most notably the bagplot layer modeled on the boxplot in {ggplot2}:
+
+```{r pair, fig.height=3}
+# faceted bagplots
+ggplot(mpg, aes(displ, hwy, color = drv, fill = drv)) +
+  facet_wrap(vars(drv)) +
+  stat_bagplot()
 ```
 
 ## acknowledgments
@@ -85,4 +98,5 @@ Conduct](https://github.com/corybrunson/gggda/blob/main/CODE_OF_CONDUCT.md).
 
 Development of this package benefitted from the use of equipment and the
 support of colleagues at [UConn Health](https://health.uconn.edu/) and
-at [UF Health](https://ufhealth.org/).
+at [the University of Florida](https://www.ufl.edu/).
+See [the {ordr} repo](https://github.com/corybrunson/ordr) for detailed acknowledgments.

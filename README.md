@@ -14,17 +14,21 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 coordinate systems, statistical transformations, and geometric
 constructions useful to the analysis and visualization of multivariate
 data, including bivariate generalizations of univariate tools and tools
-designed for geometric data analysis and ordination.
-
-It is spun off from and designed to interoperate with
-[{ordr}](https://github.com/corybrunson/ordr). However, the two packages
-remain to be completely harmonized.
+designed for geometric data analysis and ordination. It is spun off from
+and designed to interoperate with
+[{ordr}](https://github.com/corybrunson/ordr).
 
 ## usage
 
 ### installation
 
-{gggda} is not yet on CRAN and can be installed as follows using
+{gggda} is now on CRAN and can be installed in the standard way:
+
+``` r
+install.packages("gggda")
+```
+
+Or install the development version as follows using
 [{pak}](https://github.com/r-lib/pak):
 
 ``` r
@@ -69,7 +73,7 @@ ggplot(mpg, aes(displ, cty, color = drv, fill = drv)) +
 ![](man/figures/README-stat-1.png)<!-- -->
 
 Several new geometric constructions have a wide range of uses, including
-biplots, with two-dimensional errorbars an underused example:
+biplots, with two-dimensional errorbars being an underused example:
 
 ``` r
 # centroids with 2-standard deviation bars for both variables
@@ -79,6 +83,18 @@ ggplot(mpg, aes(displ, cty, color = factor(cyl))) +
 ```
 
 ![](man/figures/README-geom-1.png)<!-- -->
+
+Finally, some stats and geoms are designed to work as pairs, most
+notably the bagplot layer modeled on the boxplot in {ggplot2}:
+
+``` r
+# faceted bagplots
+ggplot(mpg, aes(displ, hwy, color = drv, fill = drv)) +
+  facet_wrap(vars(drv)) +
+  stat_bagplot()
+```
+
+![](man/figures/README-pair-1.png)<!-- -->
 
 ## acknowledgments
 
@@ -98,4 +114,5 @@ Conduct](https://github.com/corybrunson/gggda/blob/main/CODE_OF_CONDUCT.md).
 
 Development of this package benefitted from the use of equipment and the
 support of colleagues at [UConn Health](https://health.uconn.edu/) and
-at [UF Health](https://ufhealth.org/).
+at [the University of Florida](https://www.ufl.edu/). See [the {ordr}
+repo](https://github.com/corybrunson/ordr) for detailed acknowledgments.
