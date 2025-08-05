@@ -180,7 +180,11 @@ StatBagplot <- ggproto(
     
     # identify the outliers
     outlier_df <- if (outliers) {
-      subset(data, outlying, select = c("x", "y"))
+      subset(
+        data,
+        outlying,
+        select = intersect(c("x", "y", "label"), names(data))
+      )
     } else {
       data.frame()
     }
