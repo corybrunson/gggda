@@ -108,18 +108,26 @@ recover_offset_intercepts <- function(data) {
   data
 }
 
-border_points_offset <- function(data, x.range, y.range) {
-  # requires slope, xend, yend
+border_points <- function(data, x.range, y.range, use_offset, label_placement) {
+  # requires slope; accepts xend, yend (`use_offset = TRUE`)
   # computes x, y
+  # TODO: Use homogeneous coordinates?
   
-  # compute label positions
+  # compute label orientations
   increasing <- sign(data$slope) == 1
   
   # (eventual) intersections with window borders
-  a1 <- with(data, xend + (- yend + y.range[[1L]]) / slope)
-  a2 <- with(data, xend + (- yend + y.range[[2L]]) / slope)
-  b1 <- with(data, yend + (- xend + x.range[[1L]]) * slope)
-  b2 <- with(data, yend + (- xend + x.range[[2L]]) * slope)
+  if (use_offset) {
+    a1 <- with(data, xend + (- yend + y.range[[1L]]) / slope)
+    a2 <- with(data, xend + (- yend + y.range[[2L]]) / slope)
+    b1 <- with(data, yend + (- xend + x.range[[1L]]) * slope)
+    b2 <- with(data, yend + (- xend + x.range[[2L]]) * slope)
+  } else {
+    a1 <- y.range[[1L]] / data$slope
+    a2 <- y.range[[2L]] / data$slope
+    b1 <- x.range[[1L]] * data$slope
+    b2 <- x.range[[2L]] * data$slope
+  }
   # (bounded) intersections with window
   x1 <- pmax(x.range[[1L]], pmin(a1, a2))
   x2 <- pmin(x.range[[2L]], pmax(a1, a2))
@@ -129,42 +137,18 @@ border_points_offset <- function(data, x.range, y.range) {
   y1 <- ifelse(increasing, z1, z2)
   y2 <- ifelse(increasing, z2, z1)
   
-  # farther intersection from origin
-  farther2 <- x1^2 + y1^2 < x2^2 + y2^2
-  transform(
-    data,
-    x = ifelse(farther2, x2, x1),
-    y = ifelse(farther2, y2, y1)
+  # placement direction
+  place_right <- switch(
+    label_placement,
+    positive = sign(data$x) > 0 | ( data$x == 0 & sign(data$y) > 0 ),
+    negative = sign(data$x) < 0 | ( data$x == 0 & sign(data$y) < 0 ),
+    # farther intersection from origin
+    peripheral = x1^2 + y1^2 < x2^2 + y2^2
   )
-}
-
-border_points_origin <- function(data, x.range, y.range) {
-  # requires slope
-  # computes x, y
-  
-  # compute label positions
-  increasing <- sign(data$slope) == 1
-  
-  # (eventual) intersections with window borders
-  a1 <- y.range[[1L]] / data$slope
-  a2 <- y.range[[2L]] / data$slope
-  b1 <- x.range[[1L]] * data$slope
-  b2 <- x.range[[2L]] * data$slope
-  # (bounded) intersections with window
-  x1 <- pmax(x.range[[1L]], pmin(a1, a2))
-  x2 <- pmin(x.range[[2L]], pmax(a1, a2))
-  z1 <- pmax(y.range[[1L]], pmin(b1, b2))
-  z2 <- pmin(y.range[[2L]], pmax(b1, b2))
-  # account for negative slopes
-  y1 <- ifelse(increasing, z1, z2)
-  y2 <- ifelse(increasing, z2, z1)
-  
-  # farther intersection from origin
-  farther2 <- x1^2 + y1^2 < x2^2 + y2^2
   transform(
     data,
-    x = ifelse(farther2, x2, x1),
-    y = ifelse(farther2, y2, y1)
+    x = ifelse(place_right, x2, x1),
+    y = ifelse(place_right, y2, y1)
   )
 }
 

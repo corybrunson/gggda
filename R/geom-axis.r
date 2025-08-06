@@ -55,6 +55,10 @@
 #'   tick marks, and text value marks along the axes.
 #' @param label_dodge Numeric; the orthogonal distance of the axis label from
 #'   the axis, as a proportion of the minimum of the plot width and height.
+#' @param label_placement Character; how to place the labels along the axes.
+#'   Matched to `"positive"` (the default; at the increasing end of the axis),
+#'   `"negative"` (at the decreasing end), `"peripheral"` (at the end farther
+#'   from the origin).
 #' @param tick_length Numeric; the length of the tick marks, as a proportion of
 #'   the minimum of the plot width and height.
 #' @param text_dodge Numeric; the orthogonal distance of tick mark text from the
@@ -77,6 +81,7 @@ geom_axis <- function(
   axis_labels = TRUE, axis_ticks = TRUE, axis_text = TRUE,
   by = NULL, num = NULL,
   tick_length = .025, text_dodge = .03, label_dodge = .03,
+  label_placement = c("positive", "negative", "peripheral"),
   ...,
   axis.colour = NULL, axis.color = NULL, axis.alpha = NULL,
   label.angle = 0,
@@ -108,6 +113,7 @@ geom_axis <- function(
       tick_length = tick_length,
       text_dodge = text_dodge,
       label_dodge = label_dodge,
+      label_placement = label_placement,
       # NB: This is why Teun switched to `<element>_gp = list(...)`.
       axis.colour = axis.color %||% axis.colour,
       axis.alpha = axis.alpha,
@@ -179,7 +185,7 @@ GeomAxis <- ggproto(
     # offset?
     use_offset <- 
       ! is.null(data[["yintercept"]]) || ! is.null(data[["xintercept"]]) ||
-      (! is.null(data[["xend"]])       && ! is.null(data[["yend"]]))
+      (! is.null(data[["xend"]])      && ! is.null(data[["yend"]]))
     
     # compute endpoints
     if (use_limits) {
@@ -215,6 +221,7 @@ GeomAxis <- ggproto(
     axis_labels = TRUE, axis_ticks = TRUE, axis_text = TRUE,
     by = NULL, num = NULL,
     tick_length = .025, text_dodge = .03, label_dodge = .03,
+    label_placement = c("positive", "negative", "peripheral"),
     axis.colour = NULL, axis.alpha = NULL,
     label.angle = 0,
     label.colour = NULL, label.alpha = NULL,
@@ -231,6 +238,7 @@ GeomAxis <- ggproto(
     #      axis_labels, axis_ticks, axis_text,
     #      by, num,
     #      tick_length, text_dodge, label_dodge,
+    #      label_placement,
     #      axis.colour, axis.alpha,
     #      label.angle,
     #      label.colour, label.alpha,
@@ -263,6 +271,11 @@ GeomAxis <- ggproto(
     
     # offset?
     use_offset <- ! is.null(data[["xend"]]) && ! is.null(data[["yend"]])
+    # placement
+    label_placement <- match.arg(
+      label_placement,
+      c("positive", "negative", "peripheral")
+    )
     
     # initialize grob list
     grobs <- list()
@@ -342,21 +355,15 @@ GeomAxis <- ggproto(
       # NB: This step redefines positional aesthetics for a specific grob.
       
       # compute positions: if `xend` & `yend` then mid/endpoint else border
-      if (use_offset) {
-        label_data <- border_points_offset(
-          label_data,
-          panel_params$x.range, panel_params$y.range
-        )
-      } else {
-        label_data <- border_points_origin(
-          label_data,
-          panel_params$x.range, panel_params$y.range
-        )
-      }
+      label_data <- border_points(
+        label_data,
+        panel_params$x.range, panel_params$y.range,
+        use_offset = use_offset, label_placement = label_placement
+      )
       # adjust labels inward from borders
       label_data <- transform(
         label_data,
-        hjust = ifelse(x < 0, 0, 1)
+        hjust = "inward"
       )
       
       # dodge axis

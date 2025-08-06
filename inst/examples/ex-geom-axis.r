@@ -3,7 +3,8 @@ stackloss %>%
   lm(formula = stack.loss ~ Air.Flow + Water.Temp + Acid.Conc.) %>% 
   coef() %>% 
   as.list() %>% as.data.frame() %>% 
-  subset(select = c(Air.Flow, Water.Temp, Acid.Conc.)) ->
+  subset(select = c(Air.Flow, Water.Temp, Acid.Conc.)) %>%
+  transform(regressand = "stack.loss") ->
   coef_data
 # gradient axis with respect to two predictors
 scale(stackloss, scale = FALSE) %>% 
@@ -11,8 +12,9 @@ scale(stackloss, scale = FALSE) %>%
   coord_square() +
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
-  geom_axis(data = coef_data)
+  geom_axis(data = coef_data, aes(label = regressand))
 # unlimited axes with window forcing
+# FIXME: `label` is not being plotted (within the plotting window).
 stackloss_centered <- scale(stackloss, scale = FALSE)
 stackloss_centered %>% 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
@@ -20,8 +22,9 @@ stackloss_centered %>%
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   stat_rule(
-    geom = "axis", data = coef_data,
+    geom = "axis", data = coef_data, aes(label = regressand),
     referent = stackloss_centered,
+    label_placement = "negative",
     fun.lower = function(x) minpp(x, p = 1),
     fun.upper = function(x) maxpp(x, p = 1),
     fun.offset = function(x) minabspp(x, p = 1)
