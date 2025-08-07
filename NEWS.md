@@ -1,3 +1,10 @@
+# next version
+
+## label placement for axis geom (breaking change)
+
+A new `label_placement` parameter controls where axis labels are placed.
+Previously they were placed along the axis at the end (intersection with the plot window border) farther from the origin. This is now the `"peripheral"` option, while the default is `"positive"`, which places them at the end at which the axis takes a greater value.
+
 # gggda 0.1.1
 
 This patch fixes a bug in the peel stat and adds unit tests for it and the scale stat.
