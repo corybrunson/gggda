@@ -1,0 +1,211 @@
+# gggda
+
+{gggda} extends [{ggplot2}](https://github.com/tidyverse/ggplot2) with
+coordinate systems, statistical transformations, and geometric
+constructions useful to the analysis and visualization of multivariate
+data, including bivariate generalizations of univariate tools and tools
+designed for geometric data analysis and ordination. It is spun off from
+and designed to interoperate with
+[{ordr}](https://github.com/corybrunson/ordr).
+
+## usage
+
+### installation
+
+{gggda} is now on CRAN and can be installed in the standard way:
+
+``` r
+install.packages("gggda")
+```
+
+Or install the development version as follows using
+[{pak}](https://github.com/r-lib/pak):
+
+``` r
+pak::pkg_install("corybrunson/gggda")
+```
+
+### illustration
+
+Use the new coordinate system to fix the aspect ratio of the plotting
+window as well as of the coordinates:
+
+``` r
+# rectangular window (custom aspect ratio)
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  coord_rect(ratio = .1, window_ratio = 1/2) +
+  geom_point()
+```
+
+![](reference/figures/README-coord-1.png)
+
+``` r
+# square window (unit aspect ratio)
+ggplot(mpg, aes(x = cty, y = hwy)) +
+  coord_square(xlim = c(0, NA), ylim = c(0, NA)) +
+  geom_point()
+```
+
+![](reference/figures/README-coord-2.png)
+
+Some new statistical transformations provide new ways of analyzing
+bivariate data, for example the depth stat that deploys [the {ddalpha}
+package](https://cran.r-project.org/package=ddalpha) and mimics the
+density stat by pairing with the contour geom:
+
+``` r
+# depth medians and quartiles contours by group
+ggplot(mpg, aes(displ, cty, color = drv, fill = drv)) +
+  stat_depth(bins = 4) +
+  stat_center(fun.ord = depth_median)
+```
+
+![](reference/figures/README-stat-1.png)
+
+Several new geometric constructions have a wide range of uses, including
+biplots, with two-dimensional errorbars being an underused example:
+
+``` r
+# centroids with 2-standard deviation bars for both variables
+ggplot(mpg, aes(displ, cty, color = factor(cyl))) +
+  geom_point() +
+  geom_pointranges(fun.data = mean_sdl)
+```
+
+![](reference/figures/README-geom-1.png)
+
+Finally, some stats and geoms are designed to work as pairs, most
+notably the bagplot layer modeled on the boxplot in {ggplot2}:
+
+``` r
+# faceted bagplots
+ggplot(mpg, aes(displ, hwy, color = drv, fill = drv)) +
+  facet_wrap(vars(drv)) +
+  stat_bagplot()
+```
+
+![](reference/figures/README-pair-1.png)
+
+## acknowledgments
+
+### contribute
+
+Any feedback on the package is very welcome! If you encounter confusion
+or errors, do create an issue, with a [minimal reproducible
+example](https://stackoverflow.com/help/minimal-reproducible-example) if
+feasible. If you have requests, suggestions, or your own implementations
+for new features, feel free to create an issue or submit a pull request.
+Please try to follow the [contributing
+guidelines](https://github.com/corybrunson/gggda/blob/main/CONTRIBUTING.md)
+and respect the [Code of
+Conduct](https://github.com/corybrunson/gggda/blob/main/CODE_OF_CONDUCT.md).
+
+### resources
+
+Development of this package benefitted from the use of equipment and the
+support of colleagues at [UConn Health](https://health.uconn.edu/) and
+at [the University of Florida](https://www.ufl.edu/). See [the {ordr}
+repo](https://github.com/corybrunson/ordr) for detailed acknowledgments.
+
+# Package index
+
+## ‘gggda’ package
+
+Visualization methods from and for geometric data analysis
+
+- [`gggda`](gggda.md) [`gggda-package`](gggda.md) :
+
+  **gggda** package
+
+## GDA tools
+
+Helper functions to perform geometric data analysis.
+
+- [`peel_hulls()`](peel_hulls.md) : Bivariate data peelings
+- [`depth_median()`](depth_median.md) : Depth median
+
+## ‘ggproto’ classes
+
+New `'ggproto'` classes.
+
+- [`gggda-ggproto`](gggda-ggproto.md) [`CoordRect`](gggda-ggproto.md)
+  [`GeomAxis`](gggda-ggproto.md) [`GeomBagplot`](gggda-ggproto.md)
+  [`GeomPointranges`](gggda-ggproto.md)
+  [`GeomLineranges`](gggda-ggproto.md) [`GeomIsoline`](gggda-ggproto.md)
+  [`GeomRule`](gggda-ggproto.md) [`GeomTextRadiate`](gggda-ggproto.md)
+  [`GeomVector`](gggda-ggproto.md) [`StatChull`](gggda-ggproto.md)
+  [`StatPeel`](gggda-ggproto.md) [`StatDepth`](gggda-ggproto.md)
+  [`StatDepthFilled`](gggda-ggproto.md)
+  [`StatBagplot`](gggda-ggproto.md) [`StatCenter`](gggda-ggproto.md)
+  [`StatStar`](gggda-ggproto.md) [`StatCone`](gggda-ggproto.md)
+  [`StatReferent`](gggda-ggproto.md) [`StatRule`](gggda-ggproto.md)
+  [`StatScale`](gggda-ggproto.md) [`StatSpantree`](gggda-ggproto.md) :
+  ggproto classes created and adapted for gggda
+
+## Coordinate systems
+
+New `Coord*` ggprotos and `coord_*()` layers.
+
+- [`coord_rect()`](coord_rect.md) : Cartesian coordinates and plotting
+  window with fixed aspect ratios
+
+## Statistical transformations
+
+New `Stat*` ggprotos and `stat_*()` layers.
+
+- [`stat_referent()`](stat_referent.md)
+  [`ggplot_add(`*`<LayerRef>`*`)`](stat_referent.md) : Transformations
+  with respect to reference data
+- [`stat_bagplot()`](stat_bagplot.md) : Bagplots
+- [`stat_center()`](stat_center.md) [`stat_star()`](stat_center.md) :
+  Centers and spreads for bivariate data
+- [`stat_chull()`](stat_chull.md) [`stat_peel()`](stat_chull.md) :
+  Convex hulls and hull peelings
+- [`stat_cone()`](stat_cone.md) : Conical hull
+- [`stat_depth()`](stat_depth.md) [`stat_depth_filled()`](stat_depth.md)
+  : Depth estimates and contours
+- [`stat_rule()`](stat_rule.md) [`minpp()`](stat_rule.md)
+  [`maxpp()`](stat_rule.md) [`minabspp()`](stat_rule.md) : Construct
+  limited rules offset from the origin
+- [`stat_scale()`](stat_scale.md) : Multiply artificial coordinates by a
+  scale factor
+- [`stat_spantree()`](stat_spantree.md) : Calculate a minimum spanning
+  tree among cases or variables
+
+## Geometric constructions
+
+New `Geom*` ggprotos and `geom_*()` layers.
+
+- [`geom_axis()`](geom_axis.md) : Axes through or offset from the origin
+- [`geom_bagplot()`](geom_bagplot.md) : Bagplots
+- [`geom_isoline()`](geom_isoline.md) : Isolines (contour lines)
+- [`geom_lineranges()`](geom_lineranges.md)
+  [`geom_pointranges()`](geom_lineranges.md) : Intervals depicting
+  ranges, usually about center points
+- [`geom_rule()`](geom_rule.md) : Rulers through or offset from the
+  origin
+- [`geom_text_radiate()`](geom_text_radiate.md) : Text radiating outward
+  from the origin
+- [`geom_vector()`](geom_vector.md) : Vectors from the origin
+
+## Aesthetic mapping
+
+Functions for handling aesthetic mappings.
+
+- [`aes_coord()`](aes-coord.md) [`get_aes_coord()`](aes-coord.md)
+  [`aes_c()`](aes-coord.md) : Multidimensional coordinate mappings
+
+## Themes
+
+New themes and theme elements.
+
+- [`draw_key_line()`](draw-key.md)
+  [`draw_key_crosslines()`](draw-key.md)
+  [`draw_key_crosspoint()`](draw-key.md) : Key drawing functions for
+  bivariate intervals.
+
+# Articles
+
+### All vignettes
+
+- [Visualizing Multivariate Data in {ggplot2}](gggda.md):
