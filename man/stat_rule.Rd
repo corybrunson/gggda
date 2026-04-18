@@ -81,7 +81,8 @@ of the rules and the translations of the axes from the projections of
 
 \item{fun.args}{Optional additional arguments passed on to the functions.}
 
-\item{referent}{The reference data set; see Details.}
+\item{referent}{The reference data set, admitting the same 3 options as
+\code{data}; see Details.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped.

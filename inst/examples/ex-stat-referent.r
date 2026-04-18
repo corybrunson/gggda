@@ -16,3 +16,19 @@ ggplot(subcars, aes(x = hp00, y = wt)) +
 ggplot(subcars, aes(x = hp00, y = wt)) +
   coord_equal() +
   stat_referent(geom = "point", referent = grad)
+
+# passing a function yields a transformation of the primary data
+p <- ggplot(subcars, aes(x = hp00, y = wt)) +
+  stat_referent(
+    data = head,
+    referent = function(d) as.data.frame(lapply(d, mean))
+  )
+b <- ggplot_build(p)
+# original data
+b@plot@data
+# head of original data
+b@data[[1]]
+# means of original data
+b@plot@layers$stat_referent$stat_params$referent
+# means of head of original data
+as.data.frame(lapply(layer_data(p, 1), mean))

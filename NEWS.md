@@ -1,3 +1,8 @@
+# next version
+
+As with the `data` argument, the `referent` argument of `stat_referent()` can now be passed a function, which will be evaluated at `data` to obtain the reference data for the plot layer.
+The evaluation is done during addition of a layer of class `LayerRef`.
+
 # gggda 0.1.1
 
 This patch fixes a bug in the peel stat and adds unit tests for it and the scale stat.
