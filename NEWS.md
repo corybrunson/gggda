@@ -1,5 +1,9 @@
 # next version
 
+New `outlier_points` and `outlier_labels` parameters toggle these elements of
+bagplots.
+Additional text aesthetics are introduced for the latter.
+
 As with the `data` argument, the `referent` argument of `stat_referent()` can
 now be passed a function, which will be evaluated at `data` to obtain the
 reference data for the plot layer.
