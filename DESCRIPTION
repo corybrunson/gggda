@@ -1,6 +1,6 @@
 Package: gggda
 Title: A 'ggplot2' Extension for Geometric Data Analysis
-Version: 0.1.1
+Version: 0.1.1.0009
 Authors@R: c(
   person("Jason Cory", "Brunson", email = "cornelioid@gmail.com",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3126-9494")),
@@ -57,7 +57,7 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/corybrunson/gggda, https://corybrunson.github.io/gggda/
 BugReports: https://github.com/corybrunson/gggda/issues
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Collate:
     'aaa-.r'
