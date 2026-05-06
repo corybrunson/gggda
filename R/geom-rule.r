@@ -12,8 +12,6 @@
 #'   to `geom = "rule"`; see [stat_rule()] for details on this pairing.
 #' 
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_rule()` understands the following aesthetics (required aesthetics are
@@ -39,9 +37,11 @@
 #' 
 
 #' @import ggplot2
+#' @importFrom dplyr transmute group_by filter mutate ungroup distinct
+#' @importFrom tidyr pivot_wider
 #' @inheritParams ggplot2::layer
-#' @inheritParams ggplot2::geom_text
 #' @inheritParams geom_axis
+#' @inheritParams ggplot2::geom_text
 #' @template param-geom
 #' @param snap_rule Logical; whether to snap rule segments to grid values.
 #' @template return-layer
@@ -111,7 +111,7 @@ geom_rule <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -241,19 +241,24 @@ GeomRule <- ggproto(
     if ((axis_ticks || axis_text) && snap_rule) {
       
       # compute extended value range
-      mark_data |> 
-        dplyr::transmute(axis, label, x = x_t + x_0, y = y_t + y_0) |> 
-        dplyr::group_by(axis) |> 
-        dplyr::filter(label == min(label) | label == max(label)) |> 
-        dplyr::mutate(ext = ifelse(label == min(label), "min", "max")) |> 
-        dplyr::filter(all(c("min", "max") %in% ext)) |>
-        dplyr::ungroup() |> 
-        dplyr::distinct() |>
-        tidyr::pivot_wider(
-          id_cols = axis,
-          names_from = ext, values_from = c(x, y), names_sep = ""
-        ) -> 
-        mark_range
+      mark_range <- 
+        transmute(mark_data, axis, label, x = x_t + x_0, y = y_t + y_0)
+      mark_range <- group_by(mark_range, axis)
+      mark_range <-
+        filter(mark_range, label == min(label) | label == max(label))
+      mark_range <- mutate(
+        mark_range,
+        ext = ifelse(label == min(label), "min", "max")
+      )
+      mark_range <-
+        filter(mark_range, all(c("min", "max") %in% ext))
+      mark_range <- ungroup(mark_range)
+      mark_range <- distinct(mark_range)
+      mark_range <- pivot_wider(
+        mark_range,
+        id_cols = axis,
+        names_from = ext, values_from = c(x, y), names_sep = ""
+      )
       
       # extend segment to value range (when available)
       mark_axes <- match(axis_data$axis, mark_range$axis)

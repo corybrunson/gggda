@@ -6,6 +6,9 @@
 .Rhistory
 .RData
 
+# R package
 inst/doc
+CRAN-SUBMISSION
 
+# idiosyncratic
 ignore

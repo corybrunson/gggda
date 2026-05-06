@@ -47,7 +47,7 @@ from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{stat}{The statistical transformation to use on the data for this layer.
 When using a \verb{geom_*()} function to construct a layer, the \code{stat}
-argument can be used the override the default coupling between geoms and
+argument can be used to override the default coupling between geoms and
 stats. The \code{stat} argument accepts the following:
 \itemize{
 \item A \code{Stat} ggproto subclass, for example \code{StatCount}.
@@ -101,15 +101,17 @@ supported by \code{geom_label()}.}
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 \code{geom_vector()} renders arrows from the origin to points,
@@ -126,19 +128,6 @@ these as Gabriel biplots. This layer, with optional radiating text labels,
 is adapted from \code{ggbiplot()} in the off-CRAN extensions of the same name
 (Vu, 2014; Telford, 2017; Gegzna, 2018).
 }
-\section{Biplot layers}{
-
-\code{\link[=ggbiplot]{ggbiplot()}} uses \code{\link[ggplot2:fortify]{ggplot2::fortify()}} internally to produce a single data
-frame with a \code{.matrix} column distinguishing the subjects (\code{"rows"}) and
-variables (\code{"cols"}). The stat layers \code{stat_rows()} and \code{stat_cols()} simply
-filter the data frame to one of these two.
-
-The geom layers \verb{geom_rows_*()} and \verb{geom_cols_*()} call the corresponding
-stat in order to render plot elements for the corresponding factor matrix.
-\verb{geom_dims_*()} selects a default matrix based on common practice, e.g.
-points for rows and arrows for columns.
-}
-
 \section{Aesthetics}{
 
 \code{geom_vector()} understands the following aesthetics (required aesthetics
@@ -185,29 +174,28 @@ ggplot(state_center, aes(x, y, label = state)) +
   geom_text_radiate()
 
 # multidimensional scaling of covariances
-ability.cov$cov |> 
-  cov2cor() |>
-  eigen() |> getElement("vectors") |> 
-  as.data.frame() |> 
+ability.cov$cov \%>\% 
+  cov2cor() \%>\%
+  eigen() \%>\% getElement("vectors") \%>\% 
+  as.data.frame() \%>\% 
   transform(test = rownames(ability.cov$cov)) ->
   ability_cor_eigen
-ability_cor_eigen |> 
+ability_cor_eigen \%>\% 
   ggplot(aes(-V1, V2, label = test)) +
   coord_square() + theme_void() +
   geom_vector(check_overlap = TRUE) +
   scale_y_continuous(expand = expansion(mult = .2)) +
   ggtitle("Ability and intelligence test covariances")
 # multidimensional scaling of correlations
-ability.cov$cov |> 
-  eigen() |> getElement("vectors") |> 
-  as.data.frame() |> 
+ability.cov$cov \%>\% 
+  eigen() \%>\% getElement("vectors") \%>\% 
+  as.data.frame() \%>\% 
   transform(test = rownames(ability.cov$cov)) ->
   ability_cor_eigen
-ability_cor_eigen |> 
+ability_cor_eigen \%>\% 
   ggplot(aes(-V1, -V2, label = test)) +
   coord_square() + theme_void() +
   geom_vector(check_overlap = TRUE) +
-  geom_unit_circle() +
   expand_limits(x = c(-1, 1), y = c(-1, 1)) +
   ggtitle("Ability and intelligence test covariances")
 }
@@ -240,10 +228,8 @@ branch
 Other geom layers: 
 \code{\link{geom_axis}()},
 \code{\link{geom_bagplot}()},
-\code{\link{geom_interpolation}()},
 \code{\link{geom_isoline}()},
 \code{\link{geom_lineranges}()},
-\code{\link{geom_origin}()},
 \code{\link{geom_rule}()},
 \code{\link{geom_text_radiate}()}
 }

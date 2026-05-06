@@ -26,8 +26,7 @@
 #' @template ref-jolliffe2002
 #'   
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -41,7 +40,7 @@
 #'   to use; `"mlpack"`, `"vegan"`, or `"ade4"`.
 #' @param method Passed to [stats::dist()] if `engine` is `"vegan"` or `"ade4"`,
 #'   ignored if `"mlpack"`.
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-spantree.r
@@ -69,18 +68,24 @@ stat_spantree <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
 StatSpantree <- ggproto(
   "StatSpantree", Stat,
   
-  required_aes = c("x", "y"),
+  required_aes = c("x|..coord1", "y|..coord2"),
   
   compute_group = function(data, scales,
                            engine = "mlpack", method = "euclidean") {
-    data_ord <- data[, get_ord_aes(data), drop = FALSE]
+    coord_cols <- get_aes_coord(data)
+    data_ord <- data[, coord_cols, drop = FALSE]
+    # introduce or override `x` and `y` if `..coord*` are present
+    if (! setequal(names(data)[coord_cols], c("x", "y"))) {
+      data$x <- data$..coord1
+      data$y <- data$..coord2
+    }
     
     # minimum spanning tree engine
     mst_engines <- c("mlpack", "vegan", "ade4")
@@ -93,8 +98,8 @@ StatSpantree <- ggproto(
              "{", paste(mst_engines, collapse = "}, {"), "}")
       } else {
         rlang::warn(
-          paste("Package {", engine, "} not installed; ",
-                "using {", engine_alt[[1L]], "} instead."),
+          paste0("Package {", engine, "} not installed; ",
+                 "using {", engine_alt[[1L]], "} instead."),
           .frequency = "regularly",
           .frequency_id = "StatSpantree$compute_group-engine"
         )
@@ -108,8 +113,8 @@ StatSpantree <- ggproto(
       mlpack = {
         if (method != "euclidean") {
           rlang::warn(
-            paste("{", engine, "} engine uses the euclidean distance; ",
-                  "`method` will be ignored."),
+            paste0("{", engine, "} engine uses the euclidean distance; ",
+                   "`method` will be ignored."),
             .frequency = "regularly",
             .frequency_id = "StatSpantree$compute_group-links"
           )

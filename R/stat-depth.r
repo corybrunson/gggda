@@ -14,8 +14,7 @@
 
 #' @template ref-rousseeuw1999
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -44,7 +43,7 @@
 #'   [ddalpha::depth.()]).
 #' @param notion_params List of additional parameters passed via `...` to
 #'   [ddalpha::depth.()].
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-depth.r
@@ -105,7 +104,7 @@ stat_depth_filled <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -136,7 +135,7 @@ StatDepth <- ggproto(
     # update dropped aes
     contour_stat$dropped_aes <- c(contour_stat$dropped_aes, "depth", "ndepth")
     
-    ggplot2:::dapply(data, "PANEL", function(data) {
+    dapply(data, "PANEL", function(data) {
       scales <- layout$get_scales(data$PANEL[1L])
       rlang::try_fetch(
         rlang::inject(
@@ -155,7 +154,7 @@ StatDepth <- ggproto(
     notion = "zonoid", notion_params = list(),
     n = 100L, ...
   ) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_aes_coord(data)
     notion <- match.arg(
       notion,
       # `eval(formals(ddalpha::depth.)$notion)`
@@ -172,7 +171,7 @@ StatDepth <- ggproto(
     )
     depth_args <- list(
       x = xy_grid,
-      data = data[, ord_cols[seq(2L)], drop = FALSE],
+      data = data[, coord_cols[seq(2L)], drop = FALSE],
       notion = notion
     )
     depth_args <- c(depth_args, notion_params)
@@ -190,7 +189,7 @@ StatDepth <- ggproto(
   }
 )
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -199,3 +198,5 @@ StatDepthFilled <- ggproto(
   default_aes = aes(colour = NA, fill = after_stat(level)),
   contour_type = "bands"
 )
+
+dapply <- getFromNamespace("dapply", "ggplot2")

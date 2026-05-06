@@ -68,7 +68,7 @@ from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{stat}{The statistical transformation to use on the data for this layer.
 When using a \verb{geom_*()} function to construct a layer, the \code{stat}
-argument can be used the override the default coupling between geoms and
+argument can be used to override the default coupling between geoms and
 stats. The \code{stat} argument accepts the following:
 \itemize{
 \item A \code{Stat} ggproto subclass, for example \code{StatCount}.
@@ -136,15 +136,17 @@ supported by \code{geom_label()}.}
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 \code{geom_axis()} renders lines through or orthogonally translated
@@ -164,22 +166,8 @@ Axes positioned orthogonally at the origin are a ubiquitous feature of
 scatterplots and used both to recover variable values from case markers
 (prediction) and to position new case markers from variables
 (interpolation). When they are not orthogonal, these two uses conflict, so
-interpolative versus predictive axes must be used appropriately; see
-\code{\link[=ggbiplot]{ggbiplot()}}.
+interpolative versus predictive axes must be used appropriately.
 }
-\section{Biplot layers}{
-
-\code{\link[=ggbiplot]{ggbiplot()}} uses \code{\link[ggplot2:fortify]{ggplot2::fortify()}} internally to produce a single data
-frame with a \code{.matrix} column distinguishing the subjects (\code{"rows"}) and
-variables (\code{"cols"}). The stat layers \code{stat_rows()} and \code{stat_cols()} simply
-filter the data frame to one of these two.
-
-The geom layers \verb{geom_rows_*()} and \verb{geom_cols_*()} call the corresponding
-stat in order to render plot elements for the corresponding factor matrix.
-\verb{geom_dims_*()} selects a default matrix based on common practice, e.g.
-points for rows and arrows for columns.
-}
-
 \section{Aesthetics}{
 
 \code{geom_axis()} understands the following aesthetics (required aesthetics are
@@ -207,44 +195,45 @@ in bold):
 
 \examples{
 # stack loss gradient
-stackloss |> 
-  lm(formula = stack.loss ~ Air.Flow + Water.Temp + Acid.Conc.) |> 
-  coef() |> 
-  as.list() |> as.data.frame() |> 
+stackloss \%>\% 
+  lm(formula = stack.loss ~ Air.Flow + Water.Temp + Acid.Conc.) \%>\% 
+  coef() \%>\% 
+  as.list() \%>\% as.data.frame() \%>\% 
   subset(select = c(Air.Flow, Water.Temp, Acid.Conc.)) ->
   coef_data
 # gradient axis with respect to two predictors
-scale(stackloss, scale = FALSE) |> 
+scale(stackloss, scale = FALSE) \%>\% 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
-  coord_square() + geom_origin() +
+  coord_square() +
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   geom_axis(data = coef_data)
 # unlimited axes with window forcing
 stackloss_centered <- scale(stackloss, scale = FALSE)
-stackloss_centered |> 
+stackloss_centered \%>\% 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
-  coord_square() + geom_origin() +
+  coord_square() +
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   stat_rule(
     geom = "axis", data = coef_data,
     referent = stackloss_centered,
-    fun.lower = \(x) minpp(x, p = 1), fun.upper = \(x) maxpp(x, p = 1),
-    fun.offset = \(x) minabspp(x, p = 1)
+    fun.lower = function(x) minpp(x, p = 1),
+    fun.upper = function(x) maxpp(x, p = 1),
+    fun.offset = function(x) minabspp(x, p = 1)
   )
 # NB: `geom_axis(stat = "rule")` would fail to pass positional aesthetics.
 
 # eigen-decomposition of covariance matrix
-ability.cov$cov |> 
-  cov2cor() |> 
-  eigen() |> getElement("vectors") |> 
-  as.data.frame() |> 
+ability.cov$cov \%>\% 
+  cov2cor() \%>\% 
+  eigen() \%>\% getElement("vectors") \%>\% 
+  as.data.frame() \%>\% 
   transform(test = rownames(ability.cov$cov)) ->
   ability_cor_eigen
 # test axes in best-approximation space
-ability_cor_eigen |> 
-  transform(E3 = ifelse(V3 > 0, "rise", "fall")) |> 
+ability_cor_eigen \%>\% 
+  transform(E3 = ifelse(V3 > 0, "rise", "fall")) \%>\% 
   ggplot(aes(V1, V2, color = E3)) +
   coord_square() +
   geom_axis(aes(label = test), text.color = "black", text.alpha = .5) +
@@ -261,10 +250,8 @@ and Data Analysis: Recent Advances and Applications}: 169--176.
 \seealso{
 Other geom layers: 
 \code{\link{geom_bagplot}()},
-\code{\link{geom_interpolation}()},
 \code{\link{geom_isoline}()},
 \code{\link{geom_lineranges}()},
-\code{\link{geom_origin}()},
 \code{\link{geom_rule}()},
 \code{\link{geom_text_radiate}()},
 \code{\link{geom_vector}()}

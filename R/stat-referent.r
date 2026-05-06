@@ -10,21 +10,27 @@
 #' Often in geometric data analysis a statistical transformation applied to data
 #' \eqn{X} will also depend on data \eqn{Y}, for example when drawing the
 #' projections of vectors \eqn{X} onto vectors \eqn{Y}. The stat layer
-#' `stat_referent()` accepts \eqn{Y} as an argument to the `referent` parameter
+#' `stat_referent()` accepts \eqn{Y} as an argument to the `referent` argument
 #' and pre-processes them using the existing positional aesthetic mappings to
 #' `x` and `y`.
 #'
+#' If a function is passed to `referent`, then the reference data are obtained
+#' by evaluating the function at the primary `data`. Alongside borrowing the
+#' aesthetic mappings, the evaluation is done during addition via
+#' [ggplot2::ggplot_add()] of the layer of custom class `LayerRef`.
+#'
 #' The ggproto can be used as a parent to more elaborate statistical
 #' transformations, or the stat can be paired with geoms that expect the
-#' `referent` parameter and use it to position their transformations of \eqn{X}.
-#' It pairs by default to `[ggplot2::geom_blank()]` so as to prevent possibly
+#' `referent` argument and use it to position their transformations of \eqn{X}.
+#' It pairs by default to [ggplot2::geom_blank()] so as to prevent possibly
 #' confusing output.
 #' 
 
 #' @inheritParams ggplot2::layer
-#' @inheritParams stat_rows
+#' @template param-layer
 #' @inheritParams ggplot2::ggplot_add
-#' @param referent The reference data set; see Details.
+#' @param referent The reference data set, admitting the same 3 options as
+#'   `data`; see Details.
 #' @template return-layer
 #' @family biplot layers
 #' @example inst/examples/ex-stat-referent.r
@@ -57,7 +63,7 @@ stat_referent <- function(
   LayerRef
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -82,11 +88,14 @@ StatReferent <- ggproto(
     # required `x` and `y` aesthetics should be in `data`
     # (code adapted from `ggplot2:::Layer$compute_aesthetics()`)
     # NB: No checks are conducted here as in `$compute_aesthetics()`.
+    # TODO: Maybe do this in `LayerRef()` rather than here?
     if (! is.null(params$referent)) {
-      params$mapping |> 
-        lapply(rlang::eval_tidy, data = as.data.frame(params$referent)) |> 
-        as.data.frame() ->
-        params$referent
+      # replace with mappings as applied to primary data
+      params$referent <- lapply(
+        params$mapping,
+        rlang::eval_tidy, data = as.data.frame(params$referent)
+      )
+      params$referent <- as.data.frame(params$referent)
     }
     
     # discard combined mapping parameter
@@ -102,7 +111,12 @@ StatReferent <- ggproto(
 # QUESTION: Why are the arguments apparently out of order?
 #' @rdname stat_referent
 #' @export
-ggplot_add.LayerRef <- function(object, plot, object_name) {
+ggplot_add.LayerRef <- function(object, plot, ...) {
+  
+  # if function, then replace with evaluation at primary data
+  if (is.function(object$stat_params$referent)) {
+    object$stat_params$referent <- object$stat_params$referent(plot$data)
+  }
   
   # store global position mappings as a parameter
   object$stat_params$mapping <- plot$mapping[c("x", "y")]

@@ -1,8 +1,7 @@
-#' @title Compute geometric centers and spreads for ordination factors
+#' @title Centers and spreads for bivariate data
 #'
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -18,7 +17,7 @@
 #'   supply a summary function that takes a matrix as input and returns a named
 #'   column summary vector. Overridden by `fun.data` and `fun`, cannot be used
 #'   together with `fun.min` and `fun.max`.
-#' @template param-stat
+#' @template param-layer
 #' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-center.r
@@ -56,7 +55,7 @@ stat_center <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -94,10 +93,10 @@ StatCenter <- ggproto(
                            fun.ord = NULL,
                            fun.args = list(),
                            na.rm = FALSE) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_aes_coord(data)
     cfun <- 
       make_center_fun(fun.data, fun, fun.min, fun.max, fun.ord, fun.args)
-    cfun(data[, ord_cols, drop = FALSE])
+    cfun(data[, coord_cols, drop = FALSE])
   }
 )
 
@@ -132,7 +131,7 @@ stat_star <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -143,9 +142,9 @@ StatStar <- ggproto(
                            fun.data = NULL, fun = NULL,
                            fun.ord = NULL, fun.args = list(),
                            na.rm = FALSE) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_aes_coord(data)
     cfun <- make_center_fun(fun.data, fun, NULL, NULL, fun.ord, fun.args)
-    cdata <- cfun(data[, ord_cols, drop = FALSE])
+    cdata <- cfun(data[, coord_cols, drop = FALSE])
     
     data$xend <- data$x
     data$yend <- data$y
@@ -245,11 +244,4 @@ make_center_fun <- function(
       cbind(x_data, y_data)
     }
   }
-}
-
-depth_median <- function(x, notion = "halfspace", ...) {
-  x <- as.matrix(x)
-  d <- ddalpha::depth.(x, x, notion = notion)
-  i <- which(d == max(d))
-  apply(x[i, , drop = FALSE], 2L, mean, na.rm = FALSE, simplify = TRUE)
 }

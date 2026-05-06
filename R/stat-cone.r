@@ -3,11 +3,10 @@
 #' @description Restrict planar data to the points that lie on its conical hull.
 #' 
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template aes-coord
 
 #' @inheritParams ggplot2::layer
-#' @template param-stat
+#' @template param-layer
 #' @param origin Logical; whether to include the origin with the transformed
 #'   data. Defaults to `FALSE`.
 #' @template return-layer
@@ -37,7 +36,7 @@ stat_cone <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -50,15 +49,18 @@ StatCone <- ggproto(
     data, scales,
     origin = FALSE
   ) {
-    ord_cols <- get_ord_aes(data)
+    coord_cols <- get_aes_coord(data)
     
     # if the data set contains the origin, then the convex hull suffices
-    if (any(apply(as.matrix(data[, ord_cols, drop = FALSE]) == 0, 1L, all))) {
+    if (any(apply(as.matrix(data[, coord_cols, drop = FALSE]) == 0, 1L, all))) {
       return(data[chull(data$x, data$y), , drop = FALSE])
     }
     
     # append the origin to the data set for the convex hull calculation
-    hull_data <- rbind(data[, ord_cols, drop = FALSE], rep(0, length(ord_cols)))
+    hull_data <- rbind(
+      data[, coord_cols, drop = FALSE],
+      rep(0, length(coord_cols))
+    )
     hull <- chull(hull_data)
     # if the new origin is not in the convex hull, then the convex hull suffices
     orig <- match(nrow(data) + 1L, hull)
@@ -75,7 +77,7 @@ StatCone <- ggproto(
     }
     
     # reduce additional columns: unique or bust
-    data_only <- as.data.frame(lapply(subset(data, select = -ord_cols), only))
+    data_only <- as.data.frame(lapply(subset(data, select = -coord_cols), only))
     # bind additional columns to origin
     data_orig <- hull_data[nrow(hull_data), , drop = FALSE]
     if (ncol(data_only) > 0) data_orig <- merge(data_orig, data_only)

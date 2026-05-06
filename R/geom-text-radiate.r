@@ -5,7 +5,6 @@
 #'   off-CRAN extensions of the same name (Vu, 2014; Telford, 2017; Gegzna,
 #'   2018). It renders text at specified positions and angles that radiate out
 #'   from the origin. This layer and its associated ggproto are **deprecated**.
-#' @template biplot-layers
 
 #' @section Aesthetics:
 
@@ -59,7 +58,7 @@ geom_text_radiate <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

@@ -1,0 +1,309 @@
+---
+title: "Visualizing Multivariate Data in {ggplot2}"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Visualizing Multivariate Data in ggplot2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7, fig.height = 6, fig.align = "center"
+)
+```
+
+```{r sort_by, echo=FALSE}
+# define `sort_by()` if R version is < 4.4.0
+if ( as.integer(R.Version()$major) < 4L ||
+     (R.Version()$major == "4" && as.double(R.Version()$minor) < 4) ) {
+  .formula2varlist <- 
+    function(formula, data, warnLHS = TRUE, ignoreLHS = warnLHS) {
+      if (!inherits(formula, "formula")) stop("'formula' must be a formula")
+      if (!is.list(data) && !is.environment(data)) data <- as.data.frame(data)
+      if (length(formula) == 3) {
+        if (warnLHS) {
+          if (ignoreLHS)
+            warning("Unexpected LHS in 'formula' has been ignored.")
+          else
+            warning("Unexpected LHS in 'formula' has been combined with RHS.")
+        }
+        if (ignoreLHS) formula <- formula[-2]
+      }
+      ## If formula = ~list(...)
+      if (length(formula[[2]]) > 1L && formula[[2]][[1]] == quote(list)) {
+        ans <- eval(formula[[2]], data, environment(formula))
+      }
+      else {
+        fterms <- stats::terms(formula)
+        ans <- eval(attr(fterms, "variables"), data, environment(formula))
+        names(ans) <- attr(fterms, "term.labels")
+      }
+      ans
+    }
+  sort_by <- function(x, y, ...) UseMethod("sort_by")
+  sort_by.default <- function(x, y, ...) x[order(y, ...)]
+  sort_by.data.frame <- function(x, y, ...) {
+    if (inherits(y, "formula")) y <- .formula2varlist(y, x)
+    if (!is.list(y)) y <- list(y)
+    o <- do.call(order, c(unname(y), list(...)))
+    x[o, , drop = FALSE]
+  }
+}
+```
+
+## Introduction
+
+The {gggda} package is a mostly standard-issue extension to [{ggplot2}](https://github.com/tidyverse/ggplot2): It consists of [ggprotos](https://ggplot2.tidyverse.org/reference/ggplot2-ggproto.html) for a coordinate system ("coord") and several statistical transformations ("stat"), and geographic constructions ("geom") that almost exclusively use standard aesthetic mappings and recognizable parameters and defaults.
+
+The coords, stats, and geoms implement a variety of tools used in multivariate data analysis.
+By design, tools implemented in other {ggplot2} extensions are not reinvented here---or, at least, they're not meant to be! For example, [the {ggdensity} package](https://github.com/jamesotto852/ggdensity) provides plot layers for quantile-based density estimates and contours, extending the native {ggplot2} layers for level-based density visualizations, and users are encouraged to use it in tandem with the {gggda}. As a result, though, those included in the package may seem somewhat arbitrary.
+That said, the plot layers provided by {gggda} implement methods that emerged from two distinct threads, which the vignette will consider in turn.
+
+```{r setup}
+library(gggda)
+theme_set(theme_bw())
+```
+
+A brief caution: Some code below uses the `sort_by()` function [introduced in R version 4.4.0](https://github.com/wch/r-source/blob/edd57ecc73890eac2a290dbeb04e54f9cbeac77f/doc/NEWS.Rd#L1151); if that version is not yet installed, an invisible code chunk is run that defines it from scratch.
+
+### Data
+
+To motivate and illustrate these tools, let's investigate the `USJudgeRatings` data set included with the basic `R` installation. These data were obtained from the 1977 _New Haven Register_ and contain several lawyers' evaluations of 43 Superior Court[^superior] judges based, or so i infer (i have not found a journal article citation or been able to access the newspaper edition), on a number of interactions with them. The variables include the (standardized) number of interactions, ratings of 10 criteria ranging from judicial integrity to physical ability, and a final rating of retention worthiness; the ratings all use a 10-point scale. Here are those ratings for a sample of the judges:
+
+[^superior]: Presumably this was the [Connecticut Superior Court](https://www.jud.ct.gov/superiorcourt/).
+
+```{r data}
+print(USJudgeRatings[sample(nrow(USJudgeRatings), 6L, replace = FALSE), ])
+```
+
+For convenience, we reformat the data with an additional column for the name of the judge:
+
+```{r frame}
+USJudgeRatings %>% 
+  tibble::rownames_to_column(var = "NAME") ->
+  judge_ratings
+head(judge_ratings)
+```
+
+## Multivariate summaries
+
+The first set of methods is the extension of univariate summaries to multivariate, and usually bivariate, data.
+For example, univariate data have a natural ranking by value: Arrange the cases in order of a variable value, and the rank of each case is its position in order:
+
+```{r rank}
+judge_ratings %>% 
+  subset(select = c(NAME, RTEN)) %>% 
+  sort_by(~ list(-RTEN)) %>% 
+  transform(RANK = seq(nrow(judge_ratings))) %>% 
+  head()
+```
+
+There's no obvious analog to this for bivariate data:
+Suppose we want to rank judges by how well they maintain the legitimacy of their court. This might implicate two ratings in the data in particular, their integrity and the promptness of their decisions:
+
+```{r text}
+judge_plot <- ggplot(judge_ratings, aes(x = INTG, y = DECI, label = NAME))
+judge_plot +
+  geom_text(aes(label = NAME), size = 3)
+```
+
+While these ratings are correlated, several individual judges were rated significantly more highly on one criterion than on the other, and there is a clear "core" of judges who received average ratings on both.
+In the next section we'll see how these ratings might be combined into an aggregate; for now, we'll consider how to rank the judges not by the values of their ratings but by their typicality or "averageness": On this score, middling judges should be ranked highly while outlying judges should be ranked lowly.
+Such a measure might be useful for identifying idiosyncratic judges for recruitment to consensus working groups or even those whose rankings should be re-evaluated.
+Visually, this property can be captured by sequentially "peeling" outer layers of the point cloud and giving each layer the same rank. The most common way to do this is probably via convex hulls:
+
+```{r peel}
+judge_plot +
+  geom_text(size = 3, hjust = "outward", vjust = "outward") +
+  stat_peel(num = Inf, color = "black", fill = "transparent")
+```
+
+The plot identifies Judges Saden and Driscoll, for example, as outliers, despite their average or just-below-average ratings on both criteria. The more middling judges' names are harder to read, but we can extract the assignments directly to examine the most peripheral and core hulls:
+
+```{r bar}
+judge_ratings %>% 
+  subset(select = c(INTG, DECI)) %>% 
+  peel_hulls(num = Inf) %>% 
+  as.data.frame() %>% 
+  merge(
+    transform(judge_ratings, i = seq(nrow(judge_ratings))),
+    by = "i"
+  ) %>% 
+  subset(select = -c(i, x, y, prop)) %>% 
+  sort_by(~ hull + NAME) ->
+  judge_hulls
+judge_hulls %>% 
+  subset(subset = hull %in% range(hull))
+```
+
+Judges Aaronson, Armentano, and Stapleton constitute the innermost hull, and again the density of the core makes it difficult to build intuition about this stratification.
+We can, for example, check whether peripherality with respect to the nested hulls is systematically related to overall retention rating:
+
+```{r order}
+judge_hulls %>% 
+  transform(hull = factor(hull, levels = seq(max(hull)))) %>% 
+  ggplot(aes(x = hull, y = RTEN)) +
+  geom_boxplot()
+```
+
+While the fewer data in each hull yield narrower boxplots, there is no evident upward or downward trend.
+But peeling data from the outside inward is not the only way to stratify by centrality.
+Another approach is is called _data depth_, based on a family of notions of _global_ depth that are distinct from _local_ notions of density.
+One of the most famous deployments of data depth is the "bag-and-bolster plot" comprising a "bag" delineated by a depth contour and a "fence" by expanding the bag outward from the depth median. As with a box-and-whisker plot, markers outside the fence identify outliers.
+In the bag-and-bolster plot below, we used trial and error to customize the fraction contained in the bag and the scale factor of the fence, add text labels to the judges of the outermost and innermost hulls:
+
+```{r bag}
+judge_plot +
+  stat_bagplot(fraction = 1/3, coef = 3) +
+  geom_text(
+    data = subset(judge_hulls, hull %in% range(hull)),
+    size = 3, hjust = "outward", vjust = "outward"
+  )
+```
+
+For these data, the two stratifications are broadly consistent.
+However, the data seem to have a greater skew toward lower values on the periphery than in the core, resulting in Judges Naruk and Rubinow lying well within the fence while Judges Cohen and Mignone lie near its boundary, despite all four belonging to the outermost hull.
+
+## Ordination and biplots
+
+The second set of methods enables analysis of many variables at once.
+These _ordination_ models typically use linear algebra to obtain a sequence of artificial coordinates, each of which captures the most desired behavior after adjusting for the previous.
+In the most popular ordination model, principal components analysis, the principal components (PCs) account for the maximum amount of inertia, or multidimensional variance in each successive residual subspace.
+
+PCA is often applied to heterogeneous data, which requires that the variables be rescaled to have common variance.
+In this case, however, each criterion is rated on the same scale, so the simplifying assumption that their distributions (specifically their variances) are equivalent in the population is plausible.
+
+```{r pca}
+judge_ratings %>% 
+  subset(select = -c(NAME, CONT, RTEN)) %>% 
+  princomp(cor = FALSE) ->
+  judge_pca
+```
+
+As a technique for dimension reduction, PCA works best when the variables are highly dependent---not necessarily pairwise correlated, but such that the low-dimensional subspace coordinatized by the first few PCs contains a large share of the inertia.
+The componentwise variance and cumulative inertia are reported in the summary.
+We also examine the variable loadings onto the PCs, which allow us to interpret the PCs as latent variables (as in factor analysis, though the theoretical justification is weaker and their meanings are less straightforward).
+
+```{r quality}
+summary(judge_pca)
+print(judge_pca$loadings)
+```
+
+The PCA summary shows that the vast majority of the variance (92%) already lies in a single dimension, along the first PC, and that roughly half of the remainder (4%) lies along the second; 96% lies within the plane of the first two PCs and would therefore be visualized in a plot using them as axes.
+The loadings suggest that some of the ratings (diligence, soundness of oral and written rulings) align more closely with PC1 and some (integrity and demeanor) with PC2, while others (management of case flow, promptness of decisions, physical ability) are similarly aligned with both.
+
+These insights can be efficiently visualized by plotting the cases (judges) and for the variables (criteria) on the plane defined by the first two PCs.
+The quality of the resulting _biplot_ depends on the proportion of variance along those PCs.
+In the biplot below, the cases are represented by circular markers and the variables by arrows, using a geometric construction provided by {gggda}.
+The aspect ratio is fixed at 1 to avoid misrepresenting the inertia.
+
+```{r vector, fig.height=2.5}
+ggplot(mapping = aes(x = Comp.1, y = Comp.2)) +
+  geom_point(data = judge_pca$scores) +
+  geom_vector(data = unclass(judge_pca$loadings), color = "#007a3d") +
+  coord_equal()
+```
+
+The plot makes clear the singular importance of PC1: Indeed, all rating scales load positively onto it, so it could be interpreted as a dimension of overall quality.
+It is also clear that most of the criteria are tightly correlated into two roughly orthogonal groups, though these groups don't line up perfectly with the two PCs. (A rotation might be applied that would improve the "simple structure" of the PCA, but that is beyond the scope of this introduction.)
+However, the plot is limited in several ways: We can't tell which marker represents which judge or which arrow represents which criterion, and the quiver of arrows is quite small due to the different scales of the cases and the variables.
+
+In the code chunk below, we pre-process the scores and loadings into data frames with additional variables and use these variables to improve the annotations.
+(Notice our clever double-use of `NAME` for cases and variables, which allows us to distribute the aesthetic `label = NAME` across both layers.)
+We also remove gridlines from the theme since the PCs are not themselves meaningful, and we use a new coordinate system that expands the plotting window to a square while holding the aspect ratio fixed.
+Finally, we rescale the variables to be distinguishable at the same scale as the cases and add additional axis legends for this new scale.[^reconstruct]
+
+[^reconstruct]: While we don't illustrate it here, knowing the artificial coordinates of elements on both layers of a biplot allows the original data elements to be recovered via inner product.)
+
+```{r square, fig.height=7}
+judge_pca$scores %>% 
+  as.data.frame() %>% 
+  transform(NAME = judge_ratings$NAME) ->
+  judge_scores
+judge_pca$loadings %>% 
+  unclass() %>% as.data.frame() %>% 
+  tibble::rownames_to_column(var = "NAME") ->
+  judge_loadings
+ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
+  geom_text(data = judge_scores, size = 3) +
+  geom_vector(data = judge_loadings, color = "#007a3d",
+              stat = "scale", mult = 5) +
+  theme(panel.grid = element_blank()) +
+  coord_square() +
+  scale_x_continuous(sec.axis = sec_axis(~ . / 5)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 5)) +
+  expand_limits(x = c(-8, 6))
+```
+
+The arrows communicate the directions and magnitudes of each rating's associations with the two PCs.
+For example, the contribution of demeanor to separating judges like Saden on one side of the overall quality axis (PC1) and Driscoll on the other is at least half again that of integrity.
+However, this information is impressionistic, and the plot reveals little else.
+An alternative geometric construction allows for easier interpretation: calibrated axes---basically, lines containing the vectors with tick marks at regular multiples of them.[^interpolative]
+
+[^interpolative]: These axes are interpolative; the position of a case marker is the vector sum of its ratings. More useful in most applications are predictive axes, but these require additional calibration not yet available in {gggda}. See [the {calibrate} package](https://cran.r-project.org/package=calibrate) for possibly the most common solution in R.
+
+```{r axis, fig.height=7}
+ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
+  geom_axis(data = judge_loadings, color = "#007a3d") +
+  geom_text(data = judge_scores, size = 3) +
+  theme(panel.grid = element_blank()) +
+  coord_square() +
+  expand_limits(x = c(-8, 6))
+```
+
+Axes obviate the need for rescaling and provide more space to compare the variables' contributions.
+We can now see from the plot that every rating other than demenear and integrity contributes similarly to the spread, in terms of strength as well as of direction.
+Yet within this similarity there are clusters: Soundness of oral and of written rulings are closely aligned, as are management of case flow and promptness of decisions, while diligence, legal familiarity, and trial preparation are essentially indistinguishable.
+
+Axes also provide a natural way to interpolate additional variables onto an existing biplot, much as additional cases can be:
+We omitted worthiness of retention ratings from this analysis because it was less objective a criterion, but we can regress its values on the first two PCs to get a sense of how it relates to the picture they paint:
+
+```{r lm}
+judge_ratings %>% 
+  subset(select = RTEN) %>% 
+  cbind(judge_scores) %>% 
+  lm(formula = RTEN ~ Comp.1 + Comp.2) ->
+  judge_lm
+summary(judge_lm)
+```
+
+Retention worthiness depends importantly on both PCs, though more strongly on the first, indicating that it is more closely related to the first "overall quality" dimension than to the second associated more with demeanor and integrity---though both associations are positive.
+We superimpose a ruler for this effect on the biplot and offset it from the point cloud using the `referent` parameter, which accepts data in the same format as `data` and pre-processes it in the same way:
+
+```{r rule, fig.height=7}
+judge_lm %>% 
+  coefficients() %>% 
+  t() %>% as.data.frame() %>% 
+  transform(NAME = "RTEN") ->
+  judge_coef
+ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
+  geom_axis(data = judge_loadings, color = "#007a3d") +
+  geom_text(data = judge_scores, size = 3) +
+  stat_rule(data = judge_coef, referent = judge_scores, color = "#ce1126") +
+  theme(panel.grid = element_blank()) +
+  coord_square() +
+  expand_limits(x = c(-8, 6))
+```
+
+It is perhaps surprising that demeanor and integrity exert such a significant (counterclockwise) pull on retention worthiness in relation to the first PC, given the larger number of criteria whose ratings tug in the opposite direction.
+This has the effect of positioning Judge Driscoll similarly to Judge Saden, despite Saden's higher rating on every other criterion.[^quality]
+Indeed, Judge Driscoll was rated slightly more retention-worthy:
+
+```{r subset}
+judge_ratings %>% 
+  subset(subset = grepl("SADEN|DRISCOLL", NAME))
+```
+
+## Outroduction
+
+In closing, a few elements of practice are worth making explicit:
+First, multivariate data visualization is a component of multivariate data analysis, not a standalone option for it. Visualizations can elicit patterns but are no substitute for rigorously confirming them.
+Second, data may be multivariate in different ways that call for different analytic and graphical approaches. Other multivariate data may involve incommensurate variables unsuited for unscaled PCA, for example.
+
+Finally, multivariate graphics are highly versatile. This is a feature from the perspective of communication but has a double-edge with respect to the design of an analysis toward a specific task (question, hypothesis, objective): At the outset, the analyst must choose (not to say pre-register, but not _not_ to say that) settings that are appropriate to the data and the task, and as the analysis progresses they must balance an adaptability to revealed patterns with a rigor toward the theory behind the task and the original analysis plan.
+The larger {ggplot2} extension family provides several additional tools for multivariate data visualization to both facilitate and complicate your efforts.
+
+[^quality]: We can confidently infer these inequalities from the biplot only because it accounts for the vast majority of the variance in the data, i.e. it is very high quality.

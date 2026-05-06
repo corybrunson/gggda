@@ -9,6 +9,8 @@ geom_bagplot(
   data = NULL,
   stat = "bagplot",
   position = "identity",
+  outlier_points = !outlier_labels,
+  outlier_labels = FALSE,
   ...,
   bag.linewidth = sync(),
   bag.linetype = sync(),
@@ -36,6 +38,10 @@ geom_bagplot(
   outlier.color = NULL,
   outlier.fill = NA,
   outlier.alpha = NA,
+  text.size = 3.88,
+  text.colour = sync(),
+  text.color = sync(),
+  text.alpha = sync(),
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE
@@ -64,7 +70,7 @@ from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{stat}{The statistical transformation to use on the data for this layer.
 When using a \verb{geom_*()} function to construct a layer, the \code{stat}
-argument can be used the override the default coupling between geoms and
+argument can be used to override the default coupling between geoms and
 stats. The \code{stat} argument accepts the following:
 \itemize{
 \item A \code{Stat} ggproto subclass, for example \code{StatCount}.
@@ -88,6 +94,12 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 \link[ggplot2:layer_positions]{layer position} documentation.
 }}
 
+\item{outlier_points}{Logical; whether to plot outlier markers. Defaults to
+\code{! outlier_labels}.}
+
+\item{outlier_labels}{Logical; whether to plot outlier labels. Defaults to
+\code{FALSE}.}
+
 \item{...}{Additional arguments passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
 \item{bag.linetype, bag.linewidth, bag.colour, bag.color, bag.fill, bag.alpha}{Default aesthetics for bags. Set to \code{\link[=sync]{sync()}} to inherit from the data's
@@ -102,21 +114,26 @@ aesthetics or to \code{NULL} to use the data's aesthetics.}
 \item{outlier.shape, outlier.stroke, outlier.size, outlier.colour, outlier.color, outlier.fill, outlier.alpha}{Default aesthetics for outliers. Set to \code{\link[=sync]{sync()}} to inherit from the data's
 aesthetics or to \code{NULL} to use the data's aesthetics.}
 
+\item{text.size, text.colour, text.color, text.alpha}{Default aesthetics for outlier labels. Set to NULL to inherit from the
+data's aesthetics.}
+
 \item{na.rm}{Passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 Render bagplots from tagged data comprising medians, hulls,
@@ -142,19 +159,6 @@ than for density estimation. At the resolution of the default \eqn{100
   \times 100} grid, basic examples may vary noticeably when starting from
 different random seeds.
 }
-\section{Biplot layers}{
-
-\code{\link[=ggbiplot]{ggbiplot()}} uses \code{\link[ggplot2:fortify]{ggplot2::fortify()}} internally to produce a single data
-frame with a \code{.matrix} column distinguishing the subjects (\code{"rows"}) and
-variables (\code{"cols"}). The stat layers \code{stat_rows()} and \code{stat_cols()} simply
-filter the data frame to one of these two.
-
-The geom layers \verb{geom_rows_*()} and \verb{geom_cols_*()} call the corresponding
-stat in order to render plot elements for the corresponding factor matrix.
-\verb{geom_dims_*()} selects a default matrix based on common practice, e.g.
-points for rows and arrows for columns.
-}
-
 \section{Aesthetics}{
 
 \code{geom_bagplot()} understands the following aesthetics (required aesthetics
@@ -171,15 +175,20 @@ are in bold):
 \item \code{shape}
 \item \code{stroke}
 \item \code{size}
+\item \code{label}
+\item \code{hjust}
+\item \code{vjust}
+\item \code{angle}
 \item \code{group}
 }
 }
 
 \examples{
 # Motor Trends base plot with factorized cylinder counts
-p <- mtcars |> 
-  transform(cyl = factor(cyl)) |> 
-  ggplot(aes(x = wt, y = disp)) +
+p <- mtcars \%>\% 
+  transform(name = rownames(mtcars)) \%>\%
+  transform(cyl = factor(cyl)) \%>\% 
+  ggplot(aes(x = wt, y = disp, label = name)) +
   theme_bw()
 # basic bagplot
 p + geom_bagplot()
@@ -196,14 +205,18 @@ p + geom_bagplot(
   fence.linetype = sync(), fence.colour = "black",
   outlier.shape = "asterisk", outlier.colour = "black"
 )
+# label outliers
+p + geom_bagplot(
+  fraction = 0.4, coef = 1.2,
+  outlier_labels = TRUE,
+  aes(fill = cyl, linetype = cyl, color = cyl)
+)
 }
 \seealso{
 Other geom layers: 
 \code{\link{geom_axis}()},
-\code{\link{geom_interpolation}()},
 \code{\link{geom_isoline}()},
 \code{\link{geom_lineranges}()},
-\code{\link{geom_origin}()},
 \code{\link{geom_rule}()},
 \code{\link{geom_text_radiate}()},
 \code{\link{geom_vector}()}

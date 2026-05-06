@@ -16,7 +16,7 @@ stat_referent(
   ...
 )
 
-\method{ggplot_add}{LayerRef}(object, plot, object_name)
+\method{ggplot_add}{LayerRef}(object, plot, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{aes()}}. If specified and
@@ -65,29 +65,30 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 \link[ggplot2:layer_positions]{layer position} documentation.
 }}
 
-\item{referent}{The reference data set; see Details.}
+\item{referent}{The reference data set, admitting the same 3 options as
+\code{data}; see Details.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
 \item{object}{An object to add to the plot}
 
 \item{plot}{The ggplot object to add \code{object} to}
-
-\item{object_name}{The name of the object to add}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 Compute statistics with respect to a reference data set with
@@ -97,26 +98,31 @@ shared positional variables.
 Often in geometric data analysis a statistical transformation applied to data
 \eqn{X} will also depend on data \eqn{Y}, for example when drawing the
 projections of vectors \eqn{X} onto vectors \eqn{Y}. The stat layer
-\code{stat_referent()} accepts \eqn{Y} as an argument to the \code{referent} parameter
+\code{stat_referent()} accepts \eqn{Y} as an argument to the \code{referent} argument
 and pre-processes them using the existing positional aesthetic mappings to
 \code{x} and \code{y}.
 
+If a function is passed to \code{referent}, then the reference data are obtained
+by evaluating the function at the primary \code{data}. Alongside borrowing the
+aesthetic mappings, the evaluation is done during addition via
+\code{\link[ggplot2:update_ggplot]{ggplot2::ggplot_add()}} of the layer of custom class \code{LayerRef}.
+
 The ggproto can be used as a parent to more elaborate statistical
 transformations, or the stat can be paired with geoms that expect the
-\code{referent} parameter and use it to position their transformations of \eqn{X}.
-It pairs by default to \verb{[ggplot2::geom_blank()]} so as to prevent possibly
+\code{referent} argument and use it to position their transformations of \eqn{X}.
+It pairs by default to \code{\link[ggplot2:geom_blank]{ggplot2::geom_blank()}} so as to prevent possibly
 confusing output.
 }
 \examples{
 # simplify the Motor Trends data to two predictors legible at aspect ratio 1
-mtcars |>
-  transform(hp00 = hp/100) |>
+mtcars \%>\%
+  transform(hp00 = hp/100) \%>\%
   subset(select = c(mpg, hp00, wt)) ->
   subcars
 # compute the gradient of `mpg` against these two predictors
-lm(mpg ~ hp00 + wt, subcars) |>
-  coefficients() |>
-  as.list() |> as.data.frame() ->
+lm(mpg ~ hp00 + wt, subcars) \%>\%
+  coefficients() \%>\%
+  as.list() \%>\% as.data.frame() ->
   grad
 # use the gradient as a reference (to no effect in this basic ggproto)
 ggplot(subcars, aes(x = hp00, y = wt)) +
@@ -126,11 +132,21 @@ ggplot(subcars, aes(x = hp00, y = wt)) +
 ggplot(subcars, aes(x = hp00, y = wt)) +
   coord_equal() +
   stat_referent(geom = "point", referent = grad)
-}
-\seealso{
-Other biplot layers: 
-\code{\link{biplot-geoms}},
-\code{\link{biplot-stats}},
-\code{\link{stat_rows}()}
+
+# passing a function yields a transformation of the primary data
+p <- ggplot(subcars, aes(x = hp00, y = wt)) +
+  stat_referent(
+    data = head,
+    referent = function(d) as.data.frame(lapply(d, mean))
+  )
+b <- ggplot_build(p)
+# original data
+b@plot@data
+# head of original data
+b@data[[1]]
+# means of original data
+b@plot@layers$stat_referent$stat_params$referent
+# means of head of original data
+as.data.frame(lapply(layer_data(p, 1), mean))
 }
 \concept{biplot layers}

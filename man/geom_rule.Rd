@@ -69,7 +69,7 @@ from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{stat}{The statistical transformation to use on the data for this layer.
 When using a \verb{geom_*()} function to construct a layer, the \code{stat}
-argument can be used the override the default coupling between geoms and
+argument can be used to override the default coupling between geoms and
 stats. The \code{stat} argument accepts the following:
 \itemize{
 \item A \code{Stat} ggproto subclass, for example \code{StatCount}.
@@ -139,15 +139,17 @@ supported by \code{geom_label()}.}
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 \code{geom_rule()} renders segments through or orthogonally
@@ -162,19 +164,6 @@ the user must provide the \code{lower} and \code{upper} aesthetics, which are us
 euclidean lengths in the plotting window. Meanwhile, \code{stat_rule()} defaults
 to \code{geom = "rule"}; see \code{\link[=stat_rule]{stat_rule()}} for details on this pairing.
 }
-\section{Biplot layers}{
-
-\code{\link[=ggbiplot]{ggbiplot()}} uses \code{\link[ggplot2:fortify]{ggplot2::fortify()}} internally to produce a single data
-frame with a \code{.matrix} column distinguishing the subjects (\code{"rows"}) and
-variables (\code{"cols"}). The stat layers \code{stat_rows()} and \code{stat_cols()} simply
-filter the data frame to one of these two.
-
-The geom layers \verb{geom_rows_*()} and \verb{geom_cols_*()} call the corresponding
-stat in order to render plot elements for the corresponding factor matrix.
-\verb{geom_dims_*()} selects a default matrix based on common practice, e.g.
-points for rows and arrows for columns.
-}
-
 \section{Aesthetics}{
 
 \code{geom_rule()} understands the following aesthetics (required aesthetics are
@@ -201,22 +190,22 @@ in bold):
 }
 
 \examples{
-USJudgeRatings |> 
-  subset(select = -c(1, 12)) |> 
-  dist(method = "maximum") |> 
-  cmdscale() |> 
-  as.data.frame() |> 
-  setNames(c("PCo1", "PCo2")) |> 
+USJudgeRatings \%>\% 
+  subset(select = -c(1, 12)) \%>\% 
+  dist(method = "maximum") \%>\% 
+  cmdscale() \%>\% 
+  as.data.frame() \%>\% 
+  setNames(c("PCo1", "PCo2")) \%>\% 
   transform(name = rownames(USJudgeRatings)) ->
   judge_mds
-USJudgeRatings |> 
-  subset(select = c(CONT, RTEN)) |> 
+USJudgeRatings \%>\% 
+  subset(select = c(CONT, RTEN)) \%>\% 
   setNames(c("contacts", "recommendation")) ->
   judge_meta
-lm(as.matrix(judge_meta) ~ as.matrix(judge_mds[, seq(2)])) |> 
-  getElement("coefficients") |> 
-  unname() |> t() |> as.data.frame() |> 
-  setNames(c("Intercept", "PCo1", "PCo2")) |> 
+lm(as.matrix(judge_meta) ~ as.matrix(judge_mds[, seq(2)])) \%>\% 
+  getElement("coefficients") \%>\% 
+  unname() \%>\% t() \%>\% as.data.frame() \%>\% 
+  setNames(c("Intercept", "PCo1", "PCo2")) \%>\% 
   transform(variable = names(judge_meta)) ->
   judge_lm
 ggplot(judge_mds, aes(x = PCo1, y = PCo2)) +
@@ -232,10 +221,8 @@ ggplot(judge_mds, aes(x = PCo1, y = PCo2)) +
 Other geom layers: 
 \code{\link{geom_axis}()},
 \code{\link{geom_bagplot}()},
-\code{\link{geom_interpolation}()},
 \code{\link{geom_isoline}()},
 \code{\link{geom_lineranges}()},
-\code{\link{geom_origin}()},
 \code{\link{geom_text_radiate}()},
 \code{\link{geom_vector}()}
 }

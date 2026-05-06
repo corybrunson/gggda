@@ -18,8 +18,6 @@
 #' @template ref-greenacre2010
 #' @template ref-gardner2002
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_vector()` understands the following aesthetics (required aesthetics
@@ -90,7 +88,7 @@ geom_vector <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

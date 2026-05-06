@@ -24,8 +24,7 @@
 
 #' @template ref-rousseeuw1999
 
-#' @template biplot-layers
-#' @template biplot-ord-aes
+#' @template aes-coord
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -34,13 +33,16 @@
 #'   \item{`component`}{the component of the composite plot; used internally}
 #' }
 
-#' @include stat-depth.r stat-chull.r
+#' @include stat-depth.r stat-peel.r
+#' @importFrom dplyr bind_rows
 #' @inheritParams ggplot2::layer
 #' @param median,fence,outliers Logical indicators whether to include median,
 #'   fence, and outliers in the composite output.
 #' @inheritDotParams stat_depth notion notion_params
 #' @param fraction Fraction of the data to include in the bag.
 #' @param coef Scale factor of the fence relative to the bag.
+#' @template param-layer
+#' @template return-layer
 #' @family stat layers
 #' @example inst/examples/ex-stat-bagplot.r
 #' @export
@@ -69,7 +71,7 @@ stat_bagplot <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -107,11 +109,12 @@ StatBagplot <- ggproto(
     
     # locate the median at (the centroid of) the maximum density point(s)
     median_df <- if (median || fence) {
-      data |> 
-        subset(depth == max(depth), select = c("x", "y")) |> 
-        lapply(mean) |> as.data.frame() |> 
-        # cannot be empty so this will work
-        transform(component = "median", PANEL = data_PANEL, group = data_group)
+      df <- subset(data, depth == max(depth), select = c("x", "y"))
+      df <- as.data.frame(lapply(df, mean))
+      transform(
+        df,
+        component = "median", PANEL = data_PANEL, group = data_group
+      )
     } else {
       data.frame()
     }
@@ -137,14 +140,19 @@ StatBagplot <- ggproto(
     if (fence || outliers) {
       
       # begin fence by expanding the convex hull of the bag by `coef`
-      bag_df |> 
-        subset(select = c("x", "y")) |> 
-        filter_hull() |> 
-        as.matrix() |> 
-        sweep(2L, as.matrix(median_df[, c("x", "y"), drop = FALSE]), "-") |> 
-        magrittr::multiply_by(coef) |> 
-        sweep(2L, as.matrix(median_df[, c("x", "y"), drop = FALSE]), "+") |> 
-        as.data.frame() -> fence_hull
+      fence_hull <- subset(bag_df, select = c("x", "y"))
+      fence_hull <- filter_hull(fence_hull)
+      fence_hull <- as.matrix(fence_hull)
+      fence_hull <- sweep(
+        fence_hull, 2L,
+        as.matrix(median_df[, c("x", "y"), drop = FALSE]), "-"
+      )
+      fence_hull <- fence_hull * coef
+      fence_hull <- sweep(
+        fence_hull, 2L,
+        as.matrix(median_df[, c("x", "y"), drop = FALSE]), "+"
+      )
+      fence_hull <- as.data.frame(fence_hull)
       
       # tag inliers & outliers
       outlying <- lie_without(data, fence_hull)
@@ -156,11 +164,10 @@ StatBagplot <- ggproto(
     
     # end fence as the convex hull of the expanded bag hull and the inliers
     fence_df <- if (fence) {
-      data |> 
-        subset(! outlying, select = c("x", "y")) |> 
-        rbind(fence_hull) |> 
-        filter_hull() |> 
-        transform(component = "fence", PANEL = data_PANEL, group = data_group)
+      df <- subset(data, ! outlying, select = c("x", "y"))
+      df <- rbind(df, fence_hull)
+      df <- filter_hull(df)
+      transform(df, component = "fence", PANEL = data_PANEL, group = data_group)
     } else {
       data.frame()
     }
@@ -173,7 +180,11 @@ StatBagplot <- ggproto(
     
     # identify the outliers
     outlier_df <- if (outliers) {
-      subset(data, outlying, select = c("x", "y"))
+      subset(
+        data,
+        outlying,
+        select = intersect(c("x", "y", "label"), names(data))
+      )
     } else {
       data.frame()
     }
@@ -184,7 +195,7 @@ StatBagplot <- ggproto(
       outlier_df$group <- data_group
     }
     
-    dplyr::bind_rows(median_df, bag_df, fence_df, outlier_df)
+    bind_rows(median_df, bag_df, fence_df, outlier_df)
   }
 )
 

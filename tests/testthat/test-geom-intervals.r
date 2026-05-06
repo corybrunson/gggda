@@ -11,7 +11,9 @@ f <- function(y) data.frame(
 )
 
 test_that("`geom_lineranges()` alerts when no function is provided", {
+  rmv_old <- options(rlib_message_verbosity = "verbose")$rlib_message_verbosity
   expect_message(print(p + geom_lineranges()), regexp = "function")
+  options(rlib_message_verbosity = rmv_old)
 })
 
 test_that("`geom_lineranges()` computes summary values correctly", {
@@ -20,7 +22,7 @@ test_that("`geom_lineranges()` computes summary values correctly", {
   p1 <- p + geom_lineranges()
   d1 <- layer_data(p1)
   m1 <- sapply(d, mean)
-  s1 <- sapply(d, \(z) sd(z) / sqrt(length(z)))
+  s1 <- sapply(d, function(z) sd(z) / sqrt(length(z)))
   r1 <- c(
     x = m1[["x"]], xmin = m1[["x"]] - s1[["x"]], xmax = m1[["x"]] + s1[["x"]],
     y = m1[["y"]], ymin = m1[["y"]] - s1[["y"]], ymax = m1[["y"]] + s1[["y"]]

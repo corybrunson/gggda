@@ -81,18 +81,21 @@ of the rules and the translations of the axes from the projections of
 
 \item{fun.args}{Optional additional arguments passed on to the functions.}
 
-\item{referent}{The reference data set; see Details.}
+\item{referent}{The reference data set, admitting the same 3 options as
+\code{data}; see Details.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
@@ -101,7 +104,7 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 \item{p}{A numeric value; the proportion of a range used as a buffer.}
 }
 \value{
-A ggproto \link[ggplot2:layer]{layer}.
+A \link[=gggda-ggproto]{ggproto} \link[ggplot2:layer]{layer}.
 }
 \description{
 Determine axis limits and offset vectors from reference data.
@@ -136,26 +139,13 @@ This statistical transformation is done with respect to reference data passed
 to \code{referent} (ignored if \code{NULL}, the default, possibly resulting in empty
 output). See \code{\link[=stat_referent]{stat_referent()}} for more details. This relies on a sleight of
 hand through a new undocumented \code{LayerRef} class and associated
-\code{\link[ggplot2:ggplot_add]{ggplot2::ggplot_add()}} method. As a result, only layers constructed using
+\code{\link[ggplot2:update_ggplot]{ggplot2::ggplot_add()}} method. As a result, only layers constructed using
 this \verb{stat_*()} shortcut will pass the necessary positional aesthetics to the
 \verb{$setup_params()} step, making them available to pre-process \code{referent} data.
 
 The biplot shortcuts automatically substitute the complementary matrix factor
 for \code{referent = NULL} and will use an integer vector to select a subset from
 this factor. These uses do not require the mapping passage.
-}
-
-\section{Biplot layers}{
-
-\code{\link[=ggbiplot]{ggbiplot()}} uses \code{\link[ggplot2:fortify]{ggplot2::fortify()}} internally to produce a single data
-frame with a \code{.matrix} column distinguishing the subjects (\code{"rows"}) and
-variables (\code{"cols"}). The stat layers \code{stat_rows()} and \code{stat_cols()} simply
-filter the data frame to one of these two.
-
-The geom layers \verb{geom_rows_*()} and \verb{geom_cols_*()} call the corresponding
-stat in order to render plot elements for the corresponding factor matrix.
-\verb{geom_dims_*()} selects a default matrix based on common practice, e.g.
-points for rows and arrows for columns.
 }
 
 \section{Computed variables}{
@@ -170,24 +160,24 @@ transformation and can be accessed with \link[ggplot2:aes_eval]{delayed evaluati
 
 \examples{
 # stack loss gradient
-stackloss |> 
-  lm(formula = stack.loss ~ Air.Flow + Water.Temp + Acid.Conc.) |> 
-  coef() |> 
-  as.list() |> as.data.frame() |> 
+stackloss \%>\% 
+  lm(formula = stack.loss ~ Air.Flow + Water.Temp + Acid.Conc.) \%>\% 
+  coef() \%>\% 
+  as.list() \%>\% as.data.frame() \%>\% 
   subset(select = c(Air.Flow, Water.Temp, Acid.Conc.)) ->
   coef_data
 # gradient rule with respect to two predictors
 stackloss_centered <- scale(stackloss, scale = FALSE)
-stackloss_centered |> 
+stackloss_centered \%>\% 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
-  coord_square() + geom_origin() +
+  coord_square() +
   geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   stat_rule(
     geom = "axis",
     data = coef_data,
     referent = stackloss_centered,
-    fun.offset = \(x) minabspp(x, p = .5)
+    fun.offset = function(x) minabspp(x, p = .5)
   )
 }
 \references{
@@ -204,7 +194,6 @@ Other stat layers:
 \code{\link{stat_chull}()},
 \code{\link{stat_cone}()},
 \code{\link{stat_depth}()},
-\code{\link{stat_projection}()},
 \code{\link{stat_scale}()},
 \code{\link{stat_spantree}()}
 }

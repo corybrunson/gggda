@@ -35,7 +35,6 @@
 #'   
 
 #' @template stat-referent
-#' @template biplot-layers
 
 #' @section Computed variables: These are calculated during the statistical
 #'   transformation and can be accessed with [delayed
@@ -47,10 +46,11 @@
 #' }
 
 #' @include stat-referent.r
+#' @importFrom tidyr nest unnest
 #' @inheritParams ggplot2::layer
 #' @inheritParams stat_referent
 #' @inheritParams stat_center
-#' @template param-stat
+#' @template param-layer
 #' @param fun.lower,fun.upper,fun.offset Functions used to determine the limits
 #'   of the rules and the translations of the axes from the projections of
 #'   `referent` onto the axes and onto their normal vectors.
@@ -89,7 +89,7 @@ stat_rule <- function(
   LayerRef
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -141,9 +141,9 @@ StatRule <- ggproto(
     
     # compute limits and offsets
     lofun <- make_limits_offset_fun(fun.lower, fun.upper, fun.offset, fun.args)
-    data <- tidyr::nest(data, df = -tidyselect::all_of(group_vars))
+    data <- nest(data, df = -tidyselect::all_of(group_vars))
     data$df <- lapply(data$df, lofun)
-    data <- tidyr::unnest(data, df)
+    data <- unnest(data, df)
     
     # additional computed variables
     if (! is.null(data[["offset"]])) {
@@ -206,11 +206,11 @@ make_limits_offset_fun <- function(fun.lower, fun.upper, fun.offset, fun.args) {
       # TODO: If either range limit is `NULL`, make it the reverse of the other?
       if (is.null(fun.lower)) {
         fun.upper <- match.fun(fun.upper)
-        # fun.lower <- \(x) x[which(-x == fun.upper(-x))[1L]]
+        # fun.lower <- function(x) x[which(-x == fun.upper(-x))[1L]]
         fun.lower <- const0
       } else if (is.null(fun.upper)) {
         fun.lower <- match.fun(fun.lower)
-        # fun.upper <- \(x) x[which(-x == fun.lower(-x))[1L]]
+        # fun.upper <- function(x) x[which(-x == fun.lower(-x))[1L]]
         fun.upper <- const0
       }
     }

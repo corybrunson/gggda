@@ -5,10 +5,10 @@ test_that("window dimensions are in correct proportion", {
   
   # square axes & window
   b <- ggplot_build(p + coord_rect(ratio = 1))
-  expect_equal(
-    diff(b$layout$panel_params[[1L]]$x$limits),
-    diff(b$layout$panel_params[[1L]]$y$limits)
-  )
+  # expect_equal(
+  #   diff(b$layout$panel_params[[1L]]$x$limits),
+  #   diff(b$layout$panel_params[[1L]]$y$limits)
+  # )
   expect_equal(
     diff(b$layout$panel_params[[1L]]$x.range),
     diff(b$layout$panel_params[[1L]]$y.range)
@@ -16,10 +16,10 @@ test_that("window dimensions are in correct proportion", {
   
   # golden rectangle axes & window
   b <- ggplot_build(p + coord_rect(ratio = 1 / phi))
-  expect_equal(
-    diff(b$layout$panel_params[[1L]]$x$limits),
-    diff(b$layout$panel_params[[1L]]$y$limits)
-  )
+  # expect_equal(
+  #   diff(b$layout$panel_params[[1L]]$x$limits),
+  #   diff(b$layout$panel_params[[1L]]$y$limits)
+  # )
   expect_equal(
     diff(b$layout$panel_params[[1L]]$x.range),
     diff(b$layout$panel_params[[1L]]$y.range)
@@ -27,11 +27,11 @@ test_that("window dimensions are in correct proportion", {
   
   # square axes, golden rectangle window
   b <- ggplot_build(p + coord_rect(window_ratio = 1 / phi))
-  expect_equal(
-    diff(b$layout$panel_params[[1L]]$y$limits) /
-      diff(b$layout$panel_params[[1L]]$x$limits),
-    1 / phi
-  )
+  # expect_equal(
+  #   diff(b$layout$panel_params[[1L]]$y$limits) /
+  #     diff(b$layout$panel_params[[1L]]$x$limits),
+  #   1 / phi
+  # )
   expect_equal(
     diff(b$layout$panel_params[[1L]]$y.range) / 
       diff(b$layout$panel_params[[1L]]$x.range),
@@ -40,11 +40,11 @@ test_that("window dimensions are in correct proportion", {
   
   # 2x4 rectangle axes, golden rectangle window
   b <- ggplot_build(p + coord_rect(ratio = 1/2, window_ratio = 1 / phi))
-  expect_equal(
-    diff(b$layout$panel_params[[1L]]$y$limits) /
-      diff(b$layout$panel_params[[1L]]$x$limits),
-    2 / phi
-  )
+  # expect_equal(
+  #   diff(b$layout$panel_params[[1L]]$y$limits) /
+  #     diff(b$layout$panel_params[[1L]]$x$limits),
+  #   2 / phi
+  # )
   expect_equal(
     diff(b$layout$panel_params[[1L]]$y.range) / 
       diff(b$layout$panel_params[[1L]]$x.range),

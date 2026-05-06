@@ -1,11 +1,12 @@
-
-#' A synchronization flag.
+#' @title A synchronization flag
 #'
-#' The inert function `sync()` operates analogously to [ggplot2::waiver()] to
-#' indicate that an auxiliary aesthetic should be synchronized to a standard
-#' aesthetic (when it is mapped from data). `is.sync()` reports whether an
-#' object is of this class.
+#' @description The inert function `sync()` operates analogously to
+#'   [ggplot2::waiver()] to indicate that an auxiliary aesthetic should be
+#'   synchronized to a standard aesthetic (when it is mapped from data).
+#'   `is.sync()` reports whether an object is of this class.
 #'
+#' @returns `sync()` returns an empty list with the `"sync"` class; `is.sync()`
+#'   returns a logical value of whether `x` inherits this class.
 #' @export
 #' @keywords internal
 sync <- function() structure(list(), class = "sync")
@@ -234,10 +235,10 @@ offset_xy <- function(data) {
   # positional variables to offset
   offset_cols <- lapply(
     c("x", "y"),
-    \(xy) paste0(xy, c("", "end", "tick"))
-  ) |> 
-    lapply(intersect, names(data)) |> 
-    stats::setNames(c("x", "y"))
+    function(xy) paste0(xy, c("", "end", "tick"))
+  )
+  offset_cols <- lapply(offset_cols, intersect, names(data))
+  names(offset_cols) <- c("x", "y")
   
   # offset positional variables
   for (col in offset_cols$x) data[[col]] <- data[[col]] + data$x_0

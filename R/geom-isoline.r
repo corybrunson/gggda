@@ -10,8 +10,6 @@
 
 #' @template ref-greenacre2010
 
-#' @template biplot-layers
-
 #' @section Aesthetics:
 
 #' `geom_isoline()` understands the following aesthetics (required aesthetics
@@ -84,7 +82,7 @@ geom_isoline <- function(
   )
 }
 
-#' @rdname ordr-ggproto
+#' @rdname gggda-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

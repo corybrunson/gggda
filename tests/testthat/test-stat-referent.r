@@ -29,8 +29,8 @@ test_that("only inherited data influences plotting window", {
 
 test_that("reference data does not affect computation in base layer", {
   expect_equal(
-    StatReferent$compute_group(df1) |> head(n = 2),
-    StatReferent$compute_group(df1, referent = df2) |> head(n = 2)
+    StatReferent$compute_group(df1) %>% head(n = 2),
+    StatReferent$compute_group(df1, referent = df2) %>% head(n = 2)
   )
 })
 
@@ -41,4 +41,29 @@ test_that("mapping and referent parameters together yield new plotting data", {
   )$referent
   expect_equal(names(df2_setup), c("x", "y"))
   expect_equal(nrow(df2_setup), 4L)
+})
+
+test_that("passing a function to `referent` evaluates it at `data`", {
+  p <- ggplot(mtcars, aes(x = hp/100, y = wt)) +
+    stat_referent(
+      data = head,
+      referent = function(d) as.data.frame(lapply(d, mean))
+    )
+  b <- ggplot_build(p)
+  # original data
+  expect_identical(b@plot@data, mtcars)
+  # head of original data
+  expect_equal(nrow(b@data[[1]]), 6L)
+  # means of original data
+  expect_equal(
+    b@plot@layers$stat_referent$stat_params$referent,
+    as.data.frame(lapply(mtcars, mean))
+  )
+  # means of head of original data
+  expect_equal(
+    lapply(subset(layer_data(p, 1), select = c(x, y)), mean),
+    lapply(head(subset(transform(mtcars, x = hp/100, y = wt),
+                       select = c(x, y))), mean)
+  )
+  
 })
