@@ -6,16 +6,34 @@ A new `label_placement` parameter controls where axis labels are placed.
 Previously they were placed along the axis at the end (intersection with the plot window border) farther from the origin.
 This is now the `"peripheral"` option, while the default is `"positive"`, which places them at the end at which the axis takes a greater value.
 
+## outlier control for bagplots
+
+New `outlier_points` and `outlier_labels` parameters toggle these elements of
+bagplots.
+Additional text aesthetics are introduced for the latter.
+
+## pre-processing of referent data
+
+As with the `data` argument, the `referent` argument of `stat_referent()` can
+now be passed a function, which will be evaluated at `data` to obtain the
+reference data for the plot layer.
+The evaluation is done during addition of a layer of class `LayerRef`.
+
 # gggda 0.1.1
 
-This patch fixes a bug in the peel stat and adds unit tests for it and the scale stat.
+This patch fixes a bug in the peel stat and adds unit tests for it and the scale
+stat.
 
-To resolve outstanding CRAN checks, a cross-reference to {ordr} has been replaced with a URL and {dplyr} and {tidyr} functions previously called using the double-colon operator have been imported instead.
+To resolve outstanding CRAN checks, a cross-reference to {ordr} has been
+replaced with a URL and {dplyr} and {tidyr} functions previously called using
+the double-colon operator have been imported instead.
 
 # gggda 0.1.0
 
-The inaugural version of {gggda} was spun off the post-v0.1.1 development version of {ordr}.
-Upgrades to {ordr} components since that release that are included in {gggda} are listed here.
+The inaugural version of {gggda} was spun off the post-v0.1.1 development
+version of {ordr}.
+Upgrades to {ordr} components since that release that are included in {gggda}
+are listed here.
 
 ## infrastructure and standards
 
@@ -27,30 +45,44 @@ Unit tests have been written for all ggproto shortcuts.
 
 ### GDA-geared coordinate systems
 
-Two new coordinate systems provide control over the aspect ratio of the plotting window without compromising that of the (artificial) coordinate axes:
-`GeomRect` (alias `GeomSquare`) extends `GeomFixed` with an `window_ratio` parameter for the plotting window, while `GeomBiplot` removes the `ratio` parameter and forces the coordinate axes to have aspect ratio 1.
+Two new coordinate systems provide control over the aspect ratio of the plotting
+window without compromising that of the (artificial) coordinate axes:
+`GeomRect` (alias `GeomSquare`) extends `GeomFixed` with an `window_ratio`
+parameter for the plotting window, while `GeomBiplot` removes the `ratio`
+parameter and forces the coordinate axes to have aspect ratio 1.
 
 ## up( or down)grades to existing plot layers
 
 ### combined vector and radiating text geom (breaking change)
 
 The 'vector' and 'text_radiate' geoms have been combined.
-The shortcut `geom_text_radiate()` is deprecated, and `geom_vector()` generates radiating labels by default.
+The shortcut `geom_text_radiate()` is deprecated, and `geom_vector()` generates
+radiating labels by default.
 
 ### debugged axis geom
 
-The 'axis' and 'isoline' geoms hit trouble when one or more points lay at the origin (`x^2 + y^2 == 0`). These cases have now been removed in `setup_data()`.
+The 'axis' and 'isoline' geoms hit trouble when one or more points lay at the
+origin (`x^2 + y^2 == 0`). These cases have now been removed in `setup_data()`.
 
 ### reconciliation of summary functions
 
-The 'center' and 'star' stats now follow the 'summary' stat convention of using `fun`, so `fun.center` is deprecated.
-Additionally, `fun.ord` accepts a function that summarizes the columns of a matrix, which accommodates summaries like the depth median that do not decompose along orthogonal axes.
+The 'center' and 'star' stats now follow the 'summary' stat convention of using
+`fun`, so `fun.center` is deprecated.
+Additionally, `fun.ord` accepts a function that summarizes the columns of a
+matrix, which accommodates summaries like the depth median that do not decompose
+along orthogonal axes.
 
 ### revamped handling of secondary aesthetics (breaking change)
 
-Previously, underscore-separated parameters like `label_colour` were used to specify secondary aesthetics, i.e. aesthetics for graphical objects other than those considered "primary" for the layer.
-Their behavior has been debugged by mimicking the use of period-separated parameters like `label.colour` in {ggplot2} v3.5.1, except for the new bagplot geom, for which their behavior is based on that of `geom_boxplot()` in the current development version of {ggplot2}.
-This induces some breaking changes due to the renaming of most, and the removal of some, such parameters.
+Previously, underscore-separated parameters like `label_colour` were used to
+specify secondary aesthetics, i.e. aesthetics for graphical objects other than
+those considered "primary" for the layer.
+Their behavior has been debugged by mimicking the use of period-separated
+parameters like `label.colour` in {ggplot2} v3.5.1, except for the new bagplot
+geom, for which their behavior is based on that of `geom_boxplot()` in the
+current development version of {ggplot2}.
+This induces some breaking changes due to the renaming of most, and the removal
+of some, such parameters.
 
 ### deprecation of scale stat
 
@@ -60,47 +92,74 @@ The simple and experimental `StatScale` has been deprecated.
 
 ### referential stats
 
-A new statistical transformation serves to parent specific "referential stats", meaning those that depend on non-inherited (in this setting, positional) data to transform the inherited data. The reference data are passed to the new `referent` parameter. The new stat is coupled with an additional `LayerRef` class that enables `ggplot_add()` to pass the inherited positional aesthetics to `$setup_params()`. Biplot-specific `stat_*_*()` shortcuts accept additional argument types to `referent` that result in the opposite matrix factor being used as reference data.
+A new statistical transformation serves to parent specific "referential stats",
+meaning those that depend on non-inherited (in this setting, positional) data to
+transform the inherited data. The reference data are passed to the new
+`referent` parameter. The new stat is coupled with an additional `LayerRef`
+class that enables `ggplot_add()` to pass the inherited positional aesthetics to
+`$setup_params()`. Biplot-specific `stat_*_*()` shortcuts accept additional
+argument types to `referent` that result in the opposite matrix factor being
+used as reference data.
 
 ### rule stat
 
-A new 'rule' statistical transformation computes additional position aesthetics that the 'axis' geom uses to limit and offset axes. The stat is referential and expects a set of functions that compute limits `lower` and `upper` along the axes and `yintercept` and `xintercept` associated with offset axes. The 'axis' geom preprocesses these aesthetics to rule endpoints `xmin,ymin,xmax,ymax` and offset vectors `xend,yend` to force the plotting window to contain the limited axis segments or, if the axes remain lines, the offsets where they are centered.
+A new 'rule' statistical transformation computes additional position aesthetics
+that the 'axis' geom uses to limit and offset axes. The stat is referential and
+expects a set of functions that compute limits `lower` and `upper` along the
+axes and `yintercept` and `xintercept` associated with offset axes. The 'axis'
+geom preprocesses these aesthetics to rule endpoints `xmin,ymin,xmax,ymax` and
+offset vectors `xend,yend` to force the plotting window to contain the limited
+axis segments or, if the axes remain lines, the offsets where they are centered.
 
 ### peel stat
 
-A new 'peel' statistical transformation computes nested convex hulls containing specified fractions of data.
+A new 'peel' statistical transformation computes nested convex hulls containing
+specified fractions of data.
 
 ### depth stat
 
-A new 'depth' statistical transformation estimates depth across a grid and is paired with `GeomContour` to produce depth contours, which can be used to plot alpha bags.
+A new 'depth' statistical transformation estimates depth across a grid and is
+paired with `GeomContour` to produce depth contours, which can be used to plot
+alpha bags.
 
 ### adapted density stat & geom
 
-Aided by element standardization, the classic `density_2d` statistical transformation and geometric construction are adapted to biplots.
-Currently, source code generation does not respect fixed parameters passed to `layer()` by the `stat_*()` and `geom_*()` shortcuts; as a consequence, `contour = TRUE` must be manually passed to `geom_*_density_2d()`.
+Aided by element standardization, the classic `density_2d` statistical
+transformation and geometric construction are adapted to biplots.
+Currently, source code generation does not respect fixed parameters passed to
+`layer()` by the `stat_*()` and `geom_*()` shortcuts; as a consequence, `contour
+= TRUE` must be manually passed to `geom_*_density_2d()`.
 
 # ordr 0.1.1
 
 ## `linewidth` aesthetic (breaking change)
 
-An upcoming release of {ggplot2} controls stroke width using the new `linewidth` aesthetic rather than `size`. This {ordr} release adapts to this change internally for `GeomUnitCircle` and by updating row and column layers automatically adapted from {ggplot2}. (#50)
+An upcoming release of {ggplot2} controls stroke width using the new `linewidth`
+aesthetic rather than `size`. This {ordr} release adapts to this change
+internally for `GeomUnitCircle` and by updating row and column layers
+automatically adapted from {ggplot2}. (#50)
 
 ## class 'eigen'
 
-Methods are added for the 'eigen' class returned by `eigen()`, and the internal `eigen_ord()` function and its methods are updated accordingly.
+Methods are added for the 'eigen' class returned by `eigen()`, and the internal
+`eigen_ord()` function and its methods are updated accordingly.
 
 ## list tidiers (breaking change)
 
-The previous version extended the 'list' method for {broom}'s `tidy()` and `glance()` functions to recognize the output of `cmdscale()` and of `cancor()`.
-These have been spun off to a nascent helper package, {broom.list}, to reduce size and prevent attachment warnings.
+The previous version extended the 'list' method for {broom}'s `tidy()` and
+`glance()` functions to recognize the output of `cmdscale()` and of `cancor()`.
+These have been spun off to a nascent helper package, {broom.list}, to reduce
+size and prevent attachment warnings.
 
 # ordr 0.1.0
 
-In addition to minor changes, the following substantive changes are made from v0.0.2:
+In addition to minor changes, the following substantive changes are made from
+v0.0.2:
 
 ## augmentation
 
-The column names of `augment_ord()` and `tidy()` outputs are no longer prefixed by periods.
+The column names of `augment_ord()` and `tidy()` outputs are no longer prefixed
+by periods.
 
 ## list tidiers
 
@@ -108,7 +167,8 @@ A new list tidier for `cancor()` output is introduced.
 
 ## negation
 
-Tools to negate a subset of artificial dimensions, adapted from the sandboxed set of alignment tools, are provided.
+Tools to negate a subset of artificial dimensions, adapted from the sandboxed
+set of alignment tools, are provided.
 
 ## convenience function
 
@@ -116,36 +176,50 @@ The `ordinate()` function is now a generic with methods for four data classes.
 
 ## ggbiplot
 
-The logical `prediction` parameter is replaced with the character-valued `axis.type`, based on the `ax.type` parameter used in {UBbipl} (Gower, Gardner--Lubbe, & le Roux, 2011).
+The logical `prediction` parameter is replaced with the character-valued
+`axis.type`, based on the `ax.type` parameter used in {UBbipl} (Gower,
+Gardner--Lubbe, & le Roux, 2011).
 
 ## tests
 
-Unit tests are overhauled to remove contexts, omit ad hoc tests, standardize method tests, and cover additional methods.
+Unit tests are overhauled to remove contexts, omit ad hoc tests, standardize
+method tests, and cover additional methods.
 
 ## documentation
 
-The term 'accessor', used to refer to S3 class methods to recover standardized model components, has been changed to 'recoverer'.
+The term 'accessor', used to refer to S3 class methods to recover standardized
+model components, has been changed to 'recoverer'.
 
 # ordr 0.0.2
 
-This pre-release makes several substantive changes in preparation for CRAN submission.
+This pre-release makes several substantive changes in preparation for CRAN
+submission.
 
 ## element types
 
-Annotation of active and supplementary elements is standardized: The character augmentation `.element` replaces the logical `.supplement`, and class methods either omit it entirely (when all retrieved elements are active) or include it in both row and column augmentation (when either includes supplementary elements). The value of `.element` is either 'active' or a type of supplement, e.g. 'score'.
+Annotation of active and supplementary elements is standardized: The character
+augmentation `.element` replaces the logical `.supplement`, and class methods
+either omit it entirely (when all retrieved elements are active) or include it
+in both row and column augmentation (when either includes supplementary
+elements). The value of `.element` is either 'active' or a type of supplement,
+e.g. 'score'.
 
 ## dependencies
 
 Extraneous dependencies are dropped to reduce overhead. This takes two forms:
 
-1. Methods for classes from specialty (lower-priority) packages ({candisc} and {ca}) are moved to {ordr.extra} and replaced with methods for classes from higher-priority packages ({stats} and {MASS}).
+1. Methods for classes from specialty (lower-priority) packages ({candisc} and
+{ca}) are moved to {ordr.extra} and replaced with methods for classes from
+higher-priority packages ({stats} and {MASS}).
 2. One-off uses of specialty packages for examples and vignettes are replaced.
 
 ## documentation
 
-The `Description` field in DESCRIPTION is expanded and documentation throughout is slightly revised, including some new references.
+The `Description` field in DESCRIPTION is expanded and documentation throughout
+is slightly revised, including some new references.
 
 # ordr 0.0.1
 
 This is a pre-release in anticipation of a first CRAN submission.
-Upgrades between this pre-release and CRAN submission will focus on addressing issues.
+Upgrades between this pre-release and CRAN submission will focus on addressing
+issues.

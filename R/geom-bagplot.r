@@ -39,11 +39,19 @@
 #' - `shape`
 #' - `stroke`
 #' - `size`
+#' - `label`
+#' - `hjust`
+#' - `vjust`
+#' - `angle`
 #' - `group`
 #' 
 
 #' @import ggplot2
 #' @inheritParams ggplot2::layer
+#' @param outlier_points Logical; whether to plot outlier markers. Defaults to
+#'   `! outlier_labels`.
+#' @param outlier_labels Logical; whether to plot outlier labels. Defaults to
+#'   `FALSE`.
 #' @param bag.linetype,bag.linewidth,bag.colour,bag.color,bag.fill,bag.alpha
 #'   Default aesthetics for bags. Set to [sync()] to inherit from the data's
 #'   aesthetics or to `NULL` to use the data's aesthetics.
@@ -56,6 +64,9 @@
 #' @param outlier.shape,outlier.stroke,outlier.size,outlier.colour,outlier.color,outlier.fill,outlier.alpha
 #'   Default aesthetics for outliers. Set to [sync()] to inherit from the data's
 #'   aesthetics or to `NULL` to use the data's aesthetics.
+#' @param text.size,text.colour,text.color,text.alpha
+#'   Default aesthetics for outlier labels. Set to NULL to inherit from the
+#'   data's aesthetics.
 #' @template param-geom
 #' @template return-layer
 #' @family geom layers
@@ -63,6 +74,7 @@
 #' @export
 geom_bagplot <- function(
     mapping = NULL, data = NULL, stat = "bagplot", position = "identity",
+    outlier_points = ! outlier_labels, outlier_labels = FALSE,
     ...,
     # NB: Defaults declared here will be missed by `layer(geom = "bagplot")` and
     # `stat_bagplot()`; they must be coordinated with the internal `*_defaults`
@@ -83,6 +95,9 @@ geom_bagplot <- function(
     outlier.shape = sync(), outlier.stroke = sync(), outlier.size = sync(),
     outlier.colour = sync(), outlier.color = NULL,
     outlier.fill = NA, outlier.alpha = NA,
+    # label_defaults
+    text.size = 3.88,
+    text.colour = sync(), text.color = sync(), text.alpha = sync(),
     na.rm = FALSE,
     show.legend = NA, inherit.aes = TRUE
 ) {
@@ -121,6 +136,13 @@ geom_bagplot <- function(
     alpha  = outlier.alpha
   )
   
+  label_gp <- list(
+    size   = text.size,
+    # angle  = text.angle,
+    colour = text.color %||% text.colour,
+    alpha  = text.alpha
+  )
+  
   layer(
     data = data,
     mapping = mapping,
@@ -130,10 +152,12 @@ geom_bagplot <- function(
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
+      outlier_points = outlier_points, outlier_labels = outlier_labels,
       bag_gp = bag_gp,
       median_gp  = median_gp,
       fence_gp   = fence_gp,
       outlier_gp = outlier_gp,
+      label_gp   = label_gp,
       na.rm = na.rm,
       ...
     )
@@ -150,20 +174,26 @@ GeomBagplot <- ggproto(
   required_aes = c("x", "y", "component"),
   
   default_aes = aes(
-    # taken from `GeomPolygon` and `GeomPoint`; required for point grobs
+    # taken from `GeomPolygon`, `GeomPoint`, and `GeomText`;
+    # required for point grobs
     linewidth = 0.5, linetype = 1L,
     shape = 19L, stroke = 0.5, size = 1.5,
-    colour = "black", fill = "grey55", alpha = NA
+    colour = "black", fill = "grey55", alpha = NA,
+    angle = 0, hjust = 0.5, vjust = 0.5,
+    label = "", family = "", fontface = 1L
   ),
   
   # TODO: Use `$draw_group()` instead, if bugs can be resolved.
   draw_panel = function(
     data, panel_params, coord,
-    bag_gp = NULL, median_gp = NULL, fence_gp = NULL, outlier_gp = NULL,
+    outlier_points = ! outlier_labels, outlier_labels = FALSE,
+    bag_gp = NULL, median_gp = NULL, fence_gp = NULL,
+    outlier_gp = NULL, label_gp = NULL,
     na.rm = FALSE
   ) {
     # save(data, panel_params, coord,
-    #      bag_gp, median_gp, fence_gp, outlier_gp,
+    #      outlier_points, outlier_labels,
+    #      bag_gp, median_gp, fence_gp, outlier_gp, label_gp,
     #      na.rm,
     #      file = "geom-bagplot-draw-panel.rda")
     # load("geom-bagplot-draw-panel.rda")
@@ -259,32 +289,65 @@ GeomBagplot <- ggproto(
     }
     
     # outliers data
-    if (nrow(outlier_data <- subset(data, component == "outliers")) > 0L) {
+    if (nrow(label_data <- outlier_data <-
+             subset(data, component == "outliers")) > 0L) {
       
-      # default aesthetics (if not to coordinate with bag and median)
-      outlier_defaults <- list(
-        fill = NA,
-        alpha = NA
-      )
-      # specify independent aesthetics
-      outlier_aes <- GeomPoint$aesthetics()
-      for (aes_name in outlier_aes) {
-        outlier_name <- paste0("outlier.", aes_name)
-        outlier_data[[aes_name]] <- 
-          (if (is.sync(outlier_gp[[aes_name]])) 
-            outlier_data[[aes_name]]) %||%
-          outlier_gp[[aes_name]] %||% 
-          outlier_defaults[[aes_name]] %||% 
-          outlier_data[[aes_name]]
+      # if outlier markers
+      if (outlier_points) {
+        
+        # default aesthetics (if not to coordinate with bag and median)
+        outlier_defaults <- list(
+          fill = NA,
+          alpha = NA
+        )
+        # specify independent aesthetics
+        outlier_aes <- GeomPoint$aesthetics()
+        for (aes_name in outlier_aes) {
+          outlier_name <- paste0("outlier.", aes_name)
+          outlier_data[[aes_name]] <- 
+            (if (is.sync(outlier_gp[[aes_name]])) 
+              outlier_data[[aes_name]]) %||%
+            outlier_gp[[aes_name]] %||% 
+            outlier_defaults[[aes_name]] %||% 
+            outlier_data[[aes_name]]
+        }
+        outlier_aes <- intersect(outlier_aes, names(outlier_data))
+        outlier_data <- subset(outlier_data, select = outlier_aes)
+        
+        # outliers point grob
+        grobs <- c(grobs, list(GeomPoint$draw_panel(
+          data = outlier_data, panel_params = panel_params, coord = coord,
+          na.rm = na.rm
+        )))
       }
-      outlier_aes <- intersect(outlier_aes, names(outlier_data))
-      outlier_data <- subset(outlier_data, select = outlier_aes)
       
-      # outliers point grob
-      grobs <- c(grobs, list(GeomPoint$draw_panel(
-        data = outlier_data, panel_params = panel_params, coord = coord,
-        na.rm = na.rm
-      )))
+      # if outlier labels
+      if (outlier_labels) {
+        
+        # default aesthetics
+        label_defaults <- list(
+          size = 3.88
+        )
+        # specify independent aesthetics
+        label_aes <- GeomText$aesthetics()
+        for (aes_name in label_aes) {
+          label_name <- paste0("outlier.", aes_name)
+          label_data[[aes_name]] <- 
+            (if (is.sync(label_gp[[aes_name]])) 
+              label_data[[aes_name]]) %||%
+            label_gp[[aes_name]] %||% 
+            label_defaults[[aes_name]] %||% 
+            label_data[[aes_name]]
+        }
+        label_aes <- intersect(label_aes, names(label_data))
+        label_data <- subset(label_data, select = label_aes)
+        
+        # outliers text grob
+        grobs <- c(grobs, list(GeomText$draw_panel(
+          data = label_data, panel_params = panel_params, coord = coord,
+          na.rm = na.rm
+        )))
+      }
     }
     
     grob <- do.call(grid::grobTree, grobs)
