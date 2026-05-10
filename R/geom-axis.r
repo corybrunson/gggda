@@ -55,7 +55,6 @@
 #'   tick marks, and text value marks along the axes.
 #' @param label_dodge Numeric; the orthogonal distance of the axis label from
 #'   the axis, as a proportion of the minimum of the plot width and height.
-#' @param label_rotate Numeric; the angle of the axis label from the axis.
 #' @param label_placement Character; how to place the labels along the axes.
 #'   Matched to `"positive"` (the default; at the increasing end of the axis),
 #'   `"negative"` (at the decreasing end), `"peripheral"` (at the end farther
@@ -64,16 +63,15 @@
 #'   the minimum of the plot width and height.
 #' @param text_dodge Numeric; the orthogonal distance of tick mark text from the
 #'   axis, as a proportion of the minimum of the plot width and height.
-#' @param text_rotate Numeric; the angle of the tick mark text from the axis.
 #' @param axis.linewidth,axis.linetype,axis.colour,axis.color,axis.alpha Default
 #'   aesthetics for axes. Set to NULL to inherit from the data's aesthetics.
-#' @param label.hjust,label.vjust,label.family,label.fontface,label.colour,label.color,label.alpha
+#' @param label.size,label.angle,label.hjust,label.vjust,label.family,label.fontface,label.colour,label.color,label.alpha
 #'   Default aesthetics for labels. Set to NULL to inherit from the data's
 #'   aesthetics.
 #' @param tick.linewidth,tick.linetype,tick.colour,tick.color,tick.alpha Default
 #'   aesthetics for tick marks. Set to NULL to inherit from the data's
 #'   aesthetics.
-#' @param text.size,text.hjust,text.vjust,text.family,text.fontface,text.colour,text.color,text.alpha
+#' @param text.size,text.angle,text.hjust,text.vjust,text.family,text.fontface,text.colour,text.color,text.alpha
 #'   Default aesthetics for tick mark labels. Set to NULL to inherit from the
 #'   data's aesthetics.
 #' @template return-layer
@@ -85,8 +83,8 @@ geom_axis <- function(
   axis_labels = TRUE, axis_ticks = TRUE, axis_text = TRUE,
   by = NULL, num = NULL,
   tick_length = .025,
-  text_dodge = .03, text_rotate = 0,
-  label_dodge = .03, label_rotate = 0,
+  text_dodge = .03,
+  label_dodge = .03,
   label_placement = c("positive", "negative", "peripheral"),
   ...,
   # NB: Fallbacks declared here will be missed by `layer()` and `stat_*()`;
@@ -95,7 +93,7 @@ geom_axis <- function(
   axis.linewidth = sync(), axis.linetype = sync(),
   axis.colour = sync(), axis.color = NULL, axis.alpha = sync(),
   # label_fallback
-  label.size = sync(),
+  label.size = sync(), label.angle = 0,
   label.hjust = sync(), label.vjust = sync(),
   label.family = sync(), label.fontface = sync(),
   label.colour = sync(), label.color = NULL, label.alpha = sync(),
@@ -105,7 +103,7 @@ geom_axis <- function(
   tick.colour = sync(), tick.color = NULL, tick.alpha = sync(),
   # text_fallback
   # TODO: Inherit from theme.
-  text.size = 2.6,
+  text.size = 2.6, text.angle = 0,
   text.hjust = sync(), text.vjust = sync(),
   # TODO: Inherit from theme.
   text.family = sync(), text.fontface = sync(),
@@ -124,6 +122,7 @@ geom_axis <- function(
   
   label_gp <- list(
     size     = label.size,
+    angle    = label.angle,
     hjust    = label.hjust,
     vjust    = label.vjust,
     family   = label.family,
@@ -140,6 +139,7 @@ geom_axis <- function(
   
   text_gp <- list(
     size     = text.size,
+    angle    = text.angle,
     hjust    = text.hjust,
     vjust    = text.vjust,
     family   = text.family,
@@ -160,8 +160,8 @@ geom_axis <- function(
       axis_labels = axis_labels, axis_ticks = axis_ticks, axis_text = axis_text,
       by = by, num = num,
       tick_length = tick_length,
-      text_dodge = text_dodge, text_rotate = text_rotate,
-      label_dodge = label_dodge, label_rotate = label_rotate,
+      text_dodge = text_dodge,
+      label_dodge = label_dodge,
       label_placement = label_placement,
       axis_gp  = axis_gp,
       label_gp = label_gp,
@@ -208,6 +208,10 @@ GeomAxis <- ggproto(
     } else if (is.null(params[["by"]]) && is.null(params[["num"]])) {
       params$num <- 6L
     }
+    
+    # fill in angles if necessary
+    if (is.null(params$label_gp$angle)) params$label_gp$angle <- 0
+    if (is.null(params$text_gp$angle)) params$text_gp$angle <- 0
     
     params
   },
@@ -257,8 +261,8 @@ GeomAxis <- ggproto(
     axis_labels = TRUE, axis_ticks = TRUE, axis_text = TRUE,
     by = NULL, num = NULL,
     tick_length = .025,
-    text_dodge = .03, text_rotate = 0,
-    label_dodge = .03, label_rotate = 0,
+    text_dodge = .03,
+    label_dodge = .03,
     label_placement = c("positive", "negative", "peripheral"),
     axis_gp  = NULL, label_gp = NULL, tick_gp  = NULL, text_gp  = NULL,
     parse = FALSE, check_overlap = FALSE,
@@ -268,8 +272,8 @@ GeomAxis <- ggproto(
     #      axis_labels, axis_ticks, axis_text,
     #      by, num,
     #      tick_length,
-    #      text_dodge, text_rotate,
-    #      label_dodge, label_rotate,
+    #      text_dodge,
+    #      label_dodge,
     #      label_placement,
     #      axis_gp, label_gp, tick_gp, text_gp,
     #      parse, check_overlap,
@@ -384,7 +388,7 @@ GeomAxis <- ggproto(
       
       # specify independent aesthetics
       label_fallback <- list()
-      label_aes <- GeomText$aesthetics()
+      label_aes <- setdiff(GeomText$aesthetics(), "angle")
       for (aes_name in label_aes) {
         label_data[[aes_name]] <- 
           (if (is.sync(label_gp[[aes_name]])) 
@@ -417,7 +421,7 @@ GeomAxis <- ggproto(
       # update text angle
       label_data <- transform(
         label_data,
-        angle = atan(tan(angle)) + label_rotate * pi / 180
+        angle = atan(tan(angle)) + label_gp$angle * pi / 180
       )
       # put total angle in degrees
       label_data$angle <- label_data$angle * 180 / pi
@@ -476,7 +480,7 @@ GeomAxis <- ggproto(
       
       # specify independent aesthetics
       text_fallback <- list(size = 2.6)
-      text_aes <- GeomText$aesthetics()
+      text_aes <- setdiff(GeomText$aesthetics(), "angle")
       for (aes_name in text_aes) {
         text_data[[aes_name]] <- 
           (if (is.sync(text_gp[[aes_name]])) 
@@ -503,7 +507,7 @@ GeomAxis <- ggproto(
       # update text angle and put in degrees
       text_data <- transform(
         text_data,
-        angle = atan(tan(angle)) * 180 / pi + text_rotate
+        angle = atan(tan(angle)) * 180 / pi + text_gp$angle
       )
       
       if (nrow(text_data) > 0L) {

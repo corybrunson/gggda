@@ -54,8 +54,8 @@ geom_rule <- function(
   by = NULL, num = NULL,
   snap_rule = TRUE,
   tick_length = .025,
-  text_dodge = .03, text_rotate = 0,
-  label_dodge = .03, label_rotate = 0,
+  text_dodge = .03,
+  label_dodge = .03,
   ...,
   # NB: Fallbacks declared here will be missed by `layer()` and `stat_*()`;
   # they must be coordinated with the internal `*_fallback`s.
@@ -63,7 +63,7 @@ geom_rule <- function(
   axis.linewidth = sync(), axis.linetype = sync(),
   axis.colour = sync(), axis.color = NULL, axis.alpha = sync(),
   # label_fallback
-  label.size = sync(),
+  label.size = sync(), label.angle = 0,
   label.hjust = sync(), label.vjust = sync(),
   label.family = sync(), label.fontface = sync(),
   label.colour = sync(), label.color = NULL, label.alpha = sync(),
@@ -73,7 +73,7 @@ geom_rule <- function(
   tick.colour = sync(), tick.color = NULL, tick.alpha = sync(),
   # text_fallback
   # TODO: Inherit from theme.
-  text.size = 2.6,
+  text.size = 2.6, text.angle = 0,
   text.hjust = sync(), text.vjust = sync(),
   # TODO: Inherit from theme.
   text.family = sync(), text.fontface = sync(),
@@ -92,6 +92,7 @@ geom_rule <- function(
   
   label_gp <- list(
     size     = label.size,
+    angle    = label.angle,
     hjust    = label.hjust,
     vjust    = label.vjust,
     family   = label.family,
@@ -108,6 +109,7 @@ geom_rule <- function(
   
   text_gp <- list(
     size     = text.size,
+    angle    = text.angle,
     hjust    = text.hjust,
     vjust    = text.vjust,
     family   = text.family,
@@ -129,8 +131,8 @@ geom_rule <- function(
       by = by, num = num,
       snap_rule = snap_rule,
       tick_length = tick_length,
-      text_dodge = text_dodge, text_rotate = text_rotate,
-      label_dodge = label_dodge, label_rotate = label_rotate,
+      text_dodge = text_dodge,
+      label_dodge = label_dodge,
       axis_gp  = axis_gp,
       label_gp = label_gp,
       tick_gp  = tick_gp,
@@ -194,8 +196,8 @@ GeomRule <- ggproto(
     by = NULL, num = NULL,
     snap_rule = TRUE,
     tick_length = .025,
-    text_dodge = .03, text_rotate = 0,
-    label_dodge = .03, label_rotate = 0,
+    text_dodge = .03,
+    label_dodge = .03,
     axis_gp  = NULL, label_gp = NULL, tick_gp  = NULL, text_gp  = NULL,
     parse = FALSE, check_overlap = FALSE,
     na.rm = FALSE
@@ -326,7 +328,7 @@ GeomRule <- ggproto(
       
       # specify independent aesthetics
       label_fallback <- list()
-      label_aes <- GeomText$aesthetics()
+      label_aes <- setdiff(GeomText$aesthetics(), "angle")
       for (aes_name in label_aes) {
         label_data[[aes_name]] <- 
           (if (is.sync(label_gp[[aes_name]])) 
@@ -368,7 +370,7 @@ GeomRule <- ggproto(
       # update text angle
       label_data <- transform(
         label_data,
-        angle = atan(tan(angle)) + label_rotate * pi / 180
+        angle = atan(tan(angle)) + label_gp$angle * pi / 180
       )
       # put total angle in degrees
       label_data$angle <- label_data$angle * 180 / pi
@@ -427,7 +429,7 @@ GeomRule <- ggproto(
       
       # specify independent aesthetics
       text_fallback <- list(size = 2.6)
-      text_aes <- GeomText$aesthetics()
+      text_aes <- setdiff(GeomText$aesthetics(), "angle")
       for (aes_name in text_aes) {
         text_data[[aes_name]] <- 
           (if (is.sync(text_gp[[aes_name]])) 
@@ -454,7 +456,7 @@ GeomRule <- ggproto(
       # update text angle and put in degrees
       text_data <- transform(
         text_data,
-        angle = atan(tan(angle)) * 180 / pi + text_rotate
+        angle = atan(tan(angle)) * 180 / pi + text_gp$angle
       )
       
       if (nrow(text_data) > 0L) {

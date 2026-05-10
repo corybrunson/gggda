@@ -16,9 +16,7 @@ geom_axis(
   num = NULL,
   tick_length = 0.025,
   text_dodge = 0.03,
-  text_rotate = 0,
   label_dodge = 0.03,
-  label_rotate = 0,
   label_placement = c("positive", "negative", "peripheral"),
   ...,
   axis.linewidth = sync(),
@@ -27,6 +25,7 @@ geom_axis(
   axis.color = NULL,
   axis.alpha = sync(),
   label.size = sync(),
+  label.angle = 0,
   label.hjust = sync(),
   label.vjust = sync(),
   label.family = sync(),
@@ -40,6 +39,7 @@ geom_axis(
   tick.color = NULL,
   tick.alpha = sync(),
   text.size = 2.6,
+  text.angle = 0,
   text.hjust = sync(),
   text.vjust = sync(),
   text.family = sync(),
@@ -113,12 +113,8 @@ the minimum of the plot width and height.}
 \item{text_dodge}{Numeric; the orthogonal distance of tick mark text from the
 axis, as a proportion of the minimum of the plot width and height.}
 
-\item{text_rotate}{Numeric; the angle of the tick mark text from the axis.}
-
 \item{label_dodge}{Numeric; the orthogonal distance of the axis label from
 the axis, as a proportion of the minimum of the plot width and height.}
-
-\item{label_rotate}{Numeric; the angle of the axis label from the axis.}
 
 \item{label_placement}{Character; how to place the labels along the axes.
 Matched to \code{"positive"} (the default; at the increasing end of the axis),
@@ -130,17 +126,14 @@ from the origin).}
 \item{axis.linewidth, axis.linetype, axis.colour, axis.color, axis.alpha}{Default
 aesthetics for axes. Set to NULL to inherit from the data's aesthetics.}
 
-\item{label.size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Replaced by the
-\code{linewidth} aesthetic. Size of label border, in mm.}
-
-\item{label.hjust, label.vjust, label.family, label.fontface, label.colour, label.color, label.alpha}{Default aesthetics for labels. Set to NULL to inherit from the data's
+\item{label.size, label.angle, label.hjust, label.vjust, label.family, label.fontface, label.colour, label.color, label.alpha}{Default aesthetics for labels. Set to NULL to inherit from the data's
 aesthetics.}
 
 \item{tick.linewidth, tick.linetype, tick.colour, tick.color, tick.alpha}{Default
 aesthetics for tick marks. Set to NULL to inherit from the data's
 aesthetics.}
 
-\item{text.size, text.hjust, text.vjust, text.family, text.fontface, text.colour, text.color, text.alpha}{Default aesthetics for tick mark labels. Set to NULL to inherit from the
+\item{text.size, text.angle, text.hjust, text.vjust, text.family, text.fontface, text.colour, text.color, text.alpha}{Default aesthetics for tick mark labels. Set to NULL to inherit from the
 data's aesthetics.}
 
 \item{parse}{If \code{TRUE}, the labels will be parsed into expressions and
@@ -262,7 +255,7 @@ ability_cor_eigen \%>\%
   coord_square() +
   geom_axis(
     aes(label = test),
-    text.color = "black", text.alpha = .5, text_rotate = -15
+    text.color = "black", text.alpha = .5, text.angle = -15
   ) +
   expand_limits(x = c(-1, 1), y = c(-1, 1))
 }

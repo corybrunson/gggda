@@ -129,6 +129,9 @@ GeomIsoline <- ggproto(
       params$num <- 6L
     }
     
+    # fill in angles if necessary
+    if (is.null(params$text_gp$angle)) params$text_gp$angle <- 0
+    
     params
   },
   
