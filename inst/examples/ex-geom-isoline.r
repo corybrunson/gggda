@@ -10,4 +10,4 @@ scale(stackloss, scale = FALSE) %>%
   ggplot(aes(x = Water.Temp, y = Air.Flow)) +
   coord_square() +
   geom_point(aes(size = stack.loss)) + scale_size_area() +
-  geom_isoline(data = coef_data)
+  geom_isoline(data = coef_data, text.hjust = 1)

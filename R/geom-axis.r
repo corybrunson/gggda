@@ -89,8 +89,8 @@ geom_axis <- function(
   label_dodge = .03, label_rotate = 0,
   label_placement = c("positive", "negative", "peripheral"),
   ...,
-  # NB: Fallbacks declared here will be missed by `layer(geom = "bagplot")` and
-  # `stat_bagplot()`; they must be coordinated with the internal `*_fallback`s.
+  # NB: Fallbacks declared here will be missed by `layer()` and `stat_*()`;
+  # they must be coordinated with the internal `*_fallback`s.
   # axis_fallback
   axis.linewidth = sync(), axis.linetype = sync(),
   axis.colour = sync(), axis.color = NULL, axis.alpha = sync(),

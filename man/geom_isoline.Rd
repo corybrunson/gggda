@@ -12,13 +12,17 @@ geom_isoline(
   isoline_text = TRUE,
   by = NULL,
   num = NULL,
-  text_dodge = 0.03,
+  text_dodge = 0.06,
   ...,
-  text.size = 3,
+  text.size = 3.18,
   text.angle = 0,
-  text.colour = NULL,
+  text.hjust = sync(),
+  text.vjust = sync(),
+  text.family = sync(),
+  text.fontface = sync(),
+  text.colour = sync(),
   text.color = NULL,
-  text.alpha = NULL,
+  text.alpha = sync(),
   parse = FALSE,
   check_overlap = FALSE,
   na.rm = FALSE,
@@ -84,9 +88,8 @@ or isoline, as a proportion of the minimum of the plot width and height.}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
-\item{text.size, text.angle, text.colour, text.color, text.alpha}{Default
-aesthetics for tick mark labels. Set to NULL to inherit from the data's
-aesthetics.}
+\item{text.size, text.angle, text.hjust, text.vjust, text.family, text.fontface, text.colour, text.color, text.alpha}{Default aesthetics for tick mark labels. Set to NULL to inherit from the
+data's aesthetics.}
 
 \item{parse}{If \code{TRUE}, the labels will be parsed into expressions and
 displayed as described in \code{?plotmath}.}
@@ -157,7 +160,7 @@ scale(stackloss, scale = FALSE) \%>\%
   ggplot(aes(x = Water.Temp, y = Air.Flow)) +
   coord_square() +
   geom_point(aes(size = stack.loss)) + scale_size_area() +
-  geom_isoline(data = coef_data)
+  geom_isoline(data = coef_data, text.hjust = 1)
 }
 \references{
 Greenacre MJ (2010) \emph{Biplots in Practice}. Fundacion BBVA, ISBN:

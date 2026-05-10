@@ -39,9 +39,9 @@
 #'   one.
 #' @param text_dodge Numeric; the orthogonal distance of the text from the axis
 #'   or isoline, as a proportion of the minimum of the plot width and height.
-#' @param text.size,text.angle,text.colour,text.color,text.alpha Default
-#'   aesthetics for tick mark labels. Set to NULL to inherit from the data's
-#'   aesthetics.
+#' @param text.size,text.angle,text.hjust,text.vjust,text.family,text.fontface,text.colour,text.color,text.alpha
+#'   Default aesthetics for tick mark labels. Set to NULL to inherit from the
+#'   data's aesthetics.
 #' @template return-layer
 #' @family geom layers
 #' @example inst/examples/ex-geom-isoline.r
@@ -50,14 +50,31 @@ geom_isoline <- function(
   mapping = NULL, data = NULL, stat = "identity", position = "identity",
   isoline_text = TRUE,
   by = NULL, num = NULL,
-  text_dodge = .03,
+  text_dodge = .06,
   ...,
-  text.size = 3, text.angle = 0,
-  text.colour = NULL, text.color = NULL, text.alpha = NULL,
+  # NB: Fallbacks declared here will be missed by `layer()` and `stat_*()`;
+  # they must be coordinated with the internal `*_fallback`s.
+  # text_fallback
+  text.size = 3.18, text.angle = 0,
+  text.hjust = sync(), text.vjust = sync(),
+  text.family = sync(), text.fontface = sync(),
+  text.colour = sync(), text.color = NULL, text.alpha = sync(),
   parse = FALSE, check_overlap = FALSE,
   na.rm = FALSE,
   show.legend = NA, inherit.aes = TRUE
 ) {
+  
+  text_gp <- list(
+    size     = text.size,
+    angle    = text.angle,
+    hjust    = text.hjust,
+    vjust    = text.vjust,
+    family   = text.family,
+    fontface = text.fontface,
+    colour   = text.color %||% text.colour,
+    alpha    = text.alpha
+  )
+  
   layer(
     data = data,
     mapping = mapping,
@@ -70,10 +87,7 @@ geom_isoline <- function(
       isoline_text = isoline_text,
       by = by, num = num,
       text_dodge = text_dodge,
-      text.size = text.size,
-      text.angle = text.angle,
-      text.colour = text.color %||% text.colour,
-      text.alpha = text.alpha,
+      text_gp  = text_gp,
       parse = parse,
       check_overlap = check_overlap,
       na.rm = na.rm,
@@ -132,9 +146,8 @@ GeomIsoline <- ggproto(
     data, panel_params, coord,
     isoline_text = TRUE,
     by = NULL, num = NULL,
-    text_dodge = .03,
-    text.size = 3, text.angle = 0,
-    text.colour = NULL, text.color = NULL, text.alpha = NULL,
+    text_dodge = .06,
+    text_gp = NULL,
     parse = FALSE, check_overlap = FALSE,
     na.rm = TRUE
   ) {
@@ -165,18 +178,25 @@ GeomIsoline <- ggproto(
     data$slope <- - data$x / data$y
     data$intercept <- data$y_t - data$slope * data$x_t
     
-    # -+- ensure that vertical lines are rendered correctly -+-
+    # FIXME: Ensure that vertical lines are rendered correctly.
     grobs <- c(grobs, list(GeomAbline$draw_panel(
       data = data, panel_params = panel_params, coord = coord
     )))
     
     if (isoline_text) {
       text_data <- data
+      
       # specify independent aesthetics
-      text_data$size <- text.size %||% text_data$size
-      # text_data$angle <- text.angle %||% text_data$angle
-      text_data$colour <- text.colour %||% text_data$colour
-      text_data$alpha <- text.alpha %||% text_data$alpha
+      text_fallback <- list(size = 3.18)
+      text_aes <- setdiff(GeomText$aesthetics(), "angle")
+      for (aes_name in text_aes) {
+        text_data[[aes_name]] <- 
+          (if (is.sync(text_gp[[aes_name]])) 
+            text_data[[aes_name]]) %||%
+          text_gp[[aes_name]] %||% 
+          text_fallback[[aes_name]] %||% 
+          text_data[[aes_name]]
+      }
       
       # omit labels at origin
       text_data <- subset(text_data, x_t != 0 | y_t != 0)
@@ -192,7 +212,7 @@ GeomIsoline <- ggproto(
       # update text angle and put in degrees
       text_data <- transform(
         text_data,
-        angle = atan(- 1 / tan(angle)) * 180 / pi + text.angle
+        angle = atan(- 1 / tan(angle)) * 180 / pi + text_gp$angle
       )
       
       # isoline text grobs
