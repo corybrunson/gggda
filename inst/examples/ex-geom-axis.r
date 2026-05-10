@@ -42,5 +42,8 @@ ability_cor_eigen %>%
   transform(E3 = ifelse(V3 > 0, "rise", "fall")) %>% 
   ggplot(aes(V1, V2, color = E3)) +
   coord_square() +
-  geom_axis(aes(label = test), text.color = "black", text.alpha = .5) +
+  geom_axis(
+    aes(label = test),
+    text.color = "black", text.alpha = .5, text_rotate = -15
+  ) +
   expand_limits(x = c(-1, 1), y = c(-1, 1))

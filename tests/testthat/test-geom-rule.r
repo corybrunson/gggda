@@ -70,7 +70,7 @@ test_that("`geom_rule()` correctly handles secondary aesthetics", {
   g8 <- layer_grob(
     p + geom_rule(
       axis.color = "red",
-      label.angle = 30,
+      label_rotate = 30,
       tick.linewidth = 1,
       text.fontface = "italic"
     )

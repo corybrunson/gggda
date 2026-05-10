@@ -55,6 +55,7 @@
 #'   tick marks, and text value marks along the axes.
 #' @param label_dodge Numeric; the orthogonal distance of the axis label from
 #'   the axis, as a proportion of the minimum of the plot width and height.
+#' @param label_rotate Numeric; the angle of the axis label from the axis.
 #' @param label_placement Character; how to place the labels along the axes.
 #'   Matched to `"positive"` (the default; at the increasing end of the axis),
 #'   `"negative"` (at the decreasing end), `"peripheral"` (at the end farther
@@ -63,13 +64,16 @@
 #'   the minimum of the plot width and height.
 #' @param text_dodge Numeric; the orthogonal distance of tick mark text from the
 #'   axis, as a proportion of the minimum of the plot width and height.
-#' @param axis.colour,axis.color,axis.alpha Default aesthetics for axes. Set to
-#'   NULL to inherit from the data's aesthetics.
-#' @param label.angle,label.colour,label.color,label.alpha Default aesthetics
-#'   for labels. Set to NULL to inherit from the data's aesthetics.
-#' @param tick.linewidth,tick.colour,tick.color,tick.alpha Default aesthetics
-#'   for tick marks. Set to NULL to inherit from the data's aesthetics.
-#' @param text.size,text.angle,text.hjust,text.vjust,text.family,text.fontface,text.colour,text.color,text.alpha
+#' @param text_rotate Numeric; the angle of the tick mark text from the axis.
+#' @param axis.linewidth,axis.linetype,axis.colour,axis.color,axis.alpha Default
+#'   aesthetics for axes. Set to NULL to inherit from the data's aesthetics.
+#' @param label.hjust,label.vjust,label.family,label.fontface,label.colour,label.color,label.alpha
+#'   Default aesthetics for labels. Set to NULL to inherit from the data's
+#'   aesthetics.
+#' @param tick.linewidth,tick.linetype,tick.colour,tick.color,tick.alpha Default
+#'   aesthetics for tick marks. Set to NULL to inherit from the data's
+#'   aesthetics.
+#' @param text.size,text.hjust,text.vjust,text.family,text.fontface,text.colour,text.color,text.alpha
 #'   Default aesthetics for tick mark labels. Set to NULL to inherit from the
 #'   data's aesthetics.
 #' @template return-layer
@@ -80,25 +84,70 @@ geom_axis <- function(
   mapping = NULL, data = NULL, stat = "identity", position = "identity",
   axis_labels = TRUE, axis_ticks = TRUE, axis_text = TRUE,
   by = NULL, num = NULL,
-  tick_length = .025, text_dodge = .03, label_dodge = .03,
+  tick_length = .025,
+  text_dodge = .03, text_rotate = 0,
+  label_dodge = .03, label_rotate = 0,
   label_placement = c("positive", "negative", "peripheral"),
   ...,
-  axis.colour = NULL, axis.color = NULL, axis.alpha = NULL,
-  label.angle = 0,
-  label.colour = NULL, label.color = NULL, label.alpha = NULL,
+  # NB: Fallbacks declared here will be missed by `layer(geom = "bagplot")` and
+  # `stat_bagplot()`; they must be coordinated with the internal `*_fallback`s.
+  # axis_fallback
+  axis.linewidth = sync(), axis.linetype = sync(),
+  axis.colour = sync(), axis.color = NULL, axis.alpha = sync(),
+  # label_fallback
+  label.size = sync(),
+  label.hjust = sync(), label.vjust = sync(),
+  label.family = sync(), label.fontface = sync(),
+  label.colour = sync(), label.color = NULL, label.alpha = sync(),
+  # tick_fallback
   # TODO: Inherit from theme.
-  tick.linewidth = 0.25,
-  tick.colour = NULL, tick.color = NULL, tick.alpha = NULL,
+  tick.linewidth = 0.25, tick.linetype = "solid",
+  tick.colour = sync(), tick.color = NULL, tick.alpha = sync(),
+  # text_fallback
   # TODO: Inherit from theme.
   text.size = 2.6,
-  text.angle = 0, text.hjust = 0.5, text.vjust = 0.5,
+  text.hjust = sync(), text.vjust = sync(),
   # TODO: Inherit from theme.
-  text.family = NULL, text.fontface = NULL,
-  text.colour = NULL, text.color = NULL, text.alpha = NULL,
+  text.family = sync(), text.fontface = sync(),
+  text.colour = sync(), text.color = NULL, text.alpha = sync(),
   parse = FALSE, check_overlap = FALSE,
   na.rm = FALSE,
   show.legend = NA, inherit.aes = TRUE
 ) {
+  
+  axis_gp <- list(
+    linewidth = axis.linewidth,
+    linetype  = axis.linetype,
+    colour    = axis.color %||% axis.colour,
+    alpha     = axis.alpha
+  )
+  
+  label_gp <- list(
+    size     = label.size,
+    hjust    = label.hjust,
+    vjust    = label.vjust,
+    family   = label.family,
+    fontface = label.fontface,
+    colour   = label.color %||% label.colour,
+    alpha    = label.alpha
+  )
+  
+  tick_gp <- list(
+    linewidth = tick.linewidth,
+    colour    = tick.color %||% tick.colour,
+    alpha     = tick.alpha
+  )
+  
+  text_gp <- list(
+    size     = text.size,
+    hjust    = text.hjust,
+    vjust    = text.vjust,
+    family   = text.family,
+    fontface = text.fontface,
+    colour   = text.color %||% text.colour,
+    alpha    = text.alpha
+  )
+  
   layer(
     data = data,
     mapping = mapping,
@@ -111,26 +160,13 @@ geom_axis <- function(
       axis_labels = axis_labels, axis_ticks = axis_ticks, axis_text = axis_text,
       by = by, num = num,
       tick_length = tick_length,
-      text_dodge = text_dodge,
-      label_dodge = label_dodge,
+      text_dodge = text_dodge, text_rotate = text_rotate,
+      label_dodge = label_dodge, label_rotate = label_rotate,
       label_placement = label_placement,
-      # NB: This is why Teun switched to `<element>_gp = list(...)`.
-      axis.colour = axis.color %||% axis.colour,
-      axis.alpha = axis.alpha,
-      label.angle = label.angle,
-      label.colour = label.color %||% label.colour,
-      label.alpha = label.alpha,
-      tick.linewidth = tick.linewidth,
-      tick.colour = tick.color %||% tick.colour,
-      tick.alpha = tick.alpha,
-      text.size = text.size,
-      text.angle = text.angle,
-      text.hjust = text.hjust,
-      text.vjust = text.vjust,
-      text.family = text.family,
-      text.fontface = text.fontface,
-      text.colour = text.color %||% text.colour,
-      text.alpha = text.alpha,
+      axis_gp  = axis_gp,
+      label_gp = label_gp,
+      tick_gp  = tick_gp,
+      text_gp  = text_gp,
       parse = parse,
       check_overlap = check_overlap,
       na.rm = na.rm,
@@ -220,34 +256,22 @@ GeomAxis <- ggproto(
     data, panel_params, coord,
     axis_labels = TRUE, axis_ticks = TRUE, axis_text = TRUE,
     by = NULL, num = NULL,
-    tick_length = .025, text_dodge = .03, label_dodge = .03,
+    tick_length = .025,
+    text_dodge = .03, text_rotate = 0,
+    label_dodge = .03, label_rotate = 0,
     label_placement = c("positive", "negative", "peripheral"),
-    axis.colour = NULL, axis.alpha = NULL,
-    label.angle = 0,
-    label.colour = NULL, label.alpha = NULL,
-    tick.linewidth = 0.25,
-    tick.colour = NULL, tick.alpha = NULL,
-    text.size = 2.6,
-    text.angle = 0, text.hjust = 0.5, text.vjust = 0.5,
-    text.family = NULL, text.fontface = NULL,
-    text.colour = NULL, text.alpha = NULL,
+    axis_gp  = NULL, label_gp = NULL, tick_gp  = NULL, text_gp  = NULL,
     parse = FALSE, check_overlap = FALSE,
     na.rm = FALSE
   ) {
     # save(data, panel_params, coord,
     #      axis_labels, axis_ticks, axis_text,
     #      by, num,
-    #      tick_length, text_dodge, label_dodge,
+    #      tick_length,
+    #      text_dodge, text_rotate,
+    #      label_dodge, label_rotate,
     #      label_placement,
-    #      axis.colour, axis.alpha,
-    #      label.angle,
-    #      label.colour, label.alpha,
-    #      tick.linewidth,
-    #      tick.colour, tick.alpha,
-    #      text.size,
-    #      text.angle, text.hjust, text.vjust,
-    #      text.family, text.fontface,
-    #      text.colour, text.alpha,
+    #      axis_gp, label_gp, tick_gp, text_gp,
     #      parse, check_overlap,
     #      na.rm,
     #      file = "geom-axis-draw-panel.rda")
@@ -315,9 +339,18 @@ GeomAxis <- ggproto(
     
     # axis grobs: if `xend` & `yend` then segment else abline & vline
     axis_data <- unique(data)
+    
     # specify independent aesthetics
-    axis_data$colour <- axis.colour %||% axis_data$colour
-    axis_data$alpha <- axis.alpha %||% axis_data$alpha
+    axis_fallback <- list()
+    axis_aes <- GeomAbline$aesthetics()
+    for (aes_name in axis_aes) {
+      axis_data[[aes_name]] <- 
+        (if (is.sync(axis_gp[[aes_name]])) 
+          axis_data[[aes_name]]) %||%
+        axis_gp[[aes_name]] %||% 
+        axis_fallback[[aes_name]] %||% 
+        axis_data[[aes_name]]
+    }
     
     # NB: This step redefines positional aesthetics for a specific grob.
     
@@ -348,9 +381,18 @@ GeomAxis <- ggproto(
     
     if (axis_labels) {
       label_data <- data
+      
       # specify independent aesthetics
-      label_data$colour <- label.colour %||% label_data$colour
-      label_data$alpha <- label.alpha %||% label_data$alpha
+      label_fallback <- list()
+      label_aes <- GeomText$aesthetics()
+      for (aes_name in label_aes) {
+        label_data[[aes_name]] <- 
+          (if (is.sync(label_gp[[aes_name]])) 
+            label_data[[aes_name]]) %||%
+          label_gp[[aes_name]] %||% 
+          label_fallback[[aes_name]] %||% 
+          label_data[[aes_name]]
+      }
       
       # NB: This step redefines positional aesthetics for a specific grob.
       
@@ -375,7 +417,7 @@ GeomAxis <- ggproto(
       # update text angle
       label_data <- transform(
         label_data,
-        angle = atan(tan(angle)) + label.angle * pi / 180
+        angle = atan(tan(angle)) + label_rotate * pi / 180
       )
       # put total angle in degrees
       label_data$angle <- label_data$angle * 180 / pi
@@ -390,10 +432,18 @@ GeomAxis <- ggproto(
     
     if (axis_ticks) {
       tick_data <- mark_data
+      
       # specify independent aesthetics
-      tick_data$linewidth <- tick.linewidth %||% tick_data$linewidth
-      tick_data$colour <- tick.colour %||% tick_data$colour
-      tick_data$alpha <- tick.alpha %||% tick_data$alpha
+      tick_fallback <- list(linewidth = 0.25, linetype = "solid")
+      tick_aes <- GeomSegment$aesthetics()
+      for (aes_name in tick_aes) {
+        tick_data[[aes_name]] <- 
+          (if (is.sync(tick_gp[[aes_name]])) 
+            tick_data[[aes_name]]) %||%
+          tick_gp[[aes_name]] %||% 
+          tick_fallback[[aes_name]] %||% 
+          tick_data[[aes_name]]
+      }
       
       # tick mark radius
       rtick <- plot_whmin * tick_length / 2
@@ -423,15 +473,18 @@ GeomAxis <- ggproto(
     
     if (axis_text) {
       text_data <- mark_data
+      
       # specify independent aesthetics
-      text_data$size <- text.size %||% text_data$size
-      # text_data$angle <- text.angle
-      text_data$hjust <- text.hjust
-      text_data$vjust <- text.vjust
-      text_data$family <- text.family %||% text_data$family
-      text_data$fontface <- text.fontface %||% text_data$fontface
-      text_data$colour <- text.colour %||% text_data$colour
-      text_data$alpha <- text.alpha %||% text_data$alpha
+      text_fallback <- list(size = 2.6)
+      text_aes <- GeomText$aesthetics()
+      for (aes_name in text_aes) {
+        text_data[[aes_name]] <- 
+          (if (is.sync(text_gp[[aes_name]])) 
+            text_data[[aes_name]]) %||%
+          text_gp[[aes_name]] %||% 
+          text_fallback[[aes_name]] %||% 
+          text_data[[aes_name]]
+      }
       
       # omit labels at origin
       if (! use_offset) {
@@ -450,7 +503,7 @@ GeomAxis <- ggproto(
       # update text angle and put in degrees
       text_data <- transform(
         text_data,
-        angle = atan(tan(angle)) * 180 / pi + text.angle
+        angle = atan(tan(angle)) * 180 / pi + text_rotate
       )
       
       if (nrow(text_data) > 0L) {

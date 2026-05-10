@@ -16,29 +16,37 @@ geom_axis(
   num = NULL,
   tick_length = 0.025,
   text_dodge = 0.03,
+  text_rotate = 0,
   label_dodge = 0.03,
+  label_rotate = 0,
   label_placement = c("positive", "negative", "peripheral"),
   ...,
-  axis.colour = NULL,
+  axis.linewidth = sync(),
+  axis.linetype = sync(),
+  axis.colour = sync(),
   axis.color = NULL,
-  axis.alpha = NULL,
-  label.angle = 0,
-  label.colour = NULL,
+  axis.alpha = sync(),
+  label.size = sync(),
+  label.hjust = sync(),
+  label.vjust = sync(),
+  label.family = sync(),
+  label.fontface = sync(),
+  label.colour = sync(),
   label.color = NULL,
-  label.alpha = NULL,
+  label.alpha = sync(),
   tick.linewidth = 0.25,
-  tick.colour = NULL,
+  tick.linetype = "solid",
+  tick.colour = sync(),
   tick.color = NULL,
-  tick.alpha = NULL,
+  tick.alpha = sync(),
   text.size = 2.6,
-  text.angle = 0,
-  text.hjust = 0.5,
-  text.vjust = 0.5,
-  text.family = NULL,
-  text.fontface = NULL,
-  text.colour = NULL,
+  text.hjust = sync(),
+  text.vjust = sync(),
+  text.family = sync(),
+  text.fontface = sync(),
+  text.colour = sync(),
   text.color = NULL,
-  text.alpha = NULL,
+  text.alpha = sync(),
   parse = FALSE,
   check_overlap = FALSE,
   na.rm = FALSE,
@@ -105,8 +113,12 @@ the minimum of the plot width and height.}
 \item{text_dodge}{Numeric; the orthogonal distance of tick mark text from the
 axis, as a proportion of the minimum of the plot width and height.}
 
+\item{text_rotate}{Numeric; the angle of the tick mark text from the axis.}
+
 \item{label_dodge}{Numeric; the orthogonal distance of the axis label from
 the axis, as a proportion of the minimum of the plot width and height.}
+
+\item{label_rotate}{Numeric; the angle of the axis label from the axis.}
 
 \item{label_placement}{Character; how to place the labels along the axes.
 Matched to \code{"positive"} (the default; at the increasing end of the axis),
@@ -115,16 +127,20 @@ from the origin).}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:layer]{ggplot2::layer()}}.}
 
-\item{axis.colour, axis.color, axis.alpha}{Default aesthetics for axes. Set to
-NULL to inherit from the data's aesthetics.}
+\item{axis.linewidth, axis.linetype, axis.colour, axis.color, axis.alpha}{Default
+aesthetics for axes. Set to NULL to inherit from the data's aesthetics.}
 
-\item{label.angle, label.colour, label.color, label.alpha}{Default aesthetics
-for labels. Set to NULL to inherit from the data's aesthetics.}
+\item{label.size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Replaced by the
+\code{linewidth} aesthetic. Size of label border, in mm.}
 
-\item{tick.linewidth, tick.colour, tick.color, tick.alpha}{Default aesthetics
-for tick marks. Set to NULL to inherit from the data's aesthetics.}
+\item{label.hjust, label.vjust, label.family, label.fontface, label.colour, label.color, label.alpha}{Default aesthetics for labels. Set to NULL to inherit from the data's
+aesthetics.}
 
-\item{text.size, text.angle, text.hjust, text.vjust, text.family, text.fontface, text.colour, text.color, text.alpha}{Default aesthetics for tick mark labels. Set to NULL to inherit from the
+\item{tick.linewidth, tick.linetype, tick.colour, tick.color, tick.alpha}{Default
+aesthetics for tick marks. Set to NULL to inherit from the data's
+aesthetics.}
+
+\item{text.size, text.hjust, text.vjust, text.family, text.fontface, text.colour, text.color, text.alpha}{Default aesthetics for tick mark labels. Set to NULL to inherit from the
 data's aesthetics.}
 
 \item{parse}{If \code{TRUE}, the labels will be parsed into expressions and
@@ -244,7 +260,10 @@ ability_cor_eigen \%>\%
   transform(E3 = ifelse(V3 > 0, "rise", "fall")) \%>\% 
   ggplot(aes(V1, V2, color = E3)) +
   coord_square() +
-  geom_axis(aes(label = test), text.color = "black", text.alpha = .5) +
+  geom_axis(
+    aes(label = test),
+    text.color = "black", text.alpha = .5, text_rotate = -15
+  ) +
   expand_limits(x = c(-1, 1), y = c(-1, 1))
 }
 \references{
