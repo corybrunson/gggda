@@ -1,5 +1,13 @@
 # next version
 
+## component aesthetics in isolines, axes, and rules (breaking change)
+
+Component aesthetics like `text.size` are bundled into lists like `text_gp` for
+convenient handling by these three `Geom*` ggprotos, as was previously done for
+the bagplot geom.
+`text.angle` and `label.angle` are handled circuitously so that the value passed
+is used as the offset from the angle of the primary geometric element.
+
 ## label placement for axis geom (breaking change)
 
 A new `label_placement` parameter controls where axis labels are placed.
