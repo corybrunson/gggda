@@ -42,7 +42,9 @@ Imports:
     magrittr,
     scales,
     labeling,
-    ddalpha
+    ddalpha,
+    deldir,
+    geometry
 Suggests:
     gridExtra,
     MASS,
@@ -73,6 +75,7 @@ Collate:
     'geom-text-radiate.r'
     'geom-utils.r'
     'geom-vector.r'
+    'geom-voronoi.r'
     'gggda.r'
     'peel.r'
     'stat-peel.r'
@@ -84,5 +87,6 @@ Collate:
     'stat-rule.r'
     'stat-scale.r'
     'stat-spantree.r'
+    'stat-voronoi.r'
     'utils.r'
 VignetteBuilder: knitr

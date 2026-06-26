@@ -3,7 +3,9 @@
 %   R/geom-bagplot.r, R/geom-intervals.r, R/geom-isoline.r, R/geom-rule.r,
 %   R/geom-text-radiate.r, R/geom-vector.r, R/stat-peel.r, R/stat-depth.r,
 %   R/stat-bagplot.r, R/stat-center.r, R/stat-cone.r, R/stat-referent.r,
-%   R/stat-rule.r, R/stat-scale.r, R/stat-spantree.r
+%   R/stat-rule.r, R/stat-scale.r, R/stat-spantree.r,
+%   R/stat-voronoi.r,
+%   R/geom-voronoi.r
 \docType{data}
 \name{gggda-ggproto}
 \alias{gggda-ggproto}
@@ -28,6 +30,8 @@
 \alias{StatRule}
 \alias{StatScale}
 \alias{StatSpantree}
+\alias{StatVoronoi}
+\alias{GeomVoronoi}
 \title{ggproto classes created and adapted for gggda}
 \description{
 \strong{gggda} introduces several \link[ggplot2:ggproto]{ggproto} classes
