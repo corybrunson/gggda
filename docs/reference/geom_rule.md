@@ -21,26 +21,34 @@ geom_rule(
   text_dodge = 0.03,
   label_dodge = 0.03,
   ...,
-  axis.colour = NULL,
+  axis.linewidth = sync(),
+  axis.linetype = sync(),
+  axis.colour = sync(),
   axis.color = NULL,
-  axis.alpha = NULL,
+  axis.alpha = sync(),
+  label.size = sync(),
   label.angle = 0,
-  label.colour = NULL,
+  label.hjust = sync(),
+  label.vjust = sync(),
+  label.family = sync(),
+  label.fontface = sync(),
+  label.colour = sync(),
   label.color = NULL,
-  label.alpha = NULL,
+  label.alpha = sync(),
   tick.linewidth = 0.25,
-  tick.colour = NULL,
+  tick.linetype = "solid",
+  tick.colour = sync(),
   tick.color = NULL,
-  tick.alpha = NULL,
+  tick.alpha = sync(),
   text.size = 2.6,
   text.angle = 0,
-  text.hjust = 0.5,
-  text.vjust = 0.5,
-  text.family = NULL,
-  text.fontface = NULL,
-  text.colour = NULL,
+  text.hjust = sync(),
+  text.vjust = sync(),
+  text.family = sync(),
+  text.fontface = sync(),
+  text.colour = sync(),
   text.color = NULL,
-  text.alpha = NULL,
+  text.alpha = sync(),
   parse = FALSE,
   check_overlap = FALSE,
   na.rm = FALSE,
@@ -81,7 +89,7 @@ geom_rule(
 
   The statistical transformation to use on the data for this layer. When
   using a `geom_*()` function to construct a layer, the `stat` argument
-  can be used the override the default coupling between geoms and stats.
+  can be used to override the default coupling between geoms and stats.
   The `stat` argument accepts the following:
 
   - A `Stat` ggproto subclass, for example `StatCount`.
@@ -148,17 +156,18 @@ geom_rule(
   Additional arguments passed to
   [`ggplot2::layer()`](https://ggplot2.tidyverse.org/reference/layer.html).
 
-- axis.colour, axis.color, axis.alpha:
+- axis.linewidth, axis.linetype, axis.colour, axis.color, axis.alpha:
 
   Default aesthetics for axes. Set to NULL to inherit from the data's
   aesthetics.
 
-- label.angle, label.colour, label.color, label.alpha:
+- label.size, label.angle, label.hjust, label.vjust, label.family,
+  label.fontface, label.colour, label.color, label.alpha:
 
   Default aesthetics for labels. Set to NULL to inherit from the data's
   aesthetics.
 
-- tick.linewidth, tick.colour, tick.color, tick.alpha:
+- tick.linewidth, tick.linetype, tick.colour, tick.color, tick.alpha:
 
   Default aesthetics for tick marks. Set to NULL to inherit from the
   data's aesthetics.
@@ -192,7 +201,9 @@ geom_rule(
   logical. Should this layer be included in the legends? `NA`, the
   default, includes if any aesthetics are mapped. `FALSE` never
   includes, and `TRUE` always includes. It can also be a named logical
-  vector to finely select the aesthetics to display.
+  vector to finely select the aesthetics to display. To include legend
+  keys for all levels, even when no data exists, use `TRUE`. If `NA`,
+  all levels are shown in legend, but unobserved levels are omitted.
 
 - inherit.aes:
 
@@ -200,7 +211,7 @@ geom_rule(
   with them. This is most useful for helper functions that define both
   data and aesthetics and shouldn't inherit behaviour from the default
   plot specification, e.g.
-  [`borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
+  [`annotation_borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
 
 ## Value
 

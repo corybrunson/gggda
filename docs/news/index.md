@@ -1,5 +1,43 @@
 # Changelog
 
+## gggda 0.2.0
+
+### patch bug due to mlpack upgrade
+
+The trigger for this minor version is an upgrade to {mlpack} that makes
+an API change ([\#19](https://github.com/corybrunson/gggda/issues/19)).
+Thanks to [@rcurtin](https://github.com/rcurtin) for the patch.
+
+### component aesthetics in isolines, axes, and rules (breaking change)
+
+Component aesthetics like `text.size` are bundled into lists like
+`text_gp` for convenient handling by these three `Geom*` ggprotos, as
+was previously done for the bagplot geom. `text.angle` and `label.angle`
+are handled circuitously so that the value passed is used as the offset
+from the angle of the primary geometric element.
+
+### label placement for axis geom (breaking change)
+
+A new `label_placement` parameter controls where axis labels are placed.
+Previously they were placed along the axis at the end (intersection with
+the plot window border) farther from the origin. This is now the
+`"peripheral"` option, while the default is `"positive"`, which places
+them at the end at which the axis takes a greater value.
+
+### outlier control for bagplots
+
+New `outlier_points` and `outlier_labels` parameters toggle these
+elements of bagplots. Additional text aesthetics are introduced for the
+latter.
+
+### pre-processing of referent data
+
+As with the `data` argument, the `referent` argument of
+[`stat_referent()`](../reference/stat_referent.md) can now be passed a
+function, which will be evaluated at `data` to obtain the reference data
+for the plot layer. The evaluation is done during addition of a layer of
+class `LayerRef`.
+
 ## gggda 0.1.1
 
 CRAN release: 2025-07-19

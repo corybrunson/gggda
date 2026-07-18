@@ -1,6 +1,6 @@
 # Calculate a minimum spanning tree among cases or variables
 
-This stat layer identifies the \\(n-1\\) pairs among \\(n\\) points that
+This stat layer identifies the \\n-1\\ pairs among \\n\\ points that
 form a minimum spanning tree, then calculates the segments between these
 poirs in the two dimensions `x` and `y`.
 
@@ -101,7 +101,9 @@ stat_spantree(
   logical. Should this layer be included in the legends? `NA`, the
   default, includes if any aesthetics are mapped. `FALSE` never
   includes, and `TRUE` always includes. It can also be a named logical
-  vector to finely select the aesthetics to display.
+  vector to finely select the aesthetics to display. To include legend
+  keys for all levels, even when no data exists, use `TRUE`. If `NA`,
+  all levels are shown in legend, but unobserved levels are omitted.
 
 - inherit.aes:
 
@@ -109,7 +111,7 @@ stat_spantree(
   with them. This is most useful for helper functions that define both
   data and aesthetics and shouldn't inherit behaviour from the default
   plot specification, e.g.
-  [`borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
+  [`annotation_borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
 
 - ...:
 
@@ -123,9 +125,9 @@ A [ggproto](gggda-ggproto.md)
 
 ## Details
 
-A minimum spanning tree (MST) on the point cloud \\(X\\) is a minimal
-connected graph on \\(X\\) with the smallest possible sum of distances
-(or dissimilarities) between linked points. These layers call
+A minimum spanning tree (MST) on the point cloud \\X\\ is a minimal
+connected graph on \\X\\ with the smallest possible sum of distances (or
+dissimilarities) between linked points. These layers call
 [`stats::dist()`](https://rdrr.io/r/stats/dist.html) to calculate a
 distance/dissimilarity object and an engine from **mlpack**, **vegan**,
 or **ade4** to calculate the MST. The result is formatted with position
@@ -133,8 +135,8 @@ aesthetics readable by
 [`ggplot2::geom_segment()`](https://ggplot2.tidyverse.org/reference/geom_segment.html).
 
 An MST calculated on `x` and `y` reflects the distances among the points
-in \\(X\\) in the reduced-dimension plane of the biplot. In contrast,
-one calculated on the full set of coordinates reflects distances in
+in \\X\\ in the reduced-dimension plane of the biplot. In contrast, one
+calculated on the full set of coordinates reflects distances in
 higher-dimensional space. Plotting this high-dimensional MST on the
 2-dimensional biplot provides a visual cue as to how faithfully two
 dimensions can encapsulate the "true" distances between points
@@ -195,8 +197,6 @@ eurodist %>%
 ggplot(euro_mds, aes(V1, V2, label = city)) +
   stat_spantree() +
   geom_label(alpha = .25)
-#> Warning: Package {mlpack} not installed; using {ade4} instead.
-#> This warning is displayed once every 8 hours.
 
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   stat_spantree() +

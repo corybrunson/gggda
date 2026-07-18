@@ -13,13 +13,17 @@ geom_isoline(
   isoline_text = TRUE,
   by = NULL,
   num = NULL,
-  text_dodge = 0.03,
+  text_dodge = 0.06,
   ...,
-  text.size = 3,
+  text.size = 3.18,
   text.angle = 0,
-  text.colour = NULL,
+  text.hjust = sync(),
+  text.vjust = sync(),
+  text.family = sync(),
+  text.fontface = sync(),
+  text.colour = sync(),
   text.color = NULL,
-  text.alpha = NULL,
+  text.alpha = sync(),
   parse = FALSE,
   check_overlap = FALSE,
   na.rm = FALSE,
@@ -60,7 +64,7 @@ geom_isoline(
 
   The statistical transformation to use on the data for this layer. When
   using a `geom_*()` function to construct a layer, the `stat` argument
-  can be used the override the default coupling between geoms and stats.
+  can be used to override the default coupling between geoms and stats.
   The `stat` argument accepts the following:
 
   - A `Stat` ggproto subclass, for example `StatCount`.
@@ -112,7 +116,8 @@ geom_isoline(
   Additional arguments passed to
   [`ggplot2::layer()`](https://ggplot2.tidyverse.org/reference/layer.html).
 
-- text.size, text.angle, text.colour, text.color, text.alpha:
+- text.size, text.angle, text.hjust, text.vjust, text.family,
+  text.fontface, text.colour, text.color, text.alpha:
 
   Default aesthetics for tick mark labels. Set to NULL to inherit from
   the data's aesthetics.
@@ -140,7 +145,9 @@ geom_isoline(
   logical. Should this layer be included in the legends? `NA`, the
   default, includes if any aesthetics are mapped. `FALSE` never
   includes, and `TRUE` always includes. It can also be a named logical
-  vector to finely select the aesthetics to display.
+  vector to finely select the aesthetics to display. To include legend
+  keys for all levels, even when no data exists, use `TRUE`. If `NA`,
+  all levels are shown in legend, but unobserved levels are omitted.
 
 - inherit.aes:
 
@@ -148,7 +155,7 @@ geom_isoline(
   with them. This is most useful for helper functions that define both
   data and aesthetics and shouldn't inherit behaviour from the default
   plot specification, e.g.
-  [`borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
+  [`annotation_borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
 
 ## Value
 
@@ -221,5 +228,5 @@ scale(stackloss, scale = FALSE) %>%
   ggplot(aes(x = Water.Temp, y = Air.Flow)) +
   coord_square() +
   geom_point(aes(size = stack.loss)) + scale_size_area() +
-  geom_isoline(data = coef_data)
+  geom_isoline(data = coef_data, text.hjust = 1)
 ```
