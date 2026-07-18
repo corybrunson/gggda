@@ -1,15 +1,12 @@
-## version 0.1.1
+## version 0.2.0
 
-With apologies to the CRAN team, this patch fixes a bug that arose while debugging the last issue before submission.
-Tests have been introduced to catch similar bugs in future.
-
-The patch also addresses the problems flagged in the current CRAN checks by explicitly importing the reqired functions from {dplyr} and {tidyr}.
+This version contains part of a series of upgrades but was triggered by the need to patch a bug introduced by a change to the {mlpack} API; see (#19).
 
 ## R CMD checks
 
 ### Test environments
 
-* local OS X install, R 4.4.2
+* local OS X install, R 4.5.3
   * `devtools::check()`
   * `devtools::check(env_vars = c('_R_CHECK_DEPENDS_ONLY_' = "true"))`
   * `devtools::check(manual = TRUE, remote = TRUE)`

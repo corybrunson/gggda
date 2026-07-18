@@ -120,9 +120,13 @@ StatSpantree <- ggproto(
           )
         }
         # minimum spanning tree (euclidean distance)
-        data_emst <- mlpack::emst(data_ord)
+        if (packageVersion("mlpack") < "4.8.0") {
+          data_emst <- mlpack::emst(data_ord)$output
+        } else {
+          data_emst <- mlpack::emst(data_ord)
+        }
         # re-index pairs
-        data_emst$output[, 1:2] + 1L
+        data_emst[, 1:2] + 1L
       },
       vegan = {
         # distance/dissimilarity data
