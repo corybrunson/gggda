@@ -1,4 +1,9 @@
-# next version
+# gggda 0.2.0
+
+## patch bug due to mlpack upgrade
+
+The trigger for this minor version is an upgrade to {mlpack} that makes an API change (#19).
+Thanks to @rcurtin for the patch.
 
 ## component aesthetics in isolines, axes, and rules (breaking change)
 
