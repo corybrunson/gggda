@@ -21,7 +21,9 @@
 #'   then intersected with the biplot plane.
 #'
 #'   Voronoi cells are only delimited within a rectangular border, set to a
-#'   fraction (`buffer`) of the data range beyond the extrema in each dimension.
+#'   fraction of the data range beyond the extrema in each dimension.
+#'   Pass two values to `buffer` to specify `x` and `y` separately or a single
+#'   value to specify the minimum buffer of a square border.
 #'
 #'   By default, [deldir::deldir()] is deployed on 2-dimensional data while
 #'   [geometry::delaunayn()] is deployed on higher-dimensional data; the user
@@ -44,7 +46,8 @@
 
 #' @inheritParams ggplot2::layer
 #' @param buffer Numeric; a fraction of the data range by which to extend the
-#'   Voronoi tessellation in each coordinate.
+#'   Voronoi tessellation in each coordinate. A single value determines a square
+#'   border; a length-2 vector sets the x and y buffers independently.
 #' @param engine A single character string specifying the package implementation
 #'   to use; `"deldir"` or `"geometry"`. Only `"geometry"` can handle
 #'   higher-dimensional data.
@@ -104,8 +107,7 @@ StatVoronoi <- ggproto(
         length(buffer) > 2L || anyNA(buffer)) {
       stop("`buffer` must be a numeric vector of length 1 or 2.")
     }
-    buffer <- rep(buffer, length.out = 2L)
-
+    
     coord_cols <- get_aes_coord(data)
     coords <- as.matrix(data[, coord_cols, drop = FALSE])
     
@@ -122,8 +124,15 @@ StatVoronoi <- ggproto(
     y_diff <- diff(y_ran)
     if (x_diff == 0) x_diff <- 1
     if (y_diff == 0) y_diff <- 1
-    x_pad <- x_diff * buffer[1L]
-    y_pad <- y_diff * buffer[2L]
+    if (length(buffer) == 1L) {
+      max_diff <- max(x_diff, y_diff)
+      side <- max_diff + 2 * buffer * max_diff
+      x_pad <- (side - x_diff) / 2
+      y_pad <- (side - y_diff) / 2
+    } else {
+      x_pad <- x_diff * buffer[1L]
+      y_pad <- y_diff * buffer[2L]
+    }
     limits <- c(
       x_ran[1L] - x_pad, x_ran[2L] + x_pad,
       y_ran[1L] - y_pad, y_ran[2L] + y_pad
