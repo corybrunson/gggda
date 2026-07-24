@@ -132,7 +132,7 @@ StatVoronoy <- ggproto(
       y_ran[1L] - y_pad, y_ran[2L] + y_pad
     )
 
-    # Select and deploy engine based on data dimension
+    # select and deploy engine based on data dimension
     engine <- select_voronoi_engine(engine, ncol(coords))
 
     # TODO: Return a data frame with `cell` and `area` columns; `cbind()` below.
