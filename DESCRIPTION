@@ -59,7 +59,6 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/corybrunson/gggda, https://corybrunson.github.io/gggda/
 BugReports: https://github.com/corybrunson/gggda/issues
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Collate:
     'aaa-.r'
@@ -91,3 +90,4 @@ Collate:
     'stat-voronoi.r'
     'utils.r'
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

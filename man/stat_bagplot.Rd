@@ -87,7 +87,7 @@ that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=stat_depth]{stat_depth}}
+  Arguments passed on to \code{\link{stat_depth}}
   \describe{
     \item{\code{notion}}{Character; the name of the depth function (passed to
 \code{\link[ddalpha:depth.]{ddalpha::depth.()}}).}
@@ -115,7 +115,7 @@ depth values used to compute it are also used to demarcate the bag, so it
 is implemented separately in \code{StatBagplot$compute_group()} for efficiency.
 
 \code{stat_bagplot()} is designed to pair with \code{\link[=geom_bagplot]{geom_bagplot()}}, analogously to
-the pairing of \code{\link[ggplot2:geom_boxplot]{ggplot2::stat_boxplot()}} with \code{\link[ggplot2:geom_boxplot]{ggplot2::geom_boxplot()}}. In
+the pairing of \code{\link[ggplot2:stat_boxplot]{ggplot2::stat_boxplot()}} with \code{\link[ggplot2:geom_boxplot]{ggplot2::geom_boxplot()}}. In
 particular, \code{GeomBagplot} is the only \code{ggproto} that recognizes the
 computed variable \code{component}, used by \code{StatBagplot} to separate data for
 the four bagplot elements.
@@ -167,13 +167,15 @@ Rousseeuw PJ, Ruts I, & Tukey JW (1999) "The Bagplot: A Bivariate Boxplot".
 \doi{10.1080/00031305.1999.10474494}
 }
 \seealso{
-Other stat layers: 
-\code{\link{stat_center}()},
-\code{\link{stat_chull}()},
-\code{\link{stat_cone}()},
-\code{\link{stat_depth}()},
-\code{\link{stat_rule}()},
-\code{\link{stat_scale}()},
-\code{\link{stat_spantree}()}
+Other stat layers:
+\code{\link[=stat_center]{stat_center()}},
+\code{\link[=stat_chull]{stat_chull()}},
+\code{\link[=stat_cone]{stat_cone()}},
+\code{\link[=stat_delaunay]{stat_delaunay()}},
+\code{\link[=stat_depth]{stat_depth()}},
+\code{\link[=stat_rule]{stat_rule()}},
+\code{\link[=stat_scale]{stat_scale()}},
+\code{\link[=stat_spantree]{stat_spantree()}},
+\code{\link[=stat_voronoy]{stat_voronoy()}}
 }
 \concept{stat layers}

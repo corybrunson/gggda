@@ -168,12 +168,13 @@ Greenacre MJ (2010) \emph{Biplots in Practice}. Fundacion BBVA, ISBN:
 \url{https://www.fbbva.es/microsite/multivariate-statistics/biplots.html}
 }
 \seealso{
-Other geom layers: 
-\code{\link{geom_axis}()},
-\code{\link{geom_bagplot}()},
-\code{\link{geom_lineranges}()},
-\code{\link{geom_rule}()},
-\code{\link{geom_text_radiate}()},
-\code{\link{geom_vector}()}
+Other geom layers:
+\code{\link[=geom_axis]{geom_axis()}},
+\code{\link[=geom_bagplot]{geom_bagplot()}},
+\code{\link[=geom_lineranges]{geom_lineranges()}},
+\code{\link[=geom_rule]{geom_rule()}},
+\code{\link[=geom_text_radiate]{geom_text_radiate()}},
+\code{\link[=geom_vector]{geom_vector()}},
+\code{\link[=geom_voronoy]{geom_voronoy()}}
 }
 \concept{geom layers}

@@ -137,7 +137,7 @@ Depth is an extension of the univariate notion of rank to bivariate
 (and sometimes multivariate) data (Rousseeuw &al, 1999). It comes in
 several flavors and is the basis for \link[=stat_bagplot]{bagplots}.
 
-\code{stat_depth()} is adapted from \code{\link[ggplot2:geom_density_2d]{ggplot2::stat_density_2d()}} and returns
+\code{stat_depth()} is adapted from \code{\link[ggplot2:stat_density_2d]{ggplot2::stat_density_2d()}} and returns
 depth values over a grid in the same format, so it is neatly paired with
 \code{\link[ggplot2:geom_contour]{ggplot2::geom_contour()}}.
 }
@@ -173,8 +173,8 @@ variables are provided:
 \item{\code{depth}}{the depth estimate}
 \item{\code{ndepth}}{depth estimate, scaled to a maximum of 1}
 }
-With contouring on (\code{contour = TRUE}), either \code{\link[ggplot2:geom_contour]{ggplot2::stat_contour()}} or
-\code{\link[ggplot2:geom_contour]{ggplot2::stat_contour_filled()}} is run after the depth estimate has been
+With contouring on (\code{contour = TRUE}), either \code{\link[ggplot2:stat_contour]{ggplot2::stat_contour()}} or
+\code{\link[ggplot2:stat_contour_filled]{ggplot2::stat_contour_filled()}} is run after the depth estimate has been
 obtained, and the computed variables are determined by these stats.
 }
 
@@ -215,13 +215,15 @@ Rousseeuw PJ, Ruts I, & Tukey JW (1999) "The Bagplot: A Bivariate Boxplot".
 \doi{10.1080/00031305.1999.10474494}
 }
 \seealso{
-Other stat layers: 
-\code{\link{stat_bagplot}()},
-\code{\link{stat_center}()},
-\code{\link{stat_chull}()},
-\code{\link{stat_cone}()},
-\code{\link{stat_rule}()},
-\code{\link{stat_scale}()},
-\code{\link{stat_spantree}()}
+Other stat layers:
+\code{\link[=stat_bagplot]{stat_bagplot()}},
+\code{\link[=stat_center]{stat_center()}},
+\code{\link[=stat_chull]{stat_chull()}},
+\code{\link[=stat_cone]{stat_cone()}},
+\code{\link[=stat_delaunay]{stat_delaunay()}},
+\code{\link[=stat_rule]{stat_rule()}},
+\code{\link[=stat_scale]{stat_scale()}},
+\code{\link[=stat_spantree]{stat_spantree()}},
+\code{\link[=stat_voronoy]{stat_voronoy()}}
 }
 \concept{stat layers}

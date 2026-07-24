@@ -105,7 +105,7 @@ and pre-processes them using the existing positional aesthetic mappings to
 If a function is passed to \code{referent}, then the reference data are obtained
 by evaluating the function at the primary \code{data}. Alongside borrowing the
 aesthetic mappings, the evaluation is done during addition via
-\code{\link[ggplot2:update_ggplot]{ggplot2::ggplot_add()}} of the layer of custom class \code{LayerRef}.
+\code{\link[ggplot2:ggplot_add]{ggplot2::ggplot_add()}} of the layer of custom class \code{LayerRef}.
 
 The ggproto can be used as a parent to more elaborate statistical
 transformations, or the stat can be paired with geoms that expect the

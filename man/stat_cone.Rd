@@ -116,13 +116,15 @@ ggplot(mtcars, aes(hp, mpg, label = name)) +
   stat_cone(origin = TRUE, linetype = "dotted")
 }
 \seealso{
-Other stat layers: 
-\code{\link{stat_bagplot}()},
-\code{\link{stat_center}()},
-\code{\link{stat_chull}()},
-\code{\link{stat_depth}()},
-\code{\link{stat_rule}()},
-\code{\link{stat_scale}()},
-\code{\link{stat_spantree}()}
+Other stat layers:
+\code{\link[=stat_bagplot]{stat_bagplot()}},
+\code{\link[=stat_center]{stat_center()}},
+\code{\link[=stat_chull]{stat_chull()}},
+\code{\link[=stat_delaunay]{stat_delaunay()}},
+\code{\link[=stat_depth]{stat_depth()}},
+\code{\link[=stat_rule]{stat_rule()}},
+\code{\link[=stat_scale]{stat_scale()}},
+\code{\link[=stat_spantree]{stat_spantree()}},
+\code{\link[=stat_voronoy]{stat_voronoy()}}
 }
 \concept{stat layers}

@@ -151,12 +151,13 @@ mpg \%>\%
   geom_point(data = mpg, aes(displ, hwy), alpha = .5)
 }
 \seealso{
-Other geom layers: 
-\code{\link{geom_axis}()},
-\code{\link{geom_bagplot}()},
-\code{\link{geom_isoline}()},
-\code{\link{geom_rule}()},
-\code{\link{geom_text_radiate}()},
-\code{\link{geom_vector}()}
+Other geom layers:
+\code{\link[=geom_axis]{geom_axis()}},
+\code{\link[=geom_bagplot]{geom_bagplot()}},
+\code{\link[=geom_isoline]{geom_isoline()}},
+\code{\link[=geom_rule]{geom_rule()}},
+\code{\link[=geom_text_radiate]{geom_text_radiate()}},
+\code{\link[=geom_vector]{geom_vector()}},
+\code{\link[=geom_voronoy]{geom_voronoy()}}
 }
 \concept{geom layers}

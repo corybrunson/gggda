@@ -108,7 +108,7 @@ return a data frame with variables \code{ymin}, \code{y}, and \code{ymax}.}
 functions that are each passed a vector of values and should return a
 single number.}
 
-\item{fun.ord}{Alternatively to the \code{\link[ggplot2:stat_summary]{ggplot2::stat_summary_bin()}} parameters,
+\item{fun.ord}{Alternatively to the \code{\link[ggplot2:stat_summary_bin]{ggplot2::stat_summary_bin()}} parameters,
 supply a summary function that takes a matrix as input and returns a named
 column summary vector. Overridden by \code{fun.data} and \code{fun}, cannot be used
 together with \code{fun.min} and \code{fun.max}.}
@@ -159,13 +159,15 @@ ggplot(mpg, aes(x = displ, y = cty, shape = drv, linetype = drv)) +
   stat_star()
 }
 \seealso{
-Other stat layers: 
-\code{\link{stat_bagplot}()},
-\code{\link{stat_chull}()},
-\code{\link{stat_cone}()},
-\code{\link{stat_depth}()},
-\code{\link{stat_rule}()},
-\code{\link{stat_scale}()},
-\code{\link{stat_spantree}()}
+Other stat layers:
+\code{\link[=stat_bagplot]{stat_bagplot()}},
+\code{\link[=stat_chull]{stat_chull()}},
+\code{\link[=stat_cone]{stat_cone()}},
+\code{\link[=stat_delaunay]{stat_delaunay()}},
+\code{\link[=stat_depth]{stat_depth()}},
+\code{\link[=stat_rule]{stat_rule()}},
+\code{\link[=stat_scale]{stat_scale()}},
+\code{\link[=stat_spantree]{stat_spantree()}},
+\code{\link[=stat_voronoy]{stat_voronoy()}}
 }
 \concept{stat layers}

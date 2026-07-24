@@ -139,7 +139,7 @@ This statistical transformation is done with respect to reference data passed
 to \code{referent} (ignored if \code{NULL}, the default, possibly resulting in empty
 output). See \code{\link[=stat_referent]{stat_referent()}} for more details. This relies on a sleight of
 hand through a new undocumented \code{LayerRef} class and associated
-\code{\link[ggplot2:update_ggplot]{ggplot2::ggplot_add()}} method. As a result, only layers constructed using
+\code{\link[ggplot2:ggplot_add]{ggplot2::ggplot_add()}} method. As a result, only layers constructed using
 this \verb{stat_*()} shortcut will pass the necessary positional aesthetics to the
 \verb{$setup_params()} step, making them available to pre-process \code{referent} data.
 
@@ -188,13 +188,15 @@ Gower JC & Harding SA (1988) "Nonlinear biplots". \emph{Biometrika} \strong{75}(
 445--455. \doi{10.1093/biomet/75.3.445}
 }
 \seealso{
-Other stat layers: 
-\code{\link{stat_bagplot}()},
-\code{\link{stat_center}()},
-\code{\link{stat_chull}()},
-\code{\link{stat_cone}()},
-\code{\link{stat_depth}()},
-\code{\link{stat_scale}()},
-\code{\link{stat_spantree}()}
+Other stat layers:
+\code{\link[=stat_bagplot]{stat_bagplot()}},
+\code{\link[=stat_center]{stat_center()}},
+\code{\link[=stat_chull]{stat_chull()}},
+\code{\link[=stat_cone]{stat_cone()}},
+\code{\link[=stat_delaunay]{stat_delaunay()}},
+\code{\link[=stat_depth]{stat_depth()}},
+\code{\link[=stat_scale]{stat_scale()}},
+\code{\link[=stat_spantree]{stat_spantree()}},
+\code{\link[=stat_voronoy]{stat_voronoy()}}
 }
 \concept{stat layers}

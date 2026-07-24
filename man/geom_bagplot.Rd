@@ -142,7 +142,7 @@ contours, and outlier specifications.
 \details{
 \code{geom_bagplot()} is designed to pair with \code{\link[=stat_bagplot]{stat_bagplot()}},
 analogously to the pairing of \code{\link[ggplot2:geom_boxplot]{ggplot2::geom_boxplot()}} with
-\code{\link[ggplot2:geom_boxplot]{ggplot2::stat_boxplot()}}.
+\code{\link[ggplot2:stat_boxplot]{ggplot2::stat_boxplot()}}.
 
 Because the optional components are more expensive to compute in this
 setting, they are controlled by parameters passed to the stat. Auxiliary
@@ -213,12 +213,13 @@ p + geom_bagplot(
 )
 }
 \seealso{
-Other geom layers: 
-\code{\link{geom_axis}()},
-\code{\link{geom_isoline}()},
-\code{\link{geom_lineranges}()},
-\code{\link{geom_rule}()},
-\code{\link{geom_text_radiate}()},
-\code{\link{geom_vector}()}
+Other geom layers:
+\code{\link[=geom_axis]{geom_axis()}},
+\code{\link[=geom_isoline]{geom_isoline()}},
+\code{\link[=geom_lineranges]{geom_lineranges()}},
+\code{\link[=geom_rule]{geom_rule()}},
+\code{\link[=geom_text_radiate]{geom_text_radiate()}},
+\code{\link[=geom_vector]{geom_vector()}},
+\code{\link[=geom_voronoy]{geom_voronoy()}}
 }
 \concept{geom layers}

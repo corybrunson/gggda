@@ -111,7 +111,7 @@ Restrict planar data to the boundary points of its convex hull,
 or of nested convex hulls containing specified fractions of points.
 }
 \details{
-As used in a \strong{\link[ggplot2:ggplot2-package]{ggplot2}} vignette,
+As used in a \strong{\link[ggplot2:ggplot2]{ggplot2}} vignette,
 \code{stat_chull()} restricts a dataset with \code{x} and \code{y} variables to the points
 that lie on its convex hull.
 
@@ -185,13 +185,15 @@ Statistical Society: Series A (General)}, \strong{139}(3): 318--344.
 \doi{10.2307/2344839}
 }
 \seealso{
-Other stat layers: 
-\code{\link{stat_bagplot}()},
-\code{\link{stat_center}()},
-\code{\link{stat_cone}()},
-\code{\link{stat_depth}()},
-\code{\link{stat_rule}()},
-\code{\link{stat_scale}()},
-\code{\link{stat_spantree}()}
+Other stat layers:
+\code{\link[=stat_bagplot]{stat_bagplot()}},
+\code{\link[=stat_center]{stat_center()}},
+\code{\link[=stat_cone]{stat_cone()}},
+\code{\link[=stat_delaunay]{stat_delaunay()}},
+\code{\link[=stat_depth]{stat_depth()}},
+\code{\link[=stat_rule]{stat_rule()}},
+\code{\link[=stat_scale]{stat_scale()}},
+\code{\link[=stat_spantree]{stat_spantree()}},
+\code{\link[=stat_voronoy]{stat_voronoy()}}
 }
 \concept{stat layers}

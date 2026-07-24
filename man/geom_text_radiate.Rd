@@ -160,12 +160,13 @@ version 0.55. \url{https://github.com/forked-packages/ggbiplot} (fork), \code{ex
 branch
 }
 \seealso{
-Other geom layers: 
-\code{\link{geom_axis}()},
-\code{\link{geom_bagplot}()},
-\code{\link{geom_isoline}()},
-\code{\link{geom_lineranges}()},
-\code{\link{geom_rule}()},
-\code{\link{geom_vector}()}
+Other geom layers:
+\code{\link[=geom_axis]{geom_axis()}},
+\code{\link[=geom_bagplot]{geom_bagplot()}},
+\code{\link[=geom_isoline]{geom_isoline()}},
+\code{\link[=geom_lineranges]{geom_lineranges()}},
+\code{\link[=geom_rule]{geom_rule()}},
+\code{\link[=geom_vector]{geom_vector()}},
+\code{\link[=geom_voronoy]{geom_voronoy()}}
 }
 \concept{geom layers}
