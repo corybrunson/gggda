@@ -1,4 +1,4 @@
-#' @title Voronoi tiles
+#' @title Voronoi tessellation
 #'
 #' @description Compute Voronoi regions from point data.
 #' 
@@ -6,13 +6,13 @@
 #' @details The Voronoi tessellation (also associated with the names Dirichlet
 #'   and Thiessen) of a set of points in a metric space comprises the
 #'   nearest-neighbor classification region around each point. When computed in
-#'   higher-dimensional real space, `StatVoronoi$compute_layer()` computes their
+#'   higher-dimensional real space, `StatVoronoy$compute_layer()` computes their
 #'   intersections with the plane.
 #'
-#'   `stat_voronoi()` is designed to pair with [geom_voronoi()]. In particular,
-#'   `GeomVoronoi` is the only `ggproto` that recognizes the computed variable
-#'   `cell`, in which `StatVoronoi` stores a list of data frames for the Voronoi
-#'   cells.
+#'   `stat_voronoy()` is designed to pair with [geom_voronoy()] and
+#'   [geom_thiessen()]. The computed `cell` variable is a list-column of data
+#'   frames, each containing the vertex coordinates and border indicator for a
+#'   Voronoi cell.
 #'
 #'   Because linear discriminant analysis (LDA) assumes constant within-group
 #'   inertia, the Voronoi regions about the group centroids serve as prediction
@@ -46,8 +46,8 @@
 
 #' @inheritParams ggplot2::layer
 #' @param buffer Numeric; a fraction of the data range by which to extend the
-#'   Voronoi tessellation in each coordinate. A single value determines a square
-#'   border; a length-2 vector sets the x and y buffers independently.
+#'   border in each coordinate. A single value determines a square border; a
+#'   length-2 vector sets the x and y buffers independently.
 #' @param engine A single character string specifying the package implementation
 #'   to use; `"deldir"` or `"geometry"`. Only `"geometry"` can handle
 #'   higher-dimensional data.
@@ -56,20 +56,18 @@
 #' @family stat layers
 #' @example inst/examples/ex-stat-voronoi.r
 #' @export
-stat_voronoi <- function(
-    mapping = NULL, data = NULL, geom = "voronoi", position = "identity",
+stat_voronoy <- function(
+    mapping = NULL, data = NULL, geom = "voronoy", position = "identity",
     buffer = 1,
     engine = NULL,
     show.legend = NA,
     inherit.aes = TRUE,
     ...
 ) {
-  if (! is.null(engine)) engine <- match.arg(engine, c("deldir", "geometry"))
-
   layer(
     data = data,
     mapping = mapping,
-    stat = StatVoronoi,
+    stat = StatVoronoy,
     geom = geom,
     position = position,
     show.legend = show.legend,
@@ -87,30 +85,26 @@ stat_voronoi <- function(
 #' @format NULL
 #' @usage NULL
 #' @export
-StatVoronoi <- ggproto(
-  "StatVoronoi", Stat,
+StatVoronoy <- ggproto(
+  "StatVoronoy", Stat,
 
   required_aes = c("x|..coord1", "y|..coord2"),
 
   compute_layer = function(
     self, data, params, panel
   ) {
-    # save(self, data, params, panel,
-    #      file = "stat-voronoi-compute-layer.rda")
-    # load(file = "stat-voronoi-compute-layer.rda")
-    
-    # necessary when overriding `$compute_layer()`
     buffer <- params$buffer %||% 1
     engine <- params$engine
+    if (! is.null(engine)) engine <- match.arg(engine, c("deldir", "geometry"))
     
     if (! is.numeric(buffer) || length(buffer) < 1L ||
         length(buffer) > 2L || anyNA(buffer)) {
       stop("`buffer` must be a numeric vector of length 1 or 2.")
     }
-    
+
     coord_cols <- get_aes_coord(data)
     coords <- as.matrix(data[, coord_cols, drop = FALSE])
-    
+
     data$x <- coords[, 1L]
     data$y <- coords[, 2L]
     # NB: For plotting, each cell must constitute its own group.
@@ -138,34 +132,10 @@ StatVoronoi <- ggproto(
       y_ran[1L] - y_pad, y_ran[2L] + y_pad
     )
 
-    # select and deploy engine based on data dimension
-    del_engines <- c("deldir", "geometry")
-    engine_installed <- del_engines %in% .packages(all.available = TRUE)
-    names(engine_installed) <- del_engines
-    if (! any(engine_installed)) {
-      stop("No Voronoi engine installed; requires one of the following:\n",
-           "{", paste(del_engines, collapse = "}, {"), "}")
-    }
-    if (is.null(engine)) {
-      if (ncol(coords) == 2L) {
-        engine <- del_engines[which.max(engine_installed)]
-      } else if (engine_installed["geometry"]) {
-        engine <- "geometry"
-      } else {
-        stop("Higher-dimensional Voronoi tessellation requires {geometry}.")
-      }
-    } else if (engine == "deldir" && ncol(coords) > 2L) {
-      if (engine_installed["geometry"]) {
-        warning(paste0(
-          "{deldir} takes only 2-dimensional data;",
-          " using {geometry} instead."
-        ))
-        engine <- "geometry"
-      } else {
-        stop("Higher-dimensional Voronoi tessellation requires {geometry}.")
-      }
-    }
-    
+    # Select and deploy engine based on data dimension
+    engine <- select_voronoi_engine(engine, ncol(coords))
+
+    # TODO: Return a data frame with `cell` and `area` columns; `cbind()` below.
     cell_list <- switch(engine,
       deldir   = voronoi_cells_deldir(coords, limits),
       geometry = voronoi_cells_geometry(coords, limits)
@@ -184,8 +154,42 @@ StatVoronoi <- ggproto(
   }
 )
 
-# use `deldir::deldir()` for at least 3 points; otherwise handle trivially
-# assume data are 2-dimensional
+# select engine based on data dimension and availability
+select_voronoi_engine <- function(engine, ndim) {
+  del_engines <- c("deldir", "geometry")
+  engine_installed <- del_engines %in% .packages(all.available = TRUE)
+  names(engine_installed) <- del_engines
+
+  if (! any(engine_installed)) {
+    stop("No Voronoi engine installed; requires one of the following:\n",
+         "{", paste(del_engines, collapse = "}, {"), "}")
+  }
+
+  if (is.null(engine)) {
+    if (ndim == 2L) {
+      engine <- del_engines[which.max(engine_installed)]
+    } else if (engine_installed["geometry"]) {
+      engine <- "geometry"
+    } else {
+      stop("Higher-dimensional Voronoi tessellation requires {geometry}.")
+    }
+  } else if (engine == "deldir" && ndim > 2L) {
+    if (engine_installed["geometry"]) {
+      warning(paste0(
+        "{deldir} takes only 2-dimensional data;",
+        " using {geometry} instead."
+      ))
+      engine <- "geometry"
+    } else {
+      stop("Higher-dimensional Voronoi tessellation requires {geometry}.")
+    }
+  }
+
+  engine
+}
+
+# use `deldir::deldir()` for at least 3 points; otherwise handle trivially;
+# assumes data are 2-dimensional
 voronoi_cells_deldir <- function(coords, limits) {
   if (nrow(coords) >= 3L) {
     del <- deldir::deldir(coords[, 1L], coords[, 2L], rw = limits)
@@ -219,6 +223,7 @@ voronoi_cells_geometry <- function(coords, limits) {
   # adjacency list from triangulation
   adj <- vector("list", n)
   if (n >= 3L) {
+    # REVIEW: Benchmark use of `"Qz"`.
     tri <- geometry::delaunayn(coords, options = "Qz")
     if (nrow(tri) > 0L) {
       for (k in seq_len(nrow(tri))) {
@@ -239,7 +244,7 @@ voronoi_cells_geometry <- function(coords, limits) {
   }
   adj <- lapply(adj, unique)
 
-  result_list <- vector("list", n)
+  cell_list <- vector("list", n)
 
   for (i in seq_len(n)) {
     neigh <- adj[[i]]
@@ -259,17 +264,17 @@ voronoi_cells_geometry <- function(coords, limits) {
     }
 
     if (nrow(poly) >= 3L) {
-      result_list[[i]] <- data.frame(
+      cell_list[[i]] <- data.frame(
         x = poly[, 1L], y = poly[, 2L], border = poly[, 3L] | poly[, 4L]
       )
     } else {
-      result_list[[i]] <- data.frame(
+      cell_list[[i]] <- data.frame(
         x = numeric(0L), y = numeric(0L), border = logical(0L)
       )
     }
   }
 
-  result_list
+  cell_list
 }
 
 voronoi_cells_1 <- function(coords, limits) {
