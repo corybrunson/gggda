@@ -35,8 +35,8 @@ aes_c(...)
 
 ## Value
 
-A list with class `uneval`. Components of the list are either quosures
-or constants.
+An S7 object representing a list with class `mapping`. Components of the
+list are either quosures or constants.
 
 ## Details
 

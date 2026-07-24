@@ -15,6 +15,7 @@ and designed to interoperate with
 {gggda} is now on CRAN and can be installed in the standard way:
 
 ``` r
+
 install.packages("gggda")
 ```
 
@@ -22,6 +23,7 @@ Or install the development version as follows using
 [{pak}](https://github.com/r-lib/pak):
 
 ``` r
+
 pak::pkg_install("corybrunson/gggda")
 ```
 
@@ -31,6 +33,7 @@ Use the new coordinate system to fix the aspect ratio of the plotting
 window as well as of the coordinates:
 
 ``` r
+
 # rectangular window (custom aspect ratio)
 ggplot(mpg, aes(x = displ, y = hwy)) +
   coord_rect(ratio = .1, window_ratio = 1/2) +
@@ -40,6 +43,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ![](reference/figures/README-coord-1.png)
 
 ``` r
+
 # square window (unit aspect ratio)
 ggplot(mpg, aes(x = cty, y = hwy)) +
   coord_square(xlim = c(0, NA), ylim = c(0, NA)) +
@@ -54,6 +58,7 @@ package](https://cran.r-project.org/package=ddalpha) and mimics the
 density stat by pairing with the contour geom:
 
 ``` r
+
 # depth medians and quartiles contours by group
 ggplot(mpg, aes(displ, cty, color = drv, fill = drv)) +
   stat_depth(bins = 4) +
@@ -66,6 +71,7 @@ Several new geometric constructions have a wide range of uses, including
 biplots, with two-dimensional errorbars being an underused example:
 
 ``` r
+
 # centroids with 2-standard deviation bars for both variables
 ggplot(mpg, aes(displ, cty, color = factor(cyl))) +
   geom_point() +
@@ -78,6 +84,7 @@ Finally, some stats and geoms are designed to work as pairs, most
 notably the bagplot layer modeled on the boxplot in {ggplot2}:
 
 ``` r
+
 # faceted bagplots
 ggplot(mpg, aes(displ, hwy, color = drv, fill = drv)) +
   facet_wrap(vars(drv)) +

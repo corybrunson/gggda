@@ -11,6 +11,8 @@ geom_bagplot(
   data = NULL,
   stat = "bagplot",
   position = "identity",
+  outlier_points = !outlier_labels,
+  outlier_labels = FALSE,
   ...,
   bag.linewidth = sync(),
   bag.linetype = sync(),
@@ -38,6 +40,10 @@ geom_bagplot(
   outlier.color = NULL,
   outlier.fill = NA,
   outlier.alpha = NA,
+  text.size = 3.88,
+  text.colour = sync(),
+  text.color = sync(),
+  text.alpha = sync(),
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE
@@ -76,7 +82,7 @@ geom_bagplot(
 
   The statistical transformation to use on the data for this layer. When
   using a `geom_*()` function to construct a layer, the `stat` argument
-  can be used the override the default coupling between geoms and stats.
+  can be used to override the default coupling between geoms and stats.
   The `stat` argument accepts the following:
 
   - A `Stat` ggproto subclass, for example `StatCount`.
@@ -110,6 +116,15 @@ geom_bagplot(
     position](https://ggplot2.tidyverse.org/reference/layer_positions.html)
     documentation.
 
+- outlier_points:
+
+  Logical; whether to plot outlier markers. Defaults to
+  `! outlier_labels`.
+
+- outlier_labels:
+
+  Logical; whether to plot outlier labels. Defaults to `FALSE`.
+
 - ...:
 
   Additional arguments passed to
@@ -139,6 +154,11 @@ geom_bagplot(
   Default aesthetics for outliers. Set to [`sync()`](sync.md) to inherit
   from the data's aesthetics or to `NULL` to use the data's aesthetics.
 
+- text.size, text.colour, text.color, text.alpha:
+
+  Default aesthetics for outlier labels. Set to NULL to inherit from the
+  data's aesthetics.
+
 - na.rm:
 
   Passed to
@@ -149,7 +169,9 @@ geom_bagplot(
   logical. Should this layer be included in the legends? `NA`, the
   default, includes if any aesthetics are mapped. `FALSE` never
   includes, and `TRUE` always includes. It can also be a named logical
-  vector to finely select the aesthetics to display.
+  vector to finely select the aesthetics to display. To include legend
+  keys for all levels, even when no data exists, use `TRUE`. If `NA`,
+  all levels are shown in legend, but unobserved levels are omitted.
 
 - inherit.aes:
 
@@ -157,7 +179,7 @@ geom_bagplot(
   with them. This is most useful for helper functions that define both
   data and aesthetics and shouldn't inherit behaviour from the default
   plot specification, e.g.
-  [`borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
+  [`annotation_borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
 
 ## Value
 
@@ -185,8 +207,8 @@ to synchronize an auxiliary aesthetic with its standard counterpart.
 
 **WARNING:** The trade-off between precision and runtime is greater for
 depth estimation than for density estimation. At the resolution of the
-default \\(100 \times 100\\) grid, basic examples may vary noticeably
-when starting from different random seeds.
+default \\100 \times 100\\ grid, basic examples may vary noticeably when
+starting from different random seeds.
 
 ## Aesthetics
 
@@ -215,6 +237,14 @@ aesthetics are in bold):
 
 - `size`
 
+- `label`
+
+- `hjust`
+
+- `vjust`
+
+- `angle`
+
 - `group`
 
 ## See also
@@ -231,8 +261,9 @@ Other geom layers: [`geom_axis()`](geom_axis.md),
 ``` r
 # Motor Trends base plot with factorized cylinder counts
 p <- mtcars %>% 
+  transform(name = rownames(mtcars)) %>%
   transform(cyl = factor(cyl)) %>% 
-  ggplot(aes(x = wt, y = disp)) +
+  ggplot(aes(x = wt, y = disp, label = name)) +
   theme_bw()
 # basic bagplot
 p + geom_bagplot()
@@ -250,5 +281,12 @@ p + geom_bagplot(
   median.color = "black",
   fence.linetype = sync(), fence.colour = "black",
   outlier.shape = "asterisk", outlier.colour = "black"
+)
+
+# label outliers
+p + geom_bagplot(
+  fraction = 0.4, coef = 1.2,
+  outlier_labels = TRUE,
+  aes(fill = cyl, linetype = cyl, color = cyl)
 )
 ```

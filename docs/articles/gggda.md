@@ -23,9 +23,9 @@ the plot layers provided by {gggda} implement methods that emerged from
 two distinct threads, which the vignette will consider in turn.
 
 ``` r
+
 library(gggda)
 #> Loading required package: ggplot2
-#> Warning: package 'ggplot2' was built under R version 4.5.2
 theme_set(theme_bw())
 ```
 
@@ -41,15 +41,16 @@ that defines it from scratch.
 To motivate and illustrate these tools, let’s investigate the
 `USJudgeRatings` data set included with the basic `R` installation.
 These data were obtained from the 1977 *New Haven Register* and contain
-several lawyers’ evaluations of 43 Superior Court[¹](#fn1) judges based,
-or so i infer (i have not found a journal article citation or been able
-to access the newspaper edition), on a number of interactions with them.
+several lawyers’ evaluations of 43 Superior Court[^1] judges based, or
+so i infer (i have not found a journal article citation or been able to
+access the newspaper edition), on a number of interactions with them.
 The variables include the (standardized) number of interactions, ratings
 of 10 criteria ranging from judicial integrity to physical ability, and
 a final rating of retention worthiness; the ratings all use a 10-point
 scale. Here are those ratings for a sample of the judges:
 
 ``` r
+
 print(USJudgeRatings[sample(nrow(USJudgeRatings), 6L, replace = FALSE), ])
 #>                CONT INTG DMNR DILG CFMG DECI PREP FAMI ORAL WRIT PHYS RTEN
 #> MIGNONE,A.F.    6.6  7.4  6.2  6.2  5.4  5.7  5.8  5.9  5.2  5.8  4.7  5.2
@@ -64,6 +65,7 @@ For convenience, we reformat the data with an additional column for the
 name of the judge:
 
 ``` r
+
 USJudgeRatings %>% 
   tibble::rownames_to_column(var = "NAME") ->
   judge_ratings
@@ -85,6 +87,7 @@ have a natural ranking by value: Arrange the cases in order of a
 variable value, and the rank of each case is its position in order:
 
 ``` r
+
 judge_ratings %>% 
   subset(select = c(NAME, RTEN)) %>% 
   sort_by(~ list(-RTEN)) %>% 
@@ -105,6 +108,7 @@ This might implicate two ratings in the data in particular, their
 integrity and the promptness of their decisions:
 
 ``` r
+
 judge_plot <- ggplot(judge_ratings, aes(x = INTG, y = DECI, label = NAME))
 judge_plot +
   geom_text(aes(label = NAME), size = 3)
@@ -127,6 +131,7 @@ the point cloud and giving each layer the same rank. The most common way
 to do this is probably via convex hulls:
 
 ``` r
+
 judge_plot +
   geom_text(size = 3, hjust = "outward", vjust = "outward") +
   stat_peel(num = Inf, color = "black", fill = "transparent")
@@ -145,6 +150,7 @@ The more middling judges’ names are harder to read, but we can extract
 the assignments directly to examine the most peripheral and core hulls:
 
 ``` r
+
 judge_ratings %>% 
   subset(select = c(INTG, DECI)) %>% 
   peel_hulls(num = Inf) %>% 
@@ -187,6 +193,7 @@ peripherality with respect to the nested hulls is systematically related
 to overall retention rating:
 
 ``` r
+
 judge_hulls %>% 
   transform(hull = factor(hull, levels = seq(max(hull)))) %>% 
   ggplot(aes(x = hull, y = RTEN)) +
@@ -209,17 +216,13 @@ fraction contained in the bag and the scale factor of the fence, add
 text labels to the judges of the outermost and innermost hulls:
 
 ``` r
+
 judge_plot +
   stat_bagplot(fraction = 1/3, coef = 3) +
   geom_text(
     data = subset(judge_hulls, hull %in% range(hull)),
     size = 3, hjust = "outward", vjust = "outward"
   )
-#> Warning: The following aesthetics were dropped during statistical transformation: label.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
 ```
 
 ![](gggda_files/figure-html/bag-1.png)
@@ -247,6 +250,7 @@ that their distributions (specifically their variances) are equivalent
 in the population is plausible.
 
 ``` r
+
 judge_ratings %>% 
   subset(select = -c(NAME, CONT, RTEN)) %>% 
   princomp(cor = FALSE) ->
@@ -263,6 +267,7 @@ latent variables (as in factor analysis, though the theoretical
 justification is weaker and their meanings are less straightforward).
 
 ``` r
+
 summary(judge_pca)
 #> Importance of components:
 #>                           Comp.1     Comp.2     Comp.3      Comp.4      Comp.5
@@ -321,6 +326,7 @@ geometric construction provided by {gggda}. The aspect ratio is fixed at
 1 to avoid misrepresenting the inertia.
 
 ``` r
+
 ggplot(mapping = aes(x = Comp.1, y = Comp.2)) +
   geom_point(data = judge_pca$scores) +
   geom_vector(data = unclass(judge_pca$loadings), color = "#007a3d") +
@@ -349,9 +355,10 @@ PCs are not themselves meaningful, and we use a new coordinate system
 that expands the plotting window to a square while holding the aspect
 ratio fixed. Finally, we rescale the variables to be distinguishable at
 the same scale as the cases and add additional axis legends for this new
-scale.[²](#fn2)
+scale.[^2]
 
 ``` r
+
 judge_pca$scores %>% 
   as.data.frame() %>% 
   transform(NAME = judge_ratings$NAME) ->
@@ -380,9 +387,10 @@ to separating judges like Saden on one side of the overall quality axis
 integrity. However, this information is impressionistic, and the plot
 reveals little else. An alternative geometric construction allows for
 easier interpretation: calibrated axes—basically, lines containing the
-vectors with tick marks at regular multiples of them.[³](#fn3)
+vectors with tick marks at regular multiples of them.[^3]
 
 ``` r
+
 ggplot(mapping = aes(x = Comp.1, y = Comp.2, label = NAME)) +
   geom_axis(data = judge_loadings, color = "#007a3d") +
   geom_text(data = judge_scores, size = 3) +
@@ -409,6 +417,7 @@ objective a criterion, but we can regress its values on the first two
 PCs to get a sense of how it relates to the picture they paint:
 
 ``` r
+
 judge_ratings %>% 
   subset(select = RTEN) %>% 
   cbind(judge_scores) %>% 
@@ -445,6 +454,7 @@ point cloud using the `referent` parameter, which accepts data in the
 same format as `data` and pre-processes it in the same way:
 
 ``` r
+
 judge_lm %>% 
   coefficients() %>% 
   t() %>% as.data.frame() %>% 
@@ -466,10 +476,11 @@ significant (counterclockwise) pull on retention worthiness in relation
 to the first PC, given the larger number of criteria whose ratings tug
 in the opposite direction. This has the effect of positioning Judge
 Driscoll similarly to Judge Saden, despite Saden’s higher rating on
-every other criterion.[⁴](#fn4) Indeed, Judge Driscoll was rated
-slightly more retention-worthy:
+every other criterion.[^4] Indeed, Judge Driscoll was rated slightly
+more retention-worthy:
 
 ``` r
+
 judge_ratings %>% 
   subset(subset = grepl("SADEN|DRISCOLL", NAME))
 #>             NAME CONT INTG DMNR DILG CFMG DECI PREP FAMI ORAL WRIT PHYS RTEN
@@ -499,22 +510,20 @@ larger {ggplot2} extension family provides several additional tools for
 multivariate data visualization to both facilitate and complicate your
 efforts.
 
-------------------------------------------------------------------------
-
-1.  Presumably this was the [Connecticut Superior
+[^1]: Presumably this was the [Connecticut Superior
     Court](https://www.jud.ct.gov/superiorcourt/).
 
-2.  While we don’t illustrate it here, knowing the artificial
+[^2]: While we don’t illustrate it here, knowing the artificial
     coordinates of elements on both layers of a biplot allows the
     original data elements to be recovered via inner product.)
 
-3.  These axes are interpolative; the position of a case marker is the
+[^3]: These axes are interpolative; the position of a case marker is the
     vector sum of its ratings. More useful in most applications are
     predictive axes, but these require additional calibration not yet
     available in {gggda}. See [the {calibrate}
     package](https://cran.r-project.org/package=calibrate) for possibly
     the most common solution in R.
 
-4.  We can confidently infer these inequalities from the biplot only
+[^4]: We can confidently infer these inequalities from the biplot only
     because it accounts for the vast majority of the variance in the
     data, i.e. it is very high quality.

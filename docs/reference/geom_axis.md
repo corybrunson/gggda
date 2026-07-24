@@ -19,27 +19,36 @@ geom_axis(
   tick_length = 0.025,
   text_dodge = 0.03,
   label_dodge = 0.03,
+  label_placement = c("positive", "negative", "peripheral"),
   ...,
-  axis.colour = NULL,
+  axis.linewidth = sync(),
+  axis.linetype = sync(),
+  axis.colour = sync(),
   axis.color = NULL,
-  axis.alpha = NULL,
+  axis.alpha = sync(),
+  label.size = sync(),
   label.angle = 0,
-  label.colour = NULL,
+  label.hjust = sync(),
+  label.vjust = sync(),
+  label.family = sync(),
+  label.fontface = sync(),
+  label.colour = sync(),
   label.color = NULL,
-  label.alpha = NULL,
+  label.alpha = sync(),
   tick.linewidth = 0.25,
-  tick.colour = NULL,
+  tick.linetype = "solid",
+  tick.colour = sync(),
   tick.color = NULL,
-  tick.alpha = NULL,
+  tick.alpha = sync(),
   text.size = 2.6,
   text.angle = 0,
-  text.hjust = 0.5,
-  text.vjust = 0.5,
-  text.family = NULL,
-  text.fontface = NULL,
-  text.colour = NULL,
+  text.hjust = sync(),
+  text.vjust = sync(),
+  text.family = sync(),
+  text.fontface = sync(),
+  text.colour = sync(),
   text.color = NULL,
-  text.alpha = NULL,
+  text.alpha = sync(),
   parse = FALSE,
   check_overlap = FALSE,
   na.rm = FALSE,
@@ -80,7 +89,7 @@ geom_axis(
 
   The statistical transformation to use on the data for this layer. When
   using a `geom_*()` function to construct a layer, the `stat` argument
-  can be used the override the default coupling between geoms and stats.
+  can be used to override the default coupling between geoms and stats.
   The `stat` argument accepts the following:
 
   - A `Stat` ggproto subclass, for example `StatCount`.
@@ -138,22 +147,30 @@ geom_axis(
   Numeric; the orthogonal distance of the axis label from the axis, as a
   proportion of the minimum of the plot width and height.
 
+- label_placement:
+
+  Character; how to place the labels along the axes. Matched to
+  `"positive"` (the default; at the increasing end of the axis),
+  `"negative"` (at the decreasing end), `"peripheral"` (at the end
+  farther from the origin).
+
 - ...:
 
   Additional arguments passed to
   [`ggplot2::layer()`](https://ggplot2.tidyverse.org/reference/layer.html).
 
-- axis.colour, axis.color, axis.alpha:
+- axis.linewidth, axis.linetype, axis.colour, axis.color, axis.alpha:
 
   Default aesthetics for axes. Set to NULL to inherit from the data's
   aesthetics.
 
-- label.angle, label.colour, label.color, label.alpha:
+- label.size, label.angle, label.hjust, label.vjust, label.family,
+  label.fontface, label.colour, label.color, label.alpha:
 
   Default aesthetics for labels. Set to NULL to inherit from the data's
   aesthetics.
 
-- tick.linewidth, tick.colour, tick.color, tick.alpha:
+- tick.linewidth, tick.linetype, tick.colour, tick.color, tick.alpha:
 
   Default aesthetics for tick marks. Set to NULL to inherit from the
   data's aesthetics.
@@ -187,7 +204,9 @@ geom_axis(
   logical. Should this layer be included in the legends? `NA`, the
   default, includes if any aesthetics are mapped. `FALSE` never
   includes, and `TRUE` always includes. It can also be a named logical
-  vector to finely select the aesthetics to display.
+  vector to finely select the aesthetics to display. To include legend
+  keys for all levels, even when no data exists, use `TRUE`. If `NA`,
+  all levels are shown in legend, but unobserved levels are omitted.
 
 - inherit.aes:
 
@@ -195,7 +214,7 @@ geom_axis(
   with them. This is most useful for helper functions that define both
   data and aesthetics and shouldn't inherit behaviour from the default
   plot specification, e.g.
-  [`borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
+  [`annotation_borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
 
 ## Value
 
@@ -286,26 +305,28 @@ stackloss %>%
   lm(formula = stack.loss ~ Air.Flow + Water.Temp + Acid.Conc.) %>% 
   coef() %>% 
   as.list() %>% as.data.frame() %>% 
-  subset(select = c(Air.Flow, Water.Temp, Acid.Conc.)) ->
+  subset(select = c(Air.Flow, Water.Temp, Acid.Conc.)) %>%
+  transform(regressand = "stack.loss") ->
   coef_data
 # gradient axis with respect to two predictors
 scale(stackloss, scale = FALSE) %>% 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
   coord_square() +
-  geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
+  geom_point(aes(size = abs(stack.loss), alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
-  geom_axis(data = coef_data)
+  geom_axis(data = coef_data, aes(label = regressand))
 
 # unlimited axes with window forcing
 stackloss_centered <- scale(stackloss, scale = FALSE)
 stackloss_centered %>% 
   ggplot(aes(x = Acid.Conc., y = Air.Flow)) +
   coord_square() +
-  geom_point(aes(size = stack.loss, alpha = sign(stack.loss))) + 
+  geom_point(aes(size = abs(stack.loss), alpha = sign(stack.loss))) + 
   scale_size_area() + scale_alpha_binned(breaks = c(-1, 0, 1)) +
   stat_rule(
-    geom = "axis", data = coef_data,
+    geom = "axis", data = coef_data, aes(label = regressand),
     referent = stackloss_centered,
+    label_placement = "negative",
     fun.lower = function(x) minpp(x, p = 1),
     fun.upper = function(x) maxpp(x, p = 1),
     fun.offset = function(x) minabspp(x, p = 1)
@@ -325,6 +346,9 @@ ability_cor_eigen %>%
   transform(E3 = ifelse(V3 > 0, "rise", "fall")) %>% 
   ggplot(aes(V1, V2, color = E3)) +
   coord_square() +
-  geom_axis(aes(label = test), text.color = "black", text.alpha = .5) +
+  geom_axis(
+    aes(label = test),
+    text.color = "black", text.alpha = .5, text.angle = -15
+  ) +
   expand_limits(x = c(-1, 1), y = c(-1, 1))
 ```

@@ -21,7 +21,10 @@ coord_rect(
 
 - ratio:
 
-  aspect ratio, expressed as `y / x`
+  aspect ratio, expressed as `y / x`. Can be `NULL` (default) to not use
+  an aspect ratio. Using `1` ensures that one unit on the x-axis is the
+  same length as one unit on the y-axis. Ratios higher than one make
+  units on the y-axis longer than units on the x-axis, and vice versa.
 
 - window_ratio:
 
@@ -35,7 +38,11 @@ coord_rect(
 
   If `TRUE`, the default, adds a small expansion factor to the limits to
   ensure that data and axes don't overlap. If `FALSE`, limits are taken
-  exactly from the data or `xlim`/`ylim`.
+  exactly from the data or `xlim`/`ylim`. Giving a logical vector will
+  separately control the expansion for the four directions (top, left,
+  bottom and right). The `expand` argument will be recycled to length 4
+  if necessary. Alternatively, can be a named logical vector to control
+  a single direction, e.g. `expand = c(bottom = FALSE)`.
 
 - clip:
 
