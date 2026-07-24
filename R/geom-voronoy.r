@@ -28,7 +28,7 @@
 #' @template param-geom
 #' @template return-layer
 #' @family geom layers
-#' @example inst/examples/ex-geom-voronoi.r
+#' @example inst/examples/ex-geom-voronoy.r
 #' @export
 geom_voronoy <- function(
     mapping = NULL, data = NULL,

@@ -74,7 +74,7 @@ Collate:
     'geom-text-radiate.r'
     'geom-utils.r'
     'geom-vector.r'
-    'geom-voronoi.r'
+    'geom-voronoy.r'
     'gggda.r'
     'peel.r'
     'stat-peel.r'
@@ -87,7 +87,7 @@ Collate:
     'stat-rule.r'
     'stat-scale.r'
     'stat-spantree.r'
-    'stat-voronoi.r'
+    'stat-voronoy.r'
     'utils.r'
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0

@@ -85,7 +85,7 @@ StatDelaunay <- ggproto(
     data$y <- coords[, 2L]
 
     # select and deploy engine based on data dimension
-    engine <- select_voronoi_engine(engine, ncol(coords))
+    engine <- select_voronoy_engine(engine, ncol(coords))
 
     edges <- switch(engine,
       deldir   = delaunay_edges_deldir(coords),

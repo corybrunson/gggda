@@ -54,7 +54,7 @@
 #' @template param-layer
 #' @template return-layer
 #' @family stat layers
-#' @example inst/examples/ex-stat-voronoi.r
+#' @example inst/examples/ex-stat-voronoy.r
 #' @export
 stat_voronoy <- function(
     mapping = NULL, data = NULL, geom = "voronoy", position = "identity",
@@ -133,12 +133,12 @@ StatVoronoy <- ggproto(
     )
 
     # select and deploy engine based on data dimension
-    engine <- select_voronoi_engine(engine, ncol(coords))
+    engine <- select_voronoy_engine(engine, ncol(coords))
 
     # TODO: Return a data frame with `cell` and `area` columns; `cbind()` below.
     cell_list <- switch(engine,
-      deldir   = voronoi_cells_deldir(coords, limits),
-      geometry = voronoi_cells_geometry(coords, limits)
+      deldir   = voronoy_cells_deldir(coords, limits),
+      geometry = voronoy_cells_geometry(coords, limits)
     )
 
     data$cell <- cell_list
@@ -155,7 +155,7 @@ StatVoronoy <- ggproto(
 )
 
 # select engine based on data dimension and availability
-select_voronoi_engine <- function(engine, ndim) {
+select_voronoy_engine <- function(engine, ndim) {
   del_engines <- c("deldir", "geometry")
   engine_installed <- del_engines %in% .packages(all.available = TRUE)
   names(engine_installed) <- del_engines
@@ -190,7 +190,7 @@ select_voronoi_engine <- function(engine, ndim) {
 
 # use `deldir::deldir()` for at least 3 points; otherwise handle trivially;
 # assumes data are 2-dimensional
-voronoi_cells_deldir <- function(coords, limits) {
+voronoy_cells_deldir <- function(coords, limits) {
   if (nrow(coords) >= 3L) {
     del <- deldir::deldir(coords[, 1L], coords[, 2L], rw = limits)
     tiles <- deldir::tile.list(del)
@@ -205,9 +205,9 @@ voronoi_cells_deldir <- function(coords, limits) {
     names(cell_list) <- NULL
     
   } else if (nrow(coords) == 2L) {
-    cell_list <- voronoi_cells_2(coords, limits)
+    cell_list <- voronoy_cells_2(coords, limits)
   } else if (nrow(coords) == 1L) {
-    cell_list <- voronoi_cells_1(coords, limits)
+    cell_list <- voronoy_cells_1(coords, limits)
   }
 
   cell_list
@@ -215,7 +215,7 @@ voronoi_cells_deldir <- function(coords, limits) {
 
 # use `geometry::delaunayn()` to identify Delaunay neighbors, then clip each
 # cell against its neighbors' bisectors
-voronoi_cells_geometry <- function(coords, limits) {
+voronoy_cells_geometry <- function(coords, limits) {
   n <- nrow(coords)
   bound <- bound_coord(limits)
   norms_sq <- rowSums(coords^2)
@@ -277,7 +277,7 @@ voronoi_cells_geometry <- function(coords, limits) {
   cell_list
 }
 
-voronoi_cells_1 <- function(coords, limits) {
+voronoy_cells_1 <- function(coords, limits) {
   stopifnot(nrow(coords) == 1L)
   
   bound <- bound_coord(limits)
@@ -285,7 +285,7 @@ voronoi_cells_1 <- function(coords, limits) {
   list(data.frame(x = bound[, 1L], y = bound[, 2L], border = TRUE))
 }
 
-voronoi_cells_2 <- function(coords, limits) {
+voronoy_cells_2 <- function(coords, limits) {
   stopifnot(nrow(coords) == 2L)
   
   bound <- bound_coord(limits)
