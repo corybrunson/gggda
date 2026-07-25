@@ -110,7 +110,8 @@ StatVoronoy <- ggproto(
     # NB: For plotting, each cell must constitute its own group.
     data$group <- seq_len(nrow(data))
 
-    # FIXME: Why are these limits always `NULL`?
+    # FIXME: Why are these limits always `NULL`? This would allow `buffer` to be
+    # discarded.
     coord_limits <- panel$coord$limits
     x_ran <- coord_limits$x %||% range(coords[, 1L], na.rm = TRUE)
     y_ran <- coord_limits$y %||% range(coords[, 2L], na.rm = TRUE)
