@@ -15,7 +15,18 @@ ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   stat_voronoy(color = "black", buffer = .01) +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
+# facet by a variable
+set.seed(0)
+euro_mds %>%
+  transform(random = LETTERS[sample(3, nrow(euro_mds), replace = TRUE)]) %>%
+  ggplot(aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
+  coord_equal() +
+  facet_grid(cols = vars(random)) +
+  stat_voronoy(color = "black", buffer = .01) +
+  geom_point(aes(V1, V2)) +
+  geom_text(aes(V1, V2), alpha = .5, size = 3)
 # overlay Voronoy tiles and Thiessen segments
+set.seed(0)
 euro_mds %>%
   transform(random = LETTERS[sample(3, nrow(euro_mds), replace = TRUE)]) %>%
   ggplot(aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
