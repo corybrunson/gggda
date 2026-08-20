@@ -141,11 +141,11 @@ p <- ggplot(subcars, aes(x = hp00, y = wt)) +
   )
 b <- ggplot_build(p)
 # original data
-b@plot@data
+b[["plot"]][["data"]]
 # head of original data
-b@data[[1]]
+b[["data"]][[1]]
 # means of original data
-b@plot@layers$stat_referent$stat_params$referent
+b[["plot"]][["layers"]]$stat_referent$stat_params$referent
 # means of head of original data
 as.data.frame(lapply(layer_data(p, 1), mean))
 }
