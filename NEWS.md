@@ -4,17 +4,21 @@
 
 ### voronoi stat and geoms
 
-A new statistical transformation `StatVoronoy` computes Voronoi cells from `x,y` or `..coord*`, stored as nested data frames and in the latter case intersected with the `xy`-plane.
-By default, it uses `deldir::deldir()` for two-dimensional data and `geometry::delaunayn()` otherwise.
-The stat couples with two companion geometric constructions, both of which un-nest the cell data:
-`GeomVoronoy` draws cells as polygons and `GeomThiessen` draws shared cell boundaries as a union of segments.
+A new statistical transformation `StatVoronoy` computes Voronoi cells from `x,y`
+or `..coord*`, stored as nested data frames and in the latter case intersected
+with the `xy`-plane. By default, it uses `deldir::deldir()` for two-dimensional
+data and `geometry::delaunayn()` otherwise. The stat couples with two companion
+geometric constructions, both of which un-nest the cell data: `GeomVoronoy`
+draws cells as polygons and `GeomThiessen` draws shared cell boundaries as a
+union of segments.
 
 ### delaunay stat
 
-A new statistical transformation `StatDelaunay` computes the Delaunay triangulation
-from `x,y` or `..coord*`.
-It returns endpoint data for the triangulation edges, in the latter case projected onto the `xy`-plane, compatible with the default `GeomSegment`.
-It uses the same engine logic as `StatVoronoy`.
+A new statistical transformation `StatDelaunay` computes the Delaunay
+triangulation from `x,y` or `..coord*`. It returns endpoint data for the
+triangulation edges, in the latter case projected onto the `xy`-plane,
+compatible with the default `GeomSegment`. It uses the same engine logic as
+`StatVoronoy`.
 
 # gggda 0.2.0
 
