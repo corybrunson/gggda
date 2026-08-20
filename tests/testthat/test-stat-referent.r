@@ -51,12 +51,12 @@ test_that("passing a function to `referent` evaluates it at `data`", {
     )
   b <- ggplot_build(p)
   # original data
-  expect_identical(b@plot@data, mtcars)
+  expect_identical(b[["plot"]][["data"]], mtcars)
   # head of original data
-  expect_equal(nrow(b@data[[1]]), 6L)
+  expect_equal(nrow(b[["data"]][[1]]), 6L)
   # means of original data
   expect_equal(
-    b@plot@layers$stat_referent$stat_params$referent,
+    b[["plot"]][["layers"]]$stat_referent$stat_params$referent,
     as.data.frame(lapply(mtcars, mean))
   )
   # means of head of original data
