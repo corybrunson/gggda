@@ -2,8 +2,10 @@ test_that("`StatVoronoy` returns expected columns with {deldir} engine", {
   skip_if_not_installed("deldir")
   
   d <- data.frame(x = c(0, 1, 0.5, 0.2, 0.8),
-                  y = c(0, 0, 1, 0.5, 0.3))
-  l <- layer_data(ggplot(d, aes(x, y)) + stat_voronoy(engine = "deldir"))
+                  y = c(0, 0, 1, 0.5, 0.3),
+                  z = seq_len(5))
+  p <- ggplot(d, aes(x, y, alpha = z)) + stat_voronoy(engine = "deldir")
+  l <- layer_data(p)
   
   expect_equal(l$x, d$x)
   expect_equal(l$y, d$y)
@@ -26,8 +28,10 @@ test_that("`StatVoronoy` returns expected columns with {geometry} engine", {
   skip_if_not_installed("deldir")
   
   d <- data.frame(x = c(0, 1, 0.5, 0.2, 0.8),
-                  y = c(0, 0, 1, 0.5, 0.3))
-  l <- layer_data(ggplot(d, aes(x, y)) + stat_voronoy(engine = "geometry"))
+                  y = c(0, 0, 1, 0.5, 0.3),
+                  z = seq_len(5))
+  p <- ggplot(d, aes(x, y, alpha = z)) + stat_voronoy(engine = "geometry")
+  l <- layer_data(p)
 
   expect_equal(l$x, d$x)
   expect_equal(l$y, d$y)
@@ -48,19 +52,19 @@ test_that("`StatVoronoy` returns expected columns with {geometry} engine", {
 
 set.seed(3314L)
 d <- data.frame(x = runif(9), y = runif(9), z = rnorm(9))
-dd <- data.frame(x1 = runif(9), x2 = runif(9), x3 = rnorm(9))
-p <- ggplot(d, aes(x, y))
-pp <- ggplot(dd, aes_coord(dd, prefix = "x"))
+dd <- data.frame(x1 = runif(9), x2 = runif(9), x3 = rnorm(9), a = seq_len(9))
 
 test_that("`stat_voronoy()` handles higher-dimensional coordinates", {
-  l <- layer_data(ggplot(dd, aes_coord(dd, "x")) + stat_voronoy())
+  p <- ggplot(dd, aes_c(aes_coord(dd, "x"), aes(alpha = a))) + stat_voronoy()
+  l <- layer_data(p)
   expect_true(length(unique(l$group)) <= 9L)
   expect_true("x" %in% names(l))
   expect_true("y" %in% names(l))
 })
 
 test_that("`stat_voronoy()` preserves auxiliary aesthetics", {
-  l <- layer_data(p + stat_voronoy(aes(fill = z)))
+  p <- ggplot(d, aes(x, y)) + stat_voronoy(aes(fill = z))
+  l <- layer_data(p)
   expect_true("fill" %in% names(l))
   expect_false(any(is.na(l$fill)))
 })

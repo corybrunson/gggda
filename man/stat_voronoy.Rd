@@ -9,7 +9,6 @@ stat_voronoy(
   data = NULL,
   geom = "voronoy",
   position = "identity",
-  buffer = 1,
   engine = NULL,
   show.legend = NA,
   inherit.aes = TRUE,
@@ -63,10 +62,6 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 \link[ggplot2:layer_positions]{layer position} documentation.
 }}
 
-\item{buffer}{Numeric; a fraction of the data range by which to extend the
-border in each coordinate. A single value determines a square border; a
-length-2 vector sets the x and y buffers independently.}
-
 \item{engine}{A single character string specifying the package implementation
 to use; \code{"deldir"} or \code{"geometry"}. Only \code{"geometry"} can handle
 higher-dimensional data.}
@@ -110,10 +105,8 @@ regions in an LDA biplot (Gardner, 2001). When the LDA models more than
 three groups, proper prediction regions must be constructed in model space,
 then intersected with the biplot plane.
 
-Voronoi cells are only delimited within a rectangular border, set to a
-fraction of the data range beyond the extrema in each dimension.
-Pass two values to \code{buffer} to specify \code{x} and \code{y} separately or a single
-value to specify the minimum buffer of a square border.
+Voronoi cells are delimited within a rectangular border that extends to
+the edges of the plot window.
 
 By default, \code{\link[deldir:deldir]{deldir::deldir()}} is deployed on 2-dimensional data while
 \code{\link[geometry:delaunayn]{geometry::delaunayn()}} is deployed on higher-dimensional data; the user
@@ -164,16 +157,27 @@ ggplot(euro_mds, aes(V1, V2, label = city)) +
 # intersection of plane with full-dimensional regions, tight bounds
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
-  stat_voronoy(color = "black", buffer = .01) +
+  stat_voronoy(color = "black") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
-# overlay Voronoy tiles and Thiessen segments
+# facet by a variable
+set.seed(0)
 euro_mds \%>\%
   transform(random = LETTERS[sample(3, nrow(euro_mds), replace = TRUE)]) \%>\%
   ggplot(aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
-  stat_voronoy(aes(fill = random), buffer = .01) +
-  stat_voronoy(geom = "thiessen", linetype = "dotted", buffer = .03) +
+  facet_grid(cols = vars(random)) +
+  stat_voronoy(color = "black") +
+  geom_point(aes(V1, V2)) +
+  geom_text(aes(V1, V2), alpha = .5, size = 3)
+# overlay Voronoy tiles and Thiessen segments
+set.seed(0)
+euro_mds \%>\%
+  transform(random = LETTERS[sample(3, nrow(euro_mds), replace = TRUE)]) \%>\%
+  ggplot(aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
+  coord_equal() +
+  stat_voronoy(aes(fill = random)) +
+  stat_voronoy(geom = "thiessen", linetype = "dotted") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
 }

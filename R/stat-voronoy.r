@@ -20,15 +20,12 @@
 #'   three groups, proper prediction regions must be constructed in model space,
 #'   then intersected with the biplot plane.
 #'
-#'   Voronoi cells are only delimited within a rectangular border, set to a
-#'   fraction of the data range beyond the extrema in each dimension.
-#'   Pass two values to `buffer` to specify `x` and `y` separately or a single
-#'   value to specify the minimum buffer of a square border.
-#'
-#'   By default, [deldir::deldir()] is deployed on 2-dimensional data while
-#'   [geometry::delaunayn()] is deployed on higher-dimensional data; the user
-#'   may use the `engine` argument to override the default in 2 dimensions, but
-#'   in higher dimensions the **geometry** package is required.
+#'   Voronoi cells are delimited within a rectangular border that extends just
+#'   beyond the plot window. By default, [deldir::deldir()] is deployed on
+#'   2-dimensional data while [geometry::delaunayn()] is deployed on
+#'   higher-dimensional data; the user may use the `engine` argument to override
+#'   the default in 2 dimensions, but in higher dimensions the **geometry**
+#'   package is required.
 #' 
 
 #' @template ref-voronoi1908
@@ -45,9 +42,6 @@
 #' }
 
 #' @inheritParams ggplot2::layer
-#' @param buffer Numeric; a fraction of the data range by which to extend the
-#'   border in each coordinate. A single value determines a square border; a
-#'   length-2 vector sets the x and y buffers independently.
 #' @param engine A single character string specifying the package implementation
 #'   to use; `"deldir"` or `"geometry"`. Only `"geometry"` can handle
 #'   higher-dimensional data.
@@ -58,7 +52,6 @@
 #' @export
 stat_voronoy <- function(
     mapping = NULL, data = NULL, geom = "voronoy", position = "identity",
-    buffer = 1,
     engine = NULL,
     show.legend = NA,
     inherit.aes = TRUE,
@@ -73,7 +66,6 @@ stat_voronoy <- function(
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
-      buffer = buffer,
       engine = engine,
       na.rm = FALSE,
       ...
@@ -93,14 +85,8 @@ StatVoronoy <- ggproto(
   compute_layer = function(
     self, data, params, panel
   ) {
-    buffer <- params$buffer %||% 1
     engine <- params$engine
     if (! is.null(engine)) engine <- match.arg(engine, c("deldir", "geometry"))
-    
-    if (! is.numeric(buffer) || length(buffer) < 1L ||
-        length(buffer) > 2L || anyNA(buffer)) {
-      stop("`buffer` must be a numeric vector of length 1 or 2.")
-    }
 
     coord_cols <- get_aes_coord(data)
     coords <- as.matrix(data[, coord_cols, drop = FALSE])
@@ -118,23 +104,13 @@ StatVoronoy <- ggproto(
       pp$x$dimension() else range(coords[, 1L], na.rm = TRUE)
     y_ran <- if (! is.null(pp) && ! is.null(pp$y))
       pp$y$dimension() else range(coords[, 2L], na.rm = TRUE)
-    x_diff <- diff(x_ran)
-    y_diff <- diff(y_ran)
-    if (x_diff == 0) x_diff <- 1
-    if (y_diff == 0) y_diff <- 1
-    if (length(buffer) == 1L) {
-      max_diff <- max(x_diff, y_diff)
-      side <- max_diff + 2 * buffer * max_diff
-      x_pad <- (side - x_diff) / 2
-      y_pad <- (side - y_diff) / 2
-    } else {
-      x_pad <- x_diff * buffer[1L]
-      y_pad <- y_diff * buffer[2L]
-    }
-    limits <- c(
-      x_ran[1L] - x_pad, x_ran[2L] + x_pad,
-      y_ran[1L] - y_pad, y_ran[2L] + y_pad
-    )
+    # extend to cover all data points
+    x_ran <- range(c(x_ran, range(coords[, 1L], na.rm = TRUE)))
+    y_ran <- range(c(y_ran, range(coords[, 2L], na.rm = TRUE)))
+    limits <- c(x_ran[1L], x_ran[2L], y_ran[1L], y_ran[2L])
+    # extend 5% beyond the plot window on each side
+    limits[1:2] <- limits[1:2] + diff(limits[1:2]) * c(-0.05, 0.05)
+    limits[3:4] <- limits[3:4] + diff(limits[3:4]) * c(-0.05, 0.05)
 
     # select and deploy engine based on data dimension
     engine <- select_voronoy_engine(engine, ncol(coords))
@@ -150,7 +126,7 @@ StatVoronoy <- ggproto(
   },
 
   parameters = function(self, extra = FALSE) {
-    panel_args <- c("na.rm", "buffer", "engine")
+    panel_args <- c("na.rm", "engine")
     if (extra) {
       panel_args <- union(panel_args, self$non_missing_aes)
     }
