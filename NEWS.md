@@ -1,3 +1,11 @@
+# next version
+
+## common axis breaks
+
+`CoordRect` has a new parameter `sync_breaks` that defaults to `TRUE`, resulting
+in the coordinate axes having ticks, labels, and grid lines at common break
+values.
+
 # gggda 0.2.0
 
 ## patch bug due to mlpack upgrade
