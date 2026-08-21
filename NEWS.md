@@ -1,5 +1,11 @@
 # next version
 
+## common axis breaks
+
+`CoordRect` has a new parameter `sync_breaks` that defaults to `TRUE`, resulting
+in the coordinate axes having ticks, labels, and grid lines at common break
+values.
+
 ## new plot layers
 
 ### voronoi stat and geoms
