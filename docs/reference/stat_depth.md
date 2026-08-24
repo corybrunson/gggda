@@ -244,8 +244,10 @@ Boxplot". *The American Statistician*, **53**(4): 382–387.
 
 Other stat layers: [`stat_bagplot()`](stat_bagplot.md),
 [`stat_center()`](stat_center.md), [`stat_chull()`](stat_chull.md),
-[`stat_cone()`](stat_cone.md), [`stat_rule()`](stat_rule.md),
-[`stat_scale()`](stat_scale.md), [`stat_spantree()`](stat_spantree.md)
+[`stat_cone()`](stat_cone.md), [`stat_delaunay()`](stat_delaunay.md),
+[`stat_rule()`](stat_rule.md), [`stat_scale()`](stat_scale.md),
+[`stat_spantree()`](stat_spantree.md),
+[`stat_voronoi()`](stat_voronoi.md)
 
 ## Examples
 

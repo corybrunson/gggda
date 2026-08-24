@@ -30,6 +30,9 @@ Useful links:
 
 Authors:
 
+- Jason Cory Brunson <cornelioid@gmail.com>
+  ([ORCID](https://orcid.org/0000-0003-3126-9494))
+
 - John Gracey <jbgracey6@gmail.com>
 
 Other contributors:

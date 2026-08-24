@@ -64,6 +64,7 @@
 <url><loc>/reference/geom_text_radiate.html</loc></url>
 <url><loc>/reference/geom_unit_circle.html</loc></url>
 <url><loc>/reference/geom_vector.html</loc></url>
+<url><loc>/reference/geom_voronoi.html</loc></url>
 <url><loc>/reference/ggbiplot-axis.html</loc></url>
 <url><loc>/reference/ggbiplot-center.html</loc></url>
 <url><loc>/reference/ggbiplot-chull.html</loc></url>
@@ -130,6 +131,7 @@
 <url><loc>/reference/stat_center.html</loc></url>
 <url><loc>/reference/stat_chull.html</loc></url>
 <url><loc>/reference/stat_cone.html</loc></url>
+<url><loc>/reference/stat_delaunay.html</loc></url>
 <url><loc>/reference/stat_depth.html</loc></url>
 <url><loc>/reference/stat_projection.html</loc></url>
 <url><loc>/reference/stat_referent.html</loc></url>
@@ -137,6 +139,7 @@
 <url><loc>/reference/stat_rule.html</loc></url>
 <url><loc>/reference/stat_scale.html</loc></url>
 <url><loc>/reference/stat_spantree.html</loc></url>
+<url><loc>/reference/stat_voronoi.html</loc></url>
 <url><loc>/reference/supplementation.html</loc></url>
 <url><loc>/reference/sync.html</loc></url>
 <url><loc>/reference/tbl_ord.html</loc></url>

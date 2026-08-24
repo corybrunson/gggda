@@ -183,8 +183,9 @@ Springer Series in Statistics, ISSN 0172-7397.
 
 Other stat layers: [`stat_bagplot()`](stat_bagplot.md),
 [`stat_center()`](stat_center.md), [`stat_chull()`](stat_chull.md),
-[`stat_cone()`](stat_cone.md), [`stat_depth()`](stat_depth.md),
-[`stat_rule()`](stat_rule.md), [`stat_scale()`](stat_scale.md)
+[`stat_cone()`](stat_cone.md), [`stat_delaunay()`](stat_delaunay.md),
+[`stat_depth()`](stat_depth.md), [`stat_rule()`](stat_rule.md),
+[`stat_scale()`](stat_scale.md), [`stat_voronoi()`](stat_voronoi.md)
 
 ## Examples
 
@@ -197,6 +198,8 @@ eurodist %>%
 ggplot(euro_mds, aes(V1, V2, label = city)) +
   stat_spantree() +
   geom_label(alpha = .25)
+#> Warning: Package {mlpack} not installed; using {vegan} instead.
+#> This warning is displayed once every 8 hours.
 
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   stat_spantree() +

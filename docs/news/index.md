@@ -2,6 +2,8 @@
 
 ## gggda 0.2.0
 
+CRAN release: 2026-07-18
+
 ### patch bug due to mlpack upgrade
 
 The trigger for this minor version is an upgrade to {mlpack} that makes

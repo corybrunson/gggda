@@ -276,7 +276,7 @@ Other geom layers: [`geom_axis()`](geom_axis.md),
 [`geom_isoline()`](geom_isoline.md),
 [`geom_lineranges()`](geom_lineranges.md),
 [`geom_text_radiate()`](geom_text_radiate.md),
-[`geom_vector()`](geom_vector.md)
+[`geom_vector()`](geom_vector.md), [`geom_voronoi()`](geom_voronoi.md)
 
 ## Examples
 

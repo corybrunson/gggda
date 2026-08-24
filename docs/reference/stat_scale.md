@@ -139,5 +139,7 @@ incompatible with these aesthetics but will accept
 
 Other stat layers: [`stat_bagplot()`](stat_bagplot.md),
 [`stat_center()`](stat_center.md), [`stat_chull()`](stat_chull.md),
-[`stat_cone()`](stat_cone.md), [`stat_depth()`](stat_depth.md),
-[`stat_rule()`](stat_rule.md), [`stat_spantree()`](stat_spantree.md)
+[`stat_cone()`](stat_cone.md), [`stat_delaunay()`](stat_delaunay.md),
+[`stat_depth()`](stat_depth.md), [`stat_rule()`](stat_rule.md),
+[`stat_spantree()`](stat_spantree.md),
+[`stat_voronoi()`](stat_voronoi.md)

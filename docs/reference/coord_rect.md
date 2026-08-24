@@ -1,8 +1,8 @@
 # Cartesian coordinates and plotting window with fixed aspect ratios
 
-Geometric data analysis often requires that coordinates lie on the same
-scale. The coordinate system `CoordRect`, alias `CoordSquare`, provides
-control of both coordinate and window aspect ratios.
+The coordinate system `CoordRect`, alias `CoordSquare`, provides control
+of both coordinate and window aspect ratios and synchronizes tick marks
+and grid lines between the axes.
 
 ## Usage
 
@@ -13,7 +13,8 @@ coord_rect(
   xlim = NULL,
   ylim = NULL,
   expand = TRUE,
-  clip = "on"
+  clip = "on",
+  sync_breaks = (ratio == 1)
 )
 ```
 
@@ -28,7 +29,7 @@ coord_rect(
 
 - window_ratio:
 
-  aspect ratio of plotting window
+  Numeric; aspect ratio of plotting window.
 
 - xlim, ylim:
 
@@ -55,9 +56,28 @@ coord_rect(
   limits, then those data points may show up in places such as the axes,
   the legend, the plot title, or the plot margins.
 
+- sync_breaks:
+
+  Logical; if `TRUE`, break positions on both axes are computed from a
+  common step size, resulting in a regular lattice. Defaulted to when
+  `ratio == 1`.
+
 ## Value
 
 A `Coord` [ggproto](gggda-ggproto.md) object.
+
+## Details
+
+Geometric data analysis often requires that coordinates lie on the same
+scale. Plots of geometric data on a unit aspect ratio may benefit from
+visual cues to this property, including a fully square plot window and
+commensurate axis scales.
+
+The `window_ratio` argument controls the aspect ratio of the plot window
+and defaults to `1`. The `sync_breaks` argument controls whether break
+positions, which apply to tick marks and grid lines, are synchronized
+between the axes. It computes breaks based on the geometric mean of the
+axis lengths.
 
 ## Examples
 
@@ -71,15 +91,27 @@ p + coord_rect(ratio = 1, window_ratio = 2)
 
 p + coord_rect(ratio = 1, window_ratio = 1/2)
 
-p + coord_rect(ratio = 5)
-
-p + coord_rect(ratio = 1/5)
-
+# offset squares
 p + coord_rect(xlim = c(15, 30))
 
 p + coord_rect(ylim = c(15, 30))
 
+# infeasible to synchronize breaks
+p + coord_rect(ratio = 5)
 
-# square (even excluding some geometric constructions)
+p + coord_rect(ratio = 1/5)
+
+
+# force square (even excluding some geometric constructions)
 p + coord_square(xlim = c(0, 30), ylim = c(20, 40))
+
+
+# disable break synchronization
+p + 
+  scale_x_continuous(limits = c(-10, 60)) +
+  coord_rect(ratio = 1, window_ratio = 1/2)
+
+p + 
+  scale_x_continuous(limits = c(-10, 60)) +
+  coord_rect(ratio = 1, window_ratio = 1/2, sync_breaks = FALSE)
 ```

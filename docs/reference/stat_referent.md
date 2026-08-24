@@ -182,7 +182,7 @@ p <- ggplot(subcars, aes(x = hp00, y = wt)) +
   )
 b <- ggplot_build(p)
 # original data
-b@plot@data
+b[["plot"]][["data"]]
 #>                      mpg hp00    wt
 #> Mazda RX4           21.0 1.10 2.620
 #> Mazda RX4 Wag       21.0 1.10 2.875
@@ -217,7 +217,7 @@ b@plot@data
 #> Maserati Bora       15.0 3.35 3.570
 #> Volvo 142E          21.4 1.09 2.780
 # head of original data
-b@data[[1]]
+b[["data"]][[1]]
 #>      x     y PANEL group
 #> 1 1.10 2.620     1    -1
 #> 2 1.10 2.875     1    -1
@@ -226,7 +226,7 @@ b@data[[1]]
 #> 5 1.75 3.440     1    -1
 #> 6 1.05 3.460     1    -1
 # means of original data
-b@plot@layers$stat_referent$stat_params$referent
+b[["plot"]][["layers"]]$stat_referent$stat_params$referent
 #>        mpg     hp00      wt
 #> 1 20.09062 1.466875 3.21725
 # means of head of original data

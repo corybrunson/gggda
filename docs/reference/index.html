@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gggda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@
 
       <dl><dt>
 
-          <code><a href="gggda-ggproto.html">gggda-ggproto</a></code> <code><a href="gggda-ggproto.html">CoordRect</a></code> <code><a href="gggda-ggproto.html">GeomAxis</a></code> <code><a href="gggda-ggproto.html">GeomBagplot</a></code> <code><a href="gggda-ggproto.html">GeomPointranges</a></code> <code><a href="gggda-ggproto.html">GeomLineranges</a></code> <code><a href="gggda-ggproto.html">GeomIsoline</a></code> <code><a href="gggda-ggproto.html">GeomRule</a></code> <code><a href="gggda-ggproto.html">GeomTextRadiate</a></code> <code><a href="gggda-ggproto.html">GeomVector</a></code> <code><a href="gggda-ggproto.html">StatChull</a></code> <code><a href="gggda-ggproto.html">StatPeel</a></code> <code><a href="gggda-ggproto.html">StatDepth</a></code> <code><a href="gggda-ggproto.html">StatDepthFilled</a></code> <code><a href="gggda-ggproto.html">StatBagplot</a></code> <code><a href="gggda-ggproto.html">StatCenter</a></code> <code><a href="gggda-ggproto.html">StatStar</a></code> <code><a href="gggda-ggproto.html">StatCone</a></code> <code><a href="gggda-ggproto.html">StatReferent</a></code> <code><a href="gggda-ggproto.html">StatRule</a></code> <code><a href="gggda-ggproto.html">StatScale</a></code> <code><a href="gggda-ggproto.html">StatSpantree</a></code>
+          <code><a href="gggda-ggproto.html">gggda-ggproto</a></code> <code><a href="gggda-ggproto.html">CoordRect</a></code> <code><a href="gggda-ggproto.html">GeomAxis</a></code> <code><a href="gggda-ggproto.html">GeomBagplot</a></code> <code><a href="gggda-ggproto.html">GeomPointranges</a></code> <code><a href="gggda-ggproto.html">GeomLineranges</a></code> <code><a href="gggda-ggproto.html">GeomIsoline</a></code> <code><a href="gggda-ggproto.html">GeomRule</a></code> <code><a href="gggda-ggproto.html">GeomTextRadiate</a></code> <code><a href="gggda-ggproto.html">GeomVector</a></code> <code><a href="gggda-ggproto.html">GeomVoronoi</a></code> <code><a href="gggda-ggproto.html">GeomThiessen</a></code> <code><a href="gggda-ggproto.html">StatChull</a></code> <code><a href="gggda-ggproto.html">StatPeel</a></code> <code><a href="gggda-ggproto.html">StatDepth</a></code> <code><a href="gggda-ggproto.html">StatDepthFilled</a></code> <code><a href="gggda-ggproto.html">StatBagplot</a></code> <code><a href="gggda-ggproto.html">StatCenter</a></code> <code><a href="gggda-ggproto.html">StatStar</a></code> <code><a href="gggda-ggproto.html">StatCone</a></code> <code><a href="gggda-ggproto.html">StatDelaunay</a></code> <code><a href="gggda-ggproto.html">StatReferent</a></code> <code><a href="gggda-ggproto.html">StatRule</a></code> <code><a href="gggda-ggproto.html">StatScale</a></code> <code><a href="gggda-ggproto.html">StatSpantree</a></code> <code><a href="gggda-ggproto.html">StatVoronoi</a></code>
 
         </dt>
         <dd>ggproto classes created and adapted for gggda</dd>
@@ -150,6 +150,13 @@
 
         <dt>
 
+          <code><a href="stat_delaunay.html">stat_delaunay()</a></code>
+
+        </dt>
+        <dd>Delaunay triangulation</dd>
+
+        <dt>
+
           <code><a href="stat_depth.html">stat_depth()</a></code> <code><a href="stat_depth.html">stat_depth_filled()</a></code>
 
         </dt>
@@ -175,6 +182,13 @@
 
         </dt>
         <dd>Calculate a minimum spanning tree among cases or variables</dd>
+
+        <dt>
+
+          <code><a href="stat_voronoi.html">stat_voronoi()</a></code>
+
+        </dt>
+        <dd>Voronoi tessellation</dd>
       </dl></div><div class="section level2">
       <h2 id="geometric-constructions">Geometric constructions<a class="anchor" aria-label="anchor" href="#geometric-constructions"></a></h2>
 
@@ -233,6 +247,13 @@
 
         </dt>
         <dd>Vectors from the origin</dd>
+
+        <dt>
+
+          <code><a href="geom_voronoi.html">geom_voronoi()</a></code> <code><a href="geom_voronoi.html">geom_thiessen()</a></code>
+
+        </dt>
+        <dd>Voronoi tessellation</dd>
       </dl></div><div class="section level2">
       <h2 id="aesthetic-mapping">Aesthetic mapping<a class="anchor" aria-label="anchor" href="#aesthetic-mapping"></a></h2>
 
@@ -275,7 +296,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

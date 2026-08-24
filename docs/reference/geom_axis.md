@@ -295,7 +295,7 @@ Other geom layers: [`geom_bagplot()`](geom_bagplot.md),
 [`geom_lineranges()`](geom_lineranges.md),
 [`geom_rule()`](geom_rule.md),
 [`geom_text_radiate()`](geom_text_radiate.md),
-[`geom_vector()`](geom_vector.md)
+[`geom_vector()`](geom_vector.md), [`geom_voronoi()`](geom_voronoi.md)
 
 ## Examples
 

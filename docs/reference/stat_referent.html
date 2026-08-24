@@ -9,7 +9,7 @@ shared positional variables."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">gggda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,7 +197,7 @@ confusing output.</p>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">ggplot_build</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># original data</span></span></span>
-<span class="r-in"><span><span class="va">b</span><span class="op">@</span><span class="va">plot</span><span class="op">@</span><span class="va">data</span></span></span>
+<span class="r-in"><span><span class="va">b</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      mpg hp00    wt</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mazda RX4           21.0 1.10 2.620</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mazda RX4 Wag       21.0 1.10 2.875</span>
@@ -232,7 +232,7 @@ confusing output.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maserati Bora       15.0 3.35 3.570</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Volvo 142E          21.4 1.09 2.780</span>
 <span class="r-in"><span><span class="co"># head of original data</span></span></span>
-<span class="r-in"><span><span class="va">b</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">b</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      x     y PANEL group</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.10 2.620     1    -1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.10 2.875     1    -1</span>
@@ -241,7 +241,7 @@ confusing output.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 1.75 3.440     1    -1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6 1.05 3.460     1    -1</span>
 <span class="r-in"><span><span class="co"># means of original data</span></span></span>
-<span class="r-in"><span><span class="va">b</span><span class="op">@</span><span class="va">plot</span><span class="op">@</span><span class="va">layers</span><span class="op">$</span><span class="va">stat_referent</span><span class="op">$</span><span class="va">stat_params</span><span class="op">$</span><span class="va">referent</span></span></span>
+<span class="r-in"><span><span class="va">b</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"layers"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">stat_referent</span><span class="op">$</span><span class="va">stat_params</span><span class="op">$</span><span class="va">referent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mpg     hp00      wt</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 20.09062 1.466875 3.21725</span>
 <span class="r-in"><span><span class="co"># means of head of original data</span></span></span>
@@ -260,7 +260,7 @@ confusing output.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>
