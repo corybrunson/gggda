@@ -175,6 +175,6 @@ Other geom layers:
 \code{\link[=geom_rule]{geom_rule()}},
 \code{\link[=geom_text_radiate]{geom_text_radiate()}},
 \code{\link[=geom_vector]{geom_vector()}},
-\code{\link[=geom_voronoy]{geom_voronoy()}}
+\code{\link[=geom_voronoi]{geom_voronoi()}}
 }
 \concept{geom layers}

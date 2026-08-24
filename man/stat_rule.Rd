@@ -197,6 +197,6 @@ Other stat layers:
 \code{\link[=stat_depth]{stat_depth()}},
 \code{\link[=stat_scale]{stat_scale()}},
 \code{\link[=stat_spantree]{stat_spantree()}},
-\code{\link[=stat_voronoy]{stat_voronoy()}}
+\code{\link[=stat_voronoi]{stat_voronoi()}}
 }
 \concept{stat layers}

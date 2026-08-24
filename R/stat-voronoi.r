@@ -6,10 +6,10 @@
 #' @details The Voronoi tessellation (also associated with the names Dirichlet
 #'   and Thiessen) of a set of points in a metric space comprises the
 #'   nearest-neighbor classification region around each point. When computed in
-#'   higher-dimensional real space, `StatVoronoy$compute_layer()` computes their
+#'   higher-dimensional real space, `StatVoronoi$compute_layer()` computes their
 #'   intersections with the plane.
 #'
-#'   `stat_voronoy()` is designed to pair with [geom_voronoy()] and
+#'   `stat_voronoi()` is designed to pair with [geom_voronoi()] and
 #'   [geom_thiessen()]. The computed `cell` variable is a list-column of data
 #'   frames, each containing the vertex coordinates and border indicator for a
 #'   Voronoi cell.
@@ -48,10 +48,10 @@
 #' @template param-layer
 #' @template return-layer
 #' @family stat layers
-#' @example inst/examples/ex-stat-voronoy.r
+#' @example inst/examples/ex-stat-voronoi.r
 #' @export
-stat_voronoy <- function(
-    mapping = NULL, data = NULL, geom = "voronoy", position = "identity",
+stat_voronoi <- function(
+    mapping = NULL, data = NULL, geom = "voronoi", position = "identity",
     engine = NULL,
     show.legend = NA,
     inherit.aes = TRUE,
@@ -60,7 +60,7 @@ stat_voronoy <- function(
   layer(
     data = data,
     mapping = mapping,
-    stat = StatVoronoy,
+    stat = StatVoronoi,
     geom = geom,
     position = position,
     show.legend = show.legend,
@@ -77,8 +77,8 @@ stat_voronoy <- function(
 #' @format NULL
 #' @usage NULL
 #' @export
-StatVoronoy <- ggproto(
-  "StatVoronoy", Stat,
+StatVoronoi <- ggproto(
+  "StatVoronoi", Stat,
 
   required_aes = c("x|..coord1", "y|..coord2"),
 
@@ -113,12 +113,12 @@ StatVoronoy <- ggproto(
     limits[3:4] <- limits[3:4] + diff(limits[3:4]) * c(-0.05, 0.05)
 
     # select and deploy engine based on data dimension
-    engine <- select_voronoy_engine(engine, ncol(coords))
+    engine <- select_voronoi_engine(engine, ncol(coords))
 
     # TODO: Return a data frame with `cell` and `area` columns; `cbind()` below.
     cell_list <- switch(engine,
-      deldir   = voronoy_cells_deldir(coords, limits),
-      geometry = voronoy_cells_geometry(coords, limits)
+      deldir   = voronoi_cells_deldir(coords, limits),
+      geometry = voronoi_cells_geometry(coords, limits)
     )
 
     data$cell <- cell_list
@@ -135,7 +135,7 @@ StatVoronoy <- ggproto(
 )
 
 # select engine based on data dimension and availability
-select_voronoy_engine <- function(engine, ndim) {
+select_voronoi_engine <- function(engine, ndim) {
   del_engines <- c("deldir", "geometry")
   engine_installed <- del_engines %in% .packages(all.available = TRUE)
   names(engine_installed) <- del_engines
@@ -170,7 +170,7 @@ select_voronoy_engine <- function(engine, ndim) {
 
 # use `deldir::deldir()` for at least 3 points; otherwise handle trivially;
 # assumes data are 2-dimensional
-voronoy_cells_deldir <- function(coords, limits) {
+voronoi_cells_deldir <- function(coords, limits) {
   if (nrow(coords) >= 3L) {
     del <- deldir::deldir(coords[, 1L], coords[, 2L], rw = limits)
     tiles <- deldir::tile.list(del)
@@ -185,9 +185,9 @@ voronoy_cells_deldir <- function(coords, limits) {
     names(cell_list) <- NULL
     
   } else if (nrow(coords) == 2L) {
-    cell_list <- voronoy_cells_2(coords, limits)
+    cell_list <- voronoi_cells_2(coords, limits)
   } else if (nrow(coords) == 1L) {
-    cell_list <- voronoy_cells_1(coords, limits)
+    cell_list <- voronoi_cells_1(coords, limits)
   }
 
   cell_list
@@ -195,7 +195,7 @@ voronoy_cells_deldir <- function(coords, limits) {
 
 # use `geometry::delaunayn()` to identify Delaunay neighbors, then clip each
 # cell against its neighbors' bisectors
-voronoy_cells_geometry <- function(coords, limits) {
+voronoi_cells_geometry <- function(coords, limits) {
   n <- nrow(coords)
   bound <- bound_coord(limits)
   norms_sq <- rowSums(coords^2)
@@ -257,7 +257,7 @@ voronoy_cells_geometry <- function(coords, limits) {
   cell_list
 }
 
-voronoy_cells_1 <- function(coords, limits) {
+voronoi_cells_1 <- function(coords, limits) {
   stopifnot(nrow(coords) == 1L)
   
   bound <- bound_coord(limits)
@@ -265,7 +265,7 @@ voronoy_cells_1 <- function(coords, limits) {
   list(data.frame(x = bound[, 1L], y = bound[, 2L], border = TRUE))
 }
 
-voronoy_cells_2 <- function(coords, limits) {
+voronoi_cells_2 <- function(coords, limits) {
   stopifnot(nrow(coords) == 2L)
   
   bound <- bound_coord(limits)

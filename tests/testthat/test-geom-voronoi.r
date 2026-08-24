@@ -1,6 +1,6 @@
 skip_if_not_installed("deldir")
 
-test_that("`geom_voronoy()` accepts contrived data with required aesthetics", {
+test_that("`geom_voronoi()` accepts contrived data with required aesthetics", {
   t <- seq(0, 2) * 2/3*pi
   rx <- c(-.1, .1, .1, -.1); ry <- c(-.1, -.1, .1, .1)
   d <- data.frame(
@@ -15,7 +15,7 @@ test_that("`geom_voronoy()` accepts contrived data with required aesthetics", {
   )
   expect_no_error(
     p <- ggplot(d, aes(x, y, cell = cell, fill = group)) + 
-      geom_voronoy(stat = "identity")
+      geom_voronoi(stat = "identity")
   )
 })
 
@@ -43,6 +43,6 @@ test_that("full voronoi pipelines render without error", {
   d <- data.frame(x = runif(9), y = runif(9))
   p <- ggplot(d, aes(x, y))
   
-  expect_no_error(layer_data(p + stat_voronoy() + geom_voronoy()))
-  expect_no_error(layer_data(p + stat_voronoy() + geom_thiessen()))
+  expect_no_error(layer_data(p + stat_voronoi() + geom_voronoi()))
+  expect_no_error(layer_data(p + stat_voronoi() + geom_thiessen()))
 })

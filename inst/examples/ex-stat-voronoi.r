@@ -6,13 +6,13 @@ eurodist %>%
 # planar regions (note superimposed perimeters)
 ggplot(euro_mds, aes(V1, V2, label = city)) +
   coord_equal() +
-  stat_voronoy(color = "black", fill = "transparent", linetype = "dashed") +
+  stat_voronoi(color = "black", fill = "transparent", linetype = "dashed") +
   geom_point() +
   geom_text(alpha = .5, size = 3)
 # intersection of plane with full-dimensional regions
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
-  stat_voronoy(color = "black") +
+  stat_voronoi(color = "black") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
 # facet by a variable
@@ -22,16 +22,16 @@ euro_mds %>%
   ggplot(aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
   facet_grid(cols = vars(random)) +
-  stat_voronoy(color = "black") +
+  stat_voronoi(color = "black") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
-# overlay Voronoy tiles and Thiessen segments
+# overlay Voronoi tiles and Thiessen segments
 set.seed(0)
 euro_mds %>%
   transform(random = LETTERS[sample(3, nrow(euro_mds), replace = TRUE)]) %>%
   ggplot(aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
-  stat_voronoy(aes(fill = random)) +
-  stat_voronoy(geom = "thiessen", linetype = "dotted") +
+  stat_voronoi(aes(fill = random)) +
+  stat_voronoi(geom = "thiessen", linetype = "dotted") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)

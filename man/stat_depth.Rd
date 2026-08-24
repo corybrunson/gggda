@@ -224,6 +224,6 @@ Other stat layers:
 \code{\link[=stat_rule]{stat_rule()}},
 \code{\link[=stat_scale]{stat_scale()}},
 \code{\link[=stat_spantree]{stat_spantree()}},
-\code{\link[=stat_voronoy]{stat_voronoy()}}
+\code{\link[=stat_voronoi]{stat_voronoi()}}
 }
 \concept{stat layers}

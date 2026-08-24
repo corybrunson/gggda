@@ -2,16 +2,16 @@
 #'
 #' @description Render Voronoi cells as polygonal regions or boundary segments.
 #'
-#' @details `geom_voronoy()` and `geom_thiessen()` are designed to pair with
-#'   [`stat_voronoy()`], which computes the data frame-valued list-column `cell`
+#' @details `geom_voronoi()` and `geom_thiessen()` are designed to pair with
+#'   [`stat_voronoi()`], which computes the data frame-valued list-column `cell`
 #'   aesthetic.
 #'
-#'   `GeomVoronoy` un-nests `cell` and draws filled polygon interiors, by
+#'   `GeomVoronoi` un-nests `cell` and draws filled polygon interiors, by
 #'   default omitting perimeters. `GeomThiessen` un-nests `cell` then extracts,
 #'   uniquifies, and draws the edges shared by adjacent cells (so omits edges
 #'   along the border) as segments.
 #'
-#' @section Aesthetics: `geom_voronoy()` and `geom_thiessen()` understand the
+#' @section Aesthetics: `geom_voronoi()` and `geom_thiessen()` understand the
 #'   following aesthetics (required aesthetics are in bold):
 #' \itemize{
 #'   \item **`cell`** (computed)
@@ -28,11 +28,11 @@
 #' @template param-geom
 #' @template return-layer
 #' @family geom layers
-#' @example inst/examples/ex-geom-voronoy.r
+#' @example inst/examples/ex-geom-voronoi.r
 #' @export
-geom_voronoy <- function(
+geom_voronoi <- function(
     mapping = NULL, data = NULL,
-    stat = "voronoy", position = "identity",
+    stat = "voronoi", position = "identity",
     ...,
     na.rm = FALSE,
     show.legend = NA,
@@ -42,7 +42,7 @@ geom_voronoy <- function(
     data = data,
     mapping = mapping,
     stat = stat,
-    geom = GeomVoronoy,
+    geom = GeomVoronoi,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
@@ -57,8 +57,8 @@ geom_voronoy <- function(
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomVoronoy <- ggproto(
-  "GeomVoronoy", GeomPolygon,
+GeomVoronoi <- ggproto(
+  "GeomVoronoi", GeomPolygon,
   
   required_aes = c("cell"),
   
@@ -82,11 +82,11 @@ GeomVoronoy <- ggproto(
   }
 )
 
-#' @rdname geom_voronoy
+#' @rdname geom_voronoi
 #' @export
 geom_thiessen <- function(
     mapping = NULL, data = NULL,
-    stat = "voronoy", position = "identity",
+    stat = "voronoi", position = "identity",
     ...,
     na.rm = FALSE,
     show.legend = NA,

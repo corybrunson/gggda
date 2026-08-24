@@ -151,7 +151,7 @@ ggplot(usa_mds, aes_c(aes_coord(usa_mds, "V"), aes(label = city))) +
 # overlay Delaunay edges and Voronoi cells
 ggplot(usa_mds, aes(V1, V2, label = city)) +
   coord_equal() +
-  stat_voronoy(fill = "transparent", color = "grey55") +
+  stat_voronoi(fill = "transparent", color = "grey55") +
   stat_delaunay(color = "black", linetype = "dashed") +
   geom_point(aes(V1, V2))
 }
@@ -176,6 +176,6 @@ Other stat layers:
 \code{\link[=stat_rule]{stat_rule()}},
 \code{\link[=stat_scale]{stat_scale()}},
 \code{\link[=stat_spantree]{stat_spantree()}},
-\code{\link[=stat_voronoy]{stat_voronoy()}}
+\code{\link[=stat_voronoi]{stat_voronoi()}}
 }
 \concept{stat layers}
