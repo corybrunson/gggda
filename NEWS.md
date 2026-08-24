@@ -10,7 +10,7 @@ values.
 
 ### voronoi stat and geoms
 
-A new statistical transformation `StatVoronoi` computes Voronoi cells from `x,y`
+A new statistical transformation `StatVoronoi` computes voronoi cells from `x,y`
 or `..coord*`, stored as nested data frames and in the latter case intersected
 with the `xy`-plane. By default, it uses `deldir::deldir()` for two-dimensional
 data and `geometry::delaunayn()` otherwise. The stat couples with two companion
