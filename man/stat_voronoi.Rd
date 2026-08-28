@@ -105,13 +105,12 @@ regions in an LDA biplot (Gardner, 2001). When the LDA models more than
 three groups, proper prediction regions must be constructed in model space,
 then intersected with the biplot plane.
 
-Voronoi cells are delimited within a rectangular border that extends to
-the edges of the plot window.
-
-By default, \code{\link[deldir:deldir]{deldir::deldir()}} is deployed on 2-dimensional data while
-\code{\link[geometry:delaunayn]{geometry::delaunayn()}} is deployed on higher-dimensional data; the user
-may use the \code{engine} argument to override the default in 2 dimensions, but
-in higher dimensions the \strong{geometry} package is required.
+Voronoi cells are delimited within a rectangular border that extends just
+beyond the plot window. By default, \code{\link[deldir:deldir]{deldir::deldir()}} is deployed on
+2-dimensional data while \code{\link[geometry:delaunayn]{geometry::delaunayn()}} is deployed on
+higher-dimensional data; the user may use the \code{engine} argument to override
+the default in 2 dimensions, but in higher dimensions \strong{geometry} is
+always used.
 }
 \section{Multidimensional position aesthetics}{
 
@@ -154,7 +153,7 @@ ggplot(euro_mds, aes(V1, V2, label = city)) +
   stat_voronoi(color = "black", fill = "transparent", linetype = "dashed") +
   geom_point() +
   geom_text(alpha = .5, size = 3)
-# intersection of plane with full-dimensional regions, tight bounds
+# intersection of plane with full-dimensional regions
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
   stat_voronoi(color = "black") +

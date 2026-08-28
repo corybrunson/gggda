@@ -24,8 +24,8 @@
 #'   beyond the plot window. By default, [deldir::deldir()] is deployed on
 #'   2-dimensional data while [geometry::delaunayn()] is deployed on
 #'   higher-dimensional data; the user may use the `engine` argument to override
-#'   the default in 2 dimensions, but in higher dimensions the **geometry**
-#'   package is required.
+#'   the default in 2 dimensions, but in higher dimensions **geometry** is
+#'   always used.
 #' 
 
 #' @template ref-voronoi1908
@@ -193,17 +193,14 @@ voronoi_cells_deldir <- function(coords, limits) {
   cell_list
 }
 
-# use `geometry::delaunayn()` to identify Delaunay neighbors, then clip each
-# cell against its neighbors' bisectors
+# use `geometry::delaunayn()` to identify Delaunay neighbors, then intersect
+# each cell with its neighbors' bisector halfspaces via `geometry::halfspacen()`
 voronoi_cells_geometry <- function(coords, limits) {
   n <- nrow(coords)
-  bound <- bound_coord(limits)
   norms_sq <- rowSums(coords^2)
 
-  # adjacency list from triangulation
   adj <- vector("list", n)
   if (n >= 3L) {
-    # REVIEW: Benchmark use of `"Qz"`.
     tri <- geometry::delaunayn(coords, options = "Qz")
     if (nrow(tri) > 0L) {
       for (k in seq_len(nrow(tri))) {
@@ -232,20 +229,31 @@ voronoi_cells_geometry <- function(coords, limits) {
       neigh <- seq_len(n)[-i]
     }
 
-    # third and fourth columns for whether point lies on x,y border
-    poly <- cbind(bound, c(-1, 1, 1, -1), c(-1, -1, 1, 1))
+    # bounding rectangle as halfspaces: a*x + b*y <= c
+    box <- rbind(
+      c( 1,  0,  limits[2L]),
+      c(-1,  0, -limits[1L]),
+      c( 0,  1,  limits[4L]),
+      c( 0, -1, -limits[3L])
+    )
+
     for (j in neigh) {
       if (i == j) next
       a <- coords[j, 1L] - coords[i, 1L]
       b <- coords[j, 2L] - coords[i, 2L]
       c <- (norms_sq[j] - norms_sq[i]) / 2
-      poly <- clip_halfplane(poly, a, b, c)
-      if (nrow(poly) < 3L) break
+      box <- rbind(box, c(a, b, c))
     }
 
-    if (nrow(poly) >= 3L) {
+    # halfspacen() expects rows of (a, b, -c) for a*x + b*y <= c
+    eq <- cbind(box[, 1L:2L], -box[, 3L])
+    result <- tryCatch(geometry::halfspacen(eq), error = function(e) NULL)
+
+    if (! is.null(result) && nrow(result) >= 3L) {
       cell_list[[i]] <- data.frame(
-        x = poly[, 1L], y = poly[, 2L], border = poly[, 3L] | poly[, 4L]
+        x = as.numeric(result[, 1L]),
+        y = as.numeric(result[, 2L]),
+        border = FALSE
       )
     } else {
       cell_list[[i]] <- data.frame(
