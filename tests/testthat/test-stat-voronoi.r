@@ -89,3 +89,23 @@ test_that("`StatVoronoi` handles degenerate data", {
   expect_no_error(p2 + stat_voronoi() + geom_point())
   expect_no_error(p3 + stat_voronoi() + geom_point())
 })
+
+test_that("`StatVoronoi` handles high-dimensional data", {
+  
+  # position aesthetics only
+  p1 <- ggplot(euro_mds, aes_coord(euro_mds, "V")) + stat_voronoi()
+  l1 <- layer_data(p1)
+  expect_false(all(vapply(l1$cell, nrow, 0L) == 0L))
+  
+  # combined position and other aesthetics
+  p2 <- 
+    ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) + 
+    stat_voronoi() +
+    stat_identity(geom = "text", aes(V1, V2))
+  l2_1 <- layer_data(p2)
+  expect_false(all(vapply(l2_1$cell, nrow, 0L) == 0L))
+  l2_2 <- layer_data(p2, i = 2)
+  expect_equal(l2_2$x, euro_mds$V1)
+  expect_equal(l2_2$y, euro_mds$V2)
+  expect_equal(l2_2$label, euro_mds$city)
+})
