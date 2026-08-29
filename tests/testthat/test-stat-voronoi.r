@@ -56,19 +56,12 @@ set.seed(3314L)
 d <- data.frame(x = runif(9), y = runif(9), z = rnorm(9))
 dd <- data.frame(x1 = runif(9), x2 = runif(9), x3 = rnorm(9), a = seq_len(9))
 
-test_that("`stat_voronoi()` handles higher-dimensional coordinates", {
+test_that("`StatVoronoi` translates higher-dimensional coordinates", {
   p <- ggplot(dd, aes_c(aes_coord(dd, "x"), aes(alpha = a))) + stat_voronoi()
   l <- layer_data(p)
   expect_true(length(unique(l$group)) <= 9L)
   expect_true("x" %in% names(l))
   expect_true("y" %in% names(l))
-})
-
-test_that("`stat_voronoi()` preserves auxiliary aesthetics", {
-  p <- ggplot(d, aes(x, y)) + stat_voronoi(aes(fill = z))
-  l <- layer_data(p)
-  expect_true("fill" %in% names(l))
-  expect_false(any(is.na(l$fill)))
 })
 
 eurodist %>% 
@@ -77,20 +70,7 @@ eurodist %>%
   tibble::rownames_to_column(var = "city") ->
   euro_mds
 
-test_that("`StatVoronoi` handles degenerate data", {
-  d1 <- transform(euro_mds[1L, , drop = FALSE], class = "A")
-  d2 <- transform(euro_mds[seq(2L), , drop = FALSE], class = c("A", "B"))
-  d3 <- transform(euro_mds[c(1L, 1L), , drop = FALSE], class = c("A", "B"))
-  p1 <- ggplot(d1, aes(V1, V2, label = city, fill = class))
-  p2 <- ggplot(d2, aes(V1, V2, label = city, fill = class))
-  p3 <- ggplot(d3, aes(V1, V2, label = city, fill = class))
-  
-  expect_no_error(p1 + stat_voronoi() + geom_point())
-  expect_no_error(p2 + stat_voronoi() + geom_point())
-  expect_no_error(p3 + stat_voronoi() + geom_point())
-})
-
-test_that("`StatVoronoi` handles high-dimensional data", {
+test_that("`StatVoronoi` uses high-dimensional data", {
   
   # position aesthetics only
   p1 <- ggplot(euro_mds, aes_coord(euro_mds, "V")) + stat_voronoi()
@@ -108,4 +88,38 @@ test_that("`StatVoronoi` handles high-dimensional data", {
   expect_equal(l2_2$x, euro_mds$V1)
   expect_equal(l2_2$y, euro_mds$V2)
   expect_equal(l2_2$label, euro_mds$city)
+})
+
+test_that("`StatVoronoi` preserves auxiliary aesthetics", {
+  p <- ggplot(d, aes(x, y)) + stat_voronoi(aes(fill = z))
+  l <- layer_data(p)
+  expect_true("fill" %in% names(l))
+  expect_false(any(is.na(l$fill)))
+})
+
+test_that("`StatVoronoi` handles degenerate data", {
+  d1 <- transform(euro_mds[1L, , drop = FALSE], class = "A")
+  d2 <- transform(euro_mds[seq(2L), , drop = FALSE], class = c("A", "B"))
+  d3 <- transform(euro_mds[c(1L, 1L), , drop = FALSE], class = c("A", "B"))
+  p1 <- ggplot(d1, aes(V1, V2, label = city, fill = class))
+  p2 <- ggplot(d2, aes(V1, V2, label = city, fill = class))
+  p3 <- ggplot(d3, aes(V1, V2, label = city, fill = class))
+  
+  expect_no_error(p1 + stat_voronoi() + geom_point())
+  expect_no_error(p2 + stat_voronoi() + geom_point())
+  expect_no_error(p3 + stat_voronoi() + geom_point())
+})
+
+test_that("`buffer` controls the voronoi cell border", {
+  cell_range <- function(l) {
+    cells <- do.call(rbind, l$cell)
+    c(min(cells$x), max(cells$x), min(cells$y), max(cells$y))
+  }
+  l_def <- layer_data(ggplot(d, aes(x, y)) + stat_voronoi())
+  l_buf <- layer_data(ggplot(d, aes(x, y)) + stat_voronoi(buffer = 1))
+  def <- cell_range(l_def)
+  buf <- cell_range(l_buf)
+  # buffer = 1 extends beyond the default
+  expect_true(all(def[c(1L, 3L)] > buf[c(1L, 3L)]))
+  expect_true(all(def[c(2L, 4L)] < buf[c(2L, 4L)]))
 })

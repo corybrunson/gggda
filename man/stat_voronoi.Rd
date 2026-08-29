@@ -9,6 +9,7 @@ stat_voronoi(
   data = NULL,
   geom = "voronoi",
   position = "identity",
+  buffer = 0.05,
   engine = NULL,
   show.legend = NA,
   inherit.aes = TRUE,
@@ -61,6 +62,9 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 \item For more information and other ways to specify the position, see the
 \link[ggplot2:layer_positions]{layer position} documentation.
 }}
+
+\item{buffer}{Numeric; a fraction of the larger (horizontal or vertical) data
+range by which to extend the border on each side.}
 
 \item{engine}{A single character string specifying the package implementation
 to use; \code{"deldir"} or \code{"geometry"}. Only \code{"geometry"} can handle
@@ -156,7 +160,7 @@ ggplot(euro_mds, aes(V1, V2, label = city)) +
 # intersection of plane with full-dimensional regions
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
-  stat_voronoi(color = "black") +
+  stat_voronoi(color = "black", fill = "transparent", linetype = "dashed") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
 # facet by a variable

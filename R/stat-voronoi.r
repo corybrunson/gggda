@@ -42,6 +42,8 @@
 #' }
 
 #' @inheritParams ggplot2::layer
+#' @param buffer Numeric; a fraction of the larger (horizontal or vertical) data
+#'   range by which to extend the border on each side.
 #' @param engine A single character string specifying the package implementation
 #'   to use; `"deldir"` or `"geometry"`. Only `"geometry"` can handle
 #'   higher-dimensional data.
@@ -52,6 +54,7 @@
 #' @export
 stat_voronoi <- function(
     mapping = NULL, data = NULL, geom = "voronoi", position = "identity",
+    buffer = 0.05,
     engine = NULL,
     show.legend = NA,
     inherit.aes = TRUE,
@@ -66,6 +69,7 @@ stat_voronoi <- function(
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
+      buffer = buffer,
       engine = engine,
       na.rm = FALSE,
       ...
@@ -87,6 +91,7 @@ StatVoronoi <- ggproto(
   ) {
     engine <- params$engine
     if (! is.null(engine)) engine <- match.arg(engine, c("deldir", "geometry"))
+    buffer <- params$buffer %||% 0.05
 
     coord_cols <- get_aes_coord(data)
     coords <- as.matrix(data[, coord_cols, drop = FALSE])
@@ -108,9 +113,11 @@ StatVoronoi <- ggproto(
     x_ran <- range(c(x_ran, range(coords[, 1L], na.rm = TRUE)))
     y_ran <- range(c(y_ran, range(coords[, 2L], na.rm = TRUE)))
     limits <- c(x_ran[1L], x_ran[2L], y_ran[1L], y_ran[2L])
-    # extend 5% beyond the plot window on each side
-    limits[1:2] <- limits[1:2] + diff(limits[1:2]) * c(-0.05, 0.05)
-    limits[3:4] <- limits[3:4] + diff(limits[3:4]) * c(-0.05, 0.05)
+    # buffer as a fraction of the greater data range (possibly zero)
+    xy_buff <- buffer * max(diff(x_ran), diff(y_ran))
+    # extend beyond the plot window on each side by the buffer fraction
+    limits[1:2] <- limits[1:2] + c(-1, 1) * xy_buff
+    limits[3:4] <- limits[3:4] + c(-1, 1) * xy_buff
 
     # select and deploy engine based on data dimension
     engine <- select_voronoi_engine(engine, ncol(coords))
@@ -126,7 +133,7 @@ StatVoronoi <- ggproto(
   },
 
   parameters = function(self, extra = FALSE) {
-    panel_args <- c("na.rm", "engine")
+    panel_args <- c("na.rm", "buffer", "engine")
     if (extra) {
       panel_args <- union(panel_args, self$non_missing_aes)
     }
