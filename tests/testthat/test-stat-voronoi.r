@@ -7,21 +7,22 @@ test_that("`StatVoronoi` returns expected columns with {deldir} engine", {
   p <- ggplot(d, aes(x, y, alpha = z)) + stat_voronoi(engine = "deldir")
   l <- layer_data(p)
   
+  # preserve point coordinates
   expect_equal(l$x, d$x)
   expect_equal(l$y, d$y)
   
+  # add cell list-column ...
   expect_true("cell" %in% names(l))
   expect_equal(length(l$cell), nrow(d))
   expect_type(l$cell, "list")
   
-  for (i in seq_along(l$cell)) {
-    cell_df <- l$cell[[i]]
-    expect_s3_class(cell_df, "data.frame")
-    expect_named(cell_df, c("x", "y", "border"))
-    expect_type(cell_df$x, "double")
-    expect_type(cell_df$y, "double")
-    expect_type(cell_df$border, "logical")
-  }
+  # ... with specified structure
+  l_cell <- do.call(rbind, l$cell)
+  expect_s3_class(l_cell, "data.frame")
+  expect_named(l_cell, c("x", "y", "border"))
+  expect_type(l_cell$x, "double")
+  expect_type(l_cell$y, "double")
+  expect_type(l_cell$border, "logical")
 })
 
 test_that("`StatVoronoi` returns expected columns with {geometry} engine", {
@@ -32,22 +33,23 @@ test_that("`StatVoronoi` returns expected columns with {geometry} engine", {
                   z = seq_len(5))
   p <- ggplot(d, aes(x, y, alpha = z)) + stat_voronoi(engine = "geometry")
   l <- layer_data(p)
-
+  
+  # preserve point coordinates
   expect_equal(l$x, d$x)
   expect_equal(l$y, d$y)
-
+  
+  # add cell list-column ...
   expect_true("cell" %in% names(l))
   expect_equal(length(l$cell), nrow(d))
   expect_type(l$cell, "list")
-
-  for (i in seq_along(l$cell)) {
-    cell_df <- l$cell[[i]]
-    expect_s3_class(cell_df, "data.frame")
-    expect_named(cell_df, c("x", "y", "border"))
-    expect_type(cell_df$x, "double")
-    expect_type(cell_df$y, "double")
-    expect_type(cell_df$border, "logical")
-  }
+  
+  # ... with specified structure
+  l_cell <- do.call(rbind, l$cell)
+  expect_s3_class(l_cell, "data.frame")
+  expect_named(l_cell, c("x", "y", "border"))
+  expect_type(l_cell$x, "double")
+  expect_type(l_cell$y, "double")
+  expect_type(l_cell$border, "logical")
 })
 
 set.seed(3314L)

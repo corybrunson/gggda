@@ -5,16 +5,16 @@ test_that("`StatDelaunay` returns expected columns with {deldir} engine", {
                   y = c(0, 0, 1, 0.5, 0.3))
   l <- layer_data(ggplot(d, aes(x, y)) + stat_delaunay(engine = "deldir"))
   
+  # position variables of expected type
   expect_all_true(c("x", "y", "xend", "yend", "group") %in% names(l))
-
   expect_type(l$x, "double")
   expect_type(l$y, "double")
   expect_type(l$xend, "double")
   expect_type(l$yend, "double")
 
-  # edges should connect actual data points
-  endpoints <- unique(c(l$x, l$xend, l$y, l$yend))
-  expect_true(all(endpoints %in% unlist(d)))
+  # edges connect data points
+  endpoints <- unique(rbind(cbind(l$x, l$y), cbind(l$xend, l$yend)))
+  expect_identical(as.matrix(d), unique(rbind(as.matrix(d), endpoints)))
 })
 
 test_that("`StatDelaunay` returns expected columns with {geometry} engine", {
@@ -24,13 +24,17 @@ test_that("`StatDelaunay` returns expected columns with {geometry} engine", {
   d <- data.frame(x = c(0, 1, 0.5, 0.2, 0.8),
                   y = c(0, 0, 1, 0.5, 0.3))
   l <- layer_data(ggplot(d, aes(x, y)) + stat_delaunay(engine = "geometry"))
-
+  
+  # position variables of expected type
   expect_all_true(c("x", "y", "xend", "yend", "group") %in% names(l))
-
   expect_type(l$x, "double")
   expect_type(l$y, "double")
   expect_type(l$xend, "double")
   expect_type(l$yend, "double")
+  
+  # edges connect data points
+  endpoints <- unique(rbind(cbind(l$x, l$y), cbind(l$xend, l$yend)))
+  expect_identical(as.matrix(d), unique(rbind(as.matrix(d), endpoints)))
 })
 
 set.seed(3314L)
@@ -66,5 +70,6 @@ test_that("`StatDelaunay` handles degenerate data", {
 
   # duplicate points
   d3 <- data.frame(x = c(0.5, 0.5), y = c(0.5, 0.5))
-  expect_no_error(layer_data(ggplot(d3, aes(x, y)) + stat_delaunay()))
+  expect_no_error(l3 <- layer_data(ggplot(d3, aes(x, y)) + stat_delaunay()))
+  expect_equal(nrow(l3), 1L)
 })
