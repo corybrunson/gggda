@@ -12,7 +12,7 @@ ggplot(euro_mds, aes(V1, V2, label = city)) +
 # intersection of plane with full-dimensional regions
 ggplot(euro_mds, aes_c(aes_coord(euro_mds, "V"), aes(label = city))) +
   coord_equal() +
-  stat_voronoi(color = "black") +
+  stat_voronoi(color = "black", fill = "transparent", linetype = "dashed") +
   geom_point(aes(V1, V2)) +
   geom_text(aes(V1, V2), alpha = .5, size = 3)
 # facet by a variable
