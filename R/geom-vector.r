@@ -188,5 +188,8 @@ GeomVector <- ggproto(
     grob <- do.call(grid::grobTree, grobs)
     grob$name <- grid::grobName(grob, "geom_vector")
     grob
-  }
+  },
+  
+  # update this to match segment key
+  draw_key = draw_key_path
 )
